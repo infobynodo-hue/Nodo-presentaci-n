@@ -1,7 +1,10 @@
 from http.server import BaseHTTPRequestHandler
 import json, urllib.request, urllib.error, os
 
-ANTHROPIC_KEY = os.environ.get("ANTHROPIC_KEY", "")
+ANTHROPIC_KEY = (
+    os.environ.get("ANTHROPIC_KEY") or
+    os.environ.get("VITE_ANTHROPIC_API_KEY") or ""
+)
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
