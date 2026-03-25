@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NODO One · BPO Digital — Propuesta Comercial</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08070f;--s:#0f0d1a;--s2:#161228;--bo:#2a2048;
+  --pk:#e040a0;--pk2:#c026a8;--vio:#8b22e8;--vio2:#a855f7;
+  --pk-l:#f0abdc;--vio-l:#c4b5fd;
+  --t:#f5f2ff;--tm:#7a6f9a;--td:#3d3560;
+  --g2:#25a35a;--g-l:#4ade80;--r:#e8441a;
+  --grad:linear-gradient(135deg,#e040a0 0%,#c026a8 50%,#8b22e8 100%);
+  --grad-soft:linear-gradient(135deg,rgba(224,64,160,.1) 0%,rgba(139,34,232,.07) 100%);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-snap-type:y mandatory;overflow-y:scroll;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t)}
+section{scroll-snap-align:start;min-height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.grad-text{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ── TOPBAR ── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(8,7,15,.95) 0%,transparent 100%);pointer-events:none}
+.topbar-logo{font-family:'Syne',sans-serif;font-size:14px;font-weight:800}
+.topbar-logo span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar-right{display:flex;align-items:center;gap:12px;pointer-events:all}
+.key-btn{display:flex;align-items:center;gap:6px;padding:4px 12px;border:1px solid var(--bo);border-radius:20px;cursor:pointer;transition:border-color .2s;background:transparent}
+.key-btn:hover{border-color:rgba(192,38,168,.5)}
+.key-dot{width:6px;height:6px;border-radius:50%;background:var(--td);transition:background .3s}
+.key-dot.on{background:var(--g2);animation:pulse 2s infinite}
+.key-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)}
+.topbar-badge{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--tm);padding:3px 10px;border:1px solid var(--bo);border-radius:20px}
+
+/* ── SIDENAV ── */
+.sidenav{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:10px}
+.snav-dot{width:6px;height:6px;border-radius:50%;background:var(--td);cursor:pointer;transition:all .3s;position:relative}
+.snav-dot.active{background:var(--pk);box-shadow:0 0 8px rgba(224,64,160,.6);width:8px;height:8px}
+.snav-dot:hover{background:var(--pk-l)}
+.snav-dot::after{content:attr(data-label);position:absolute;right:18px;top:50%;transform:translateY(-50%);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--tm);white-space:nowrap;opacity:0;transition:opacity .2s;text-transform:uppercase}
+.snav-dot:hover::after{opacity:1}
+
+/* ── WELCOME / LEAD CAPTURE MODAL ── */
+.modal-overlay{position:fixed;inset:0;z-index:999;background:rgba(8,7,15,.96);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center}
+.modal-box{background:var(--s);border:1px solid rgba(192,38,168,.4);border-radius:20px;padding:44px 48px;max-width:500px;width:92%;position:relative;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6)}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+.modal-glow{position:absolute;top:-80px;right:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(192,38,168,.12) 0%,transparent 70%);pointer-events:none}
+.modal-brand{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px}
+.modal-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:8px;line-height:1.15}
+.modal-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.modal-sub{font-size:14px;color:var(--tm);line-height:1.65;margin-bottom:28px}
+.modal-field{margin-bottom:14px}
+.modal-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--tm);margin-bottom:6px;display:block}
+.modal-input{width:100%;background:var(--s2);border:1px solid var(--bo);border-radius:10px;padding:13px 16px;font-size:14px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.modal-input:focus{border-color:rgba(192,38,168,.5);background:var(--bg)}
+.modal-input::placeholder{color:var(--td)}
+.modal-err{font-size:12px;color:#f07050;margin-bottom:10px;display:none;padding:8px 12px;background:rgba(232,68,26,.08);border:1px solid rgba(232,68,26,.2);border-radius:6px}
+.modal-btn{width:100%;padding:15px;background:var(--grad);border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;margin-top:4px;box-shadow:0 8px 28px rgba(192,38,168,.28)}
+.modal-btn:hover{opacity:.88;transform:translateY(-1px)}
+.modal-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.modal-privacy{font-size:11px;color:var(--td);text-align:center;margin-top:14px;font-family:'DM Mono',monospace;line-height:1.5}
+.phone-row{display:flex;gap:8px}
+.modal-select{background:var(--s2);border:1px solid var(--bo);border-radius:10px;padding:13px 10px;font-size:14px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;transition:border-color .2s;flex-shrink:0;-webkit-appearance:none;appearance:none;text-align:center;min-width:90px}
+.modal-select:focus{border-color:rgba(192,38,168,.5);background:var(--bg)}
+.phone-num{flex:1}
+
+/* ── BG ── */
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(42,32,72,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(42,32,72,.15) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.glow{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);opacity:.35}
+
+/* ── ANIMATIONS ── */
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(37,163,90,.4)}50%{box-shadow:0 0 0 4px rgba(37,163,90,0)}}
+@keyframes livepulse{0%,100%{box-shadow:0 0 0 0 rgba(37,163,90,.4)}50%{box-shadow:0 0 0 4px rgba(37,163,90,0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+@keyframes scrollPulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes entryIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:all .7s cubic-bezier(.4,0,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+/* ── S0 HERO ── */
+#s0{flex-direction:column;text-align:center}
+.hero-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;max-width:800px;padding:0 40px}
+.hero-clock{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--tm);margin-bottom:40px;opacity:0;animation:fadeUp .6s ease .5s both}
+.hero-msg-wrap{margin-bottom:32px;opacity:0;animation:fadeUp .7s ease 1.4s both}
+.hero-wamsg{display:inline-flex;align-items:center;gap:12px;background:var(--s);border:1px solid var(--bo);border-radius:18px 18px 4px 18px;padding:12px 18px;font-size:14px;color:var(--tm)}
+.hero-wamsg-dot{width:8px;height:8px;border-radius:50%;background:var(--g2);flex-shrink:0}
+.hero-typing{display:inline-flex;align-items:center;gap:4px;padding:10px 16px;background:var(--s2);border:1px solid var(--bo);border-radius:4px 18px 18px 18px;margin-top:6px;opacity:0;animation:fadeUp .4s ease 2.4s both}
+.tdot{width:6px;height:6px;border-radius:50%;background:var(--tm);animation:tdot 1.2s infinite ease}
+.tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
+.hero-no-resp{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,52px);font-weight:800;color:#e8441a;margin-bottom:10px;letter-spacing:-.02em;opacity:0;animation:fadeUp .6s ease 4.2s both}
+.hero-gone{font-size:15px;color:var(--tm);margin-bottom:36px;opacity:0;animation:fadeUp .5s ease 5s both}
+.hero-counter-wrap{display:flex;align-items:center;gap:16px;padding:16px 28px;background:rgba(232,68,26,.06);border:1px solid rgba(232,68,26,.2);border-radius:8px;margin-bottom:52px;opacity:0;animation:fadeUp .5s ease 5.8s both}
+.hero-counter-num{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;color:#f07050;line-height:1}
+.hero-counter-label{font-size:12px;color:var(--tm);line-height:1.4;text-align:left;max-width:160px}
+.hero-logo-wrap{opacity:0;animation:fadeUp .8s ease 7s both;margin-bottom:16px}
+.hero-logo{font-family:'Syne',sans-serif;font-size:12px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
+.hero-tagline{font-family:'Syne',sans-serif;font-size:clamp(24px,3vw,42px);font-weight:800;line-height:1.15;letter-spacing:-.02em}
+.hero-tagline em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-scroll{margin-top:44px;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeUp .5s ease 8.5s both;cursor:pointer}
+.hero-scroll-line{width:1px;height:36px;background:linear-gradient(180deg,var(--pk),transparent);animation:scrollPulse 2s infinite}
+.hero-scroll span{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--td)}
+
+/* ── S1 PROBLEMA ── */
+#s1{align-items:flex-start;padding:100px 60px 60px}
+.s-inner{position:relative;z-index:2;width:100%;max-width:1100px;margin:0 auto}
+.s-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--tm);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.s-label::after{content:'';flex:1;height:1px;background:var(--bo)}
+.s-title{font-family:'Syne',sans-serif;font-size:clamp(26px,3.5vw,46px);font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:12px}
+.s-sub{font-size:15px;color:var(--tm);line-height:1.7;max-width:600px;margin-bottom:36px}
+.prob-quote{text-align:center;padding:44px 0;border-top:1px solid var(--bo);border-bottom:1px solid var(--bo);margin-bottom:36px}
+.prob-quote-eye{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--pk-l);margin-bottom:14px}
+.prob-quote-text{font-family:'Syne',sans-serif;font-size:clamp(20px,2.5vw,32px);font-weight:800;line-height:1.25;letter-spacing:-.01em}
+.prob-quote-text em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.prob-quote-sub{font-size:13px;color:var(--tm);line-height:1.7;max-width:500px;margin:14px auto 0}
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.bac{padding:26px 28px;border-radius:8px}
+.bab{background:rgba(232,68,26,.04);border:1px solid rgba(232,68,26,.2)}
+.baa{background:rgba(37,163,90,.04);border:1px solid rgba(37,163,90,.2)}
+.bat{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:14px}
+.bab .bat{color:#f07050}.baa .bat{color:var(--g2)}
+.bai{font-size:13px;color:var(--tm);display:flex;gap:10px;margin-bottom:9px;line-height:1.5;align-items:flex-start}
+.dot-r{width:6px;height:6px;border-radius:50%;background:var(--r);flex-shrink:0;margin-top:5px}
+.dot-g{width:6px;height:6px;border-radius:50%;background:var(--g2);flex-shrink:0;margin-top:5px}
+
+/* ── S2 SOLUCIÓN ── */
+#s2{align-items:flex-start;padding:100px 60px 60px}
+.sol-intro{background:var(--grad-soft);border:1px solid rgba(192,38,168,.3);border-radius:12px;padding:22px 30px;margin-bottom:32px;position:relative;overflow:hidden}
+.sol-intro::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--grad)}
+.sol-intro-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--pk-l);margin-bottom:7px}
+.sol-intro-text{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;line-height:1.55}
+.agents-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px}
+.agent-card{background:var(--s);border:1px solid var(--bo);border-radius:12px;overflow:hidden;transition:all .25s}
+.agent-card:hover{border-color:rgba(192,38,168,.4);transform:translateY(-2px)}
+.ac-top{padding:22px;border-bottom:1px solid var(--bo);display:flex;align-items:center;gap:14px}
+.ac-pk .ac-top{background:rgba(224,64,160,.06)}.ac-vio .ac-top{background:rgba(139,34,232,.06)}
+.ac-av{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.ac-pk .ac-av{background:rgba(224,64,160,.15);border:1px solid rgba(224,64,160,.3)}
+.ac-vio .ac-av{background:rgba(139,34,232,.15);border:1px solid rgba(139,34,232,.3)}
+.ac-name{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;margin-bottom:3px}
+.ac-role{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em}
+.ac-pk .ac-role{color:var(--pk-l)}.ac-vio .ac-role{color:var(--vio-l)}
+.ac-body{padding:18px 22px}
+.ac-desc{font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:14px}
+.ac-caps{list-style:none;display:flex;flex-direction:column;gap:6px}
+.ac-caps li{font-size:12px;color:var(--tm);display:flex;gap:8px;align-items:flex-start;line-height:1.45}
+.ac-caps li::before{font-size:8px;flex-shrink:0;margin-top:4px}
+.ac-pk .ac-caps li::before{content:'◆';color:var(--pk)}.ac-vio .ac-caps li::before{content:'◆';color:var(--vio2)}
+.ac-metrics{margin-top:14px;padding-top:14px;border-top:1px solid var(--bo);display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.am{background:var(--bg);border:1px solid var(--bo);border-radius:8px;padding:9px 7px;text-align:center}
+.am-val{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:3px}
+.am-lbl{font-size:9px;color:var(--tm)}
+.met-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.met{background:var(--s);border:1px solid var(--bo);border-radius:8px;padding:18px;text-align:center;transition:all .2s}
+.met:hover{border-color:rgba(192,38,168,.35)}
+.met-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:5px}
+.met-lbl{font-size:11px;color:var(--tm);line-height:1.4}
+.met-sub{font-size:9px;color:var(--td);font-family:'DM Mono',monospace;margin-top:3px;letter-spacing:.06em}
+
+/* ── S3 DEMO ── */
+#s3{align-items:flex-start;padding:88px 60px 40px}
+.demo-header{text-align:center;margin-bottom:24px}
+.live-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(37,163,90,.1);border:1px solid rgba(37,163,90,.25);border-radius:20px;padding:4px 14px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--g2);margin-bottom:14px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--g2);animation:pulse 2s infinite}
+.demo-title{font-family:'Syne',sans-serif;font-size:clamp(20px,2.5vw,32px);font-weight:800;margin-bottom:7px;letter-spacing:-.01em}
+.demo-sub{font-size:14px;color:var(--tm)}
+.demo-tabs{display:flex;gap:8px;margin-bottom:18px;justify-content:center}
+.dtab{padding:10px 20px;border-radius:8px;background:var(--s);border:1px solid var(--bo);cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--tm);display:flex;align-items:center;gap:8px}
+.dtab:hover{border-color:rgba(192,38,168,.4);color:var(--t)}
+.dtab.active{background:var(--grad-soft);border-color:rgba(192,38,168,.4);color:var(--t);box-shadow:0 0 20px rgba(192,38,168,.12)}
+.demo-wrap{display:grid;grid-template-columns:1fr 340px;gap:18px;width:100%;max-width:1100px;margin:0 auto}
+.dpanel{display:none}.dpanel.active{display:flex;flex-direction:column}
+.chat-win{background:var(--s);border:1px solid var(--bo);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;height:420px}
+.chat-hdr{padding:13px 18px;border-bottom:1px solid var(--bo);display:flex;align-items:center;gap:11px;flex-shrink:0}
+.chat-av{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--grad-soft);border:1px solid rgba(192,38,168,.3);flex-shrink:0}
+.chat-aname{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.chat-arole{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--pk-l);text-transform:uppercase}
+.chat-status{margin-left:auto;display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--g2);text-transform:uppercase}
+.chat-sdot{width:6px;height:6px;border-radius:50%;background:var(--g2);animation:pulse 2s infinite}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px;scrollbar-width:thin;scrollbar-color:var(--bo) transparent}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--bo);border-radius:2px}
+.cmsg{max-width:85%;padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.5;animation:msgIn .25s ease both}
+.cmsg-u{background:var(--grad);color:#fff;align-self:flex-end;border-radius:12px 12px 4px 12px}
+.cmsg-a{background:var(--s2);border:1px solid var(--bo);color:var(--t);align-self:flex-start;border-radius:12px 12px 12px 4px}
+.cmsg-time{font-size:10px;opacity:.45;margin-top:3px;font-family:'DM Mono',monospace}
+.typing-ind{display:none;align-self:flex-start;background:var(--s2);border:1px solid var(--bo);padding:9px 13px;border-radius:12px 12px 12px 4px;align-items:center;gap:4px}
+.typing-ind.show{display:flex}
+.chat-foot{padding:11px 14px;border-top:1px solid var(--bo);flex-shrink:0}
+.chat-in-row{display:flex;gap:7px}
+.chat-in{flex:1;background:var(--s2);border:1px solid var(--bo);border-radius:8px;padding:9px 13px;font-size:13px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.chat-in::placeholder{color:var(--td)}.chat-in:focus{border-color:rgba(192,38,168,.4)}
+.chat-send{padding:9px 15px;background:var(--grad);border:none;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:#fff;transition:opacity .2s;white-space:nowrap}
+.chat-send:hover{opacity:.85}.chat-send:disabled{opacity:.4;cursor:not-allowed}
+.suggs{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.sugg{padding:5px 11px;border-radius:20px;border:1px solid var(--bo);font-size:11px;color:var(--tm);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;font-family:'DM Mono',monospace;letter-spacing:.02em}
+.sugg:hover{border-color:rgba(192,38,168,.4);color:var(--pk-l);background:rgba(224,64,160,.06)}
+.demo-sidebar{display:flex;flex-direction:column;gap:11px}
+.dscard{background:var(--s);border:1px solid var(--bo);border-radius:10px;padding:17px}
+.dscard-t{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--pk-l);margin-bottom:9px;text-transform:uppercase;letter-spacing:.05em}
+.dscard-i{font-size:12px;color:var(--tm);display:flex;gap:7px;margin-bottom:5px;line-height:1.4}
+.dscard-i::before{content:'·';color:var(--pk);flex-shrink:0}
+.pwrd{background:var(--grad-soft);border:1px solid rgba(192,38,168,.3);border-radius:8px;padding:11px 14px;text-align:center;margin-top:auto}
+.pwrd-t{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--pk-l);margin-bottom:3px}
+.pwrd-s{font-size:11px;color:var(--tm)}
+
+/* ── S4 BENEFICIOS ── */
+#s4{align-items:flex-start;padding:100px 60px 60px}
+.intel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:24px}
+.ic{background:var(--s);border:1px solid var(--bo);border-radius:10px;padding:19px;transition:all .2s}
+.ic:hover{border-color:rgba(192,38,168,.35);background:var(--s2);transform:translateY(-2px)}
+.ic-icon{font-size:22px;margin-bottom:9px}
+.ic-t{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--pk-l);margin-bottom:5px}
+.ic-d{font-size:12px;color:var(--tm);line-height:1.6}
+.impact-bar{background:linear-gradient(135deg,rgba(224,64,160,.12),rgba(139,34,232,.07));border:1px solid rgba(192,38,168,.32);border-left:3px solid var(--pk);border-radius:0 10px 10px 0;padding:18px 26px;display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.impact-icon{font-size:26px;flex-shrink:0}
+.impact-text{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;line-height:1.4}
+.impact-text em{color:var(--pk-l);font-style:normal}
+.impact-sub{font-size:11px;color:var(--tm);margin-top:3px;font-family:'DM Mono',monospace}
+.roi-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.roi-col{border-radius:10px;padding:22px}
+.roi-before{background:rgba(232,68,26,.04);border:1px solid rgba(232,68,26,.18)}
+.roi-after{background:var(--grad-soft);border:1px solid rgba(192,38,168,.25);position:relative;overflow:hidden}
+.roi-after::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+.roi-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:13px}
+.roi-before .roi-lbl{color:#f07050}.roi-after .roi-lbl{color:var(--pk-l)}
+.roi-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.roi-row:last-child{border-bottom:none}
+.roi-row span:first-child{color:var(--tm)}
+.roi-before .roi-row span:last-child{color:var(--t);font-weight:600}
+.roi-after .roi-row span:last-child{font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ── S5 OFICINA DIGITAL ── */
+#s5{align-items:flex-start;padding:100px 60px 60px}
+.off-hdr{display:flex;align-items:center;gap:14px;background:var(--s);border:1px solid var(--bo);border-radius:10px;padding:13px 18px;margin-bottom:20px}
+.off-status{display:flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--g2)}
+.off-dot{width:7px;height:7px;border-radius:50%;background:var(--g2);animation:pulse 2s infinite}
+.off-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-left:4px}
+.off-time{margin-left:auto;font-family:'DM Mono',monospace;font-size:10px;color:var(--tm)}
+.off-grid{display:grid;grid-template-columns:1fr 1fr 280px;gap:14px}
+.oa{background:var(--s);border:1px solid var(--bo);border-radius:12px;overflow:hidden}
+.oa-hdr{padding:14px 18px;border-bottom:1px solid var(--bo);display:flex;align-items:center;gap:11px}
+.oa-c .oa-hdr{background:rgba(224,64,160,.06)}.oa-v .oa-hdr{background:rgba(139,34,232,.06)}
+.oa-dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
+.oa-c .oa-dot{background:var(--pk)}.oa-v .oa-dot{background:var(--vio2)}
+.oa-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.oa-ch{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;margin-left:auto;text-transform:uppercase}
+.oa-c .oa-ch{color:var(--pk-l)}.oa-v .oa-ch{color:var(--vio-l)}
+.oa-body{padding:14px 18px}
+.oa-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:14px}
+.oa-stat{background:var(--s2);border:1px solid var(--bo);border-radius:7px;padding:9px 7px;text-align:center}
+.oa-sval{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:2px}
+.oa-slbl{font-size:9px;color:var(--tm);font-family:'DM Mono',monospace}
+.oa-feed{display:flex;flex-direction:column;gap:5px;max-height:110px;overflow:hidden}
+.oa-entry{font-size:11px;color:var(--tm);display:flex;align-items:flex-start;gap:7px;padding:5px 8px;background:var(--bg);border-radius:5px;border:1px solid var(--bo);animation:entryIn .4s ease both}
+.oa-edot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.oa-etext{flex:1;line-height:1.4}
+.oa-etime{font-family:'DM Mono',monospace;font-size:9px;color:var(--td);flex-shrink:0;margin-top:1px}
+.off-feed{background:var(--s);border:1px solid var(--bo);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.of-hdr{padding:13px 15px;border-bottom:1px solid var(--bo);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--pk-l);display:flex;align-items:center;gap:7px}
+.of-hdot{width:5px;height:5px;border-radius:50%;background:var(--g2);animation:pulse 2s infinite}
+.of-list{flex:1;padding:10px;display:flex;flex-direction:column;gap:5px;overflow:hidden}
+.of-item{padding:7px 9px;background:var(--s2);border-radius:6px;border-left:2px solid;font-size:11px;color:var(--tm);line-height:1.4;animation:entryIn .4s ease both}
+.of-item.pk{border-color:var(--pk)}.of-item.vio{border-color:var(--vio2)}.of-item.g{border-color:var(--g2)}
+.of-itype{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1px}
+.of-item.pk .of-itype{color:var(--pk-l)}.of-item.vio .of-itype{color:var(--vio-l)}.of-item.g .of-itype{color:var(--g2)}
+
+/* ── S5 OFICINA ISOMÉTRICA ── */
+.office-scene{background:var(--s);border:1px solid var(--bo);border-radius:12px;overflow:hidden;margin-bottom:18px}
+#officeCanvas{width:100%;display:block;max-height:340px}
+.office-legend{display:flex;gap:22px;padding:10px 20px;border-top:1px solid var(--bo);flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--tm);font-family:'DM Mono',monospace;letter-spacing:.06em}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.hybrid-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.hyb{background:var(--s);border:1px solid var(--bo);border-radius:10px;padding:20px;transition:all .2s}
+.hyb:hover{border-color:rgba(192,38,168,.35);transform:translateY(-2px)}
+.hyb-icon{font-size:20px;margin-bottom:9px}
+.hyb-t{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--pk-l);margin-bottom:5px}
+.hyb-d{font-size:12px;color:var(--tm);line-height:1.6}
+
+/* ── S6 CTA ── */
+#s6{flex-direction:column;text-align:center}
+.cta-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;max-width:700px;padding:0 40px}
+.cta-eye{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--pk-l);margin-bottom:18px}
+.cta-title{font-family:'Syne',sans-serif;font-size:clamp(26px,3.5vw,46px);font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-bottom:14px}
+.cta-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-sub{font-size:15px;color:var(--tm);line-height:1.7;margin-bottom:36px;max-width:520px}
+.cta-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:44px}
+.cta-btn1{padding:15px 32px;background:var(--grad);border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:0 8px 28px rgba(192,38,168,.28);display:flex;align-items:center;gap:9px}
+.cta-btn1:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(192,38,168,.38)}
+.cta-btn2{padding:15px 32px;background:var(--s);border:1px solid rgba(192,38,168,.35);border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--t);cursor:pointer;text-decoration:none;transition:all .2s;display:flex;align-items:center;gap:9px}
+.cta-btn2:hover{border-color:var(--pk);background:var(--s2)}
+.cta-proof{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
+.cpp{text-align:center}
+.cpp-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:3px}
+.cpp-lbl{font-size:11px;color:var(--tm)}
+.cta-foot{margin-top:44px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--td)}
+.cta-foot em{color:var(--tm);font-style:normal}
+
+@media(max-width:900px){
+  #s1,#s2,#s3,#s4,#s5{padding:90px 24px 40px}
+  .ba-grid,.agents-grid,.intel-grid,.met-row,.roi-compare,.hybrid-row,.demo-wrap{grid-template-columns:1fr}
+  .demo-sidebar,.sidenav{display:none}
+  .topbar{padding:14px 24px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── WELCOME / LEAD CAPTURE ── -->
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal-box">
+    <div class="modal-glow"></div>
+    <div class="modal-brand">NODO One · BPO Digital</div>
+    <div class="modal-title">Propuesta para hacer que<br>tu negocio <em>responda y venda 24/7</em></div>
+    <div class="modal-sub">Déjanos tus datos y en segundos podrás ver cómo nuestros agentes de inteligencia artificial trabajan para un negocio real — en vivo.</div>
+    <div class="modal-err" id="leadErr">⚠ Por favor completa nombre y teléfono.</div>
+    <div class="modal-field">
+      <label class="modal-label">Tu nombre</label>
+      <input type="text" class="modal-input" id="leadNombre" placeholder="Ej: Carlos Martínez" autocomplete="name" onkeydown="if(event.key==='Enter')document.getElementById('leadTelefono').focus()">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Teléfono / WhatsApp</label>
+      <div class="phone-row">
+        <select class="modal-select" id="leadPais">
+          <option value="+57">🇨🇴 +57</option>
+          <option value="+52">🇲🇽 +52</option>
+          <option value="+58">🇻🇪 +58</option>
+          <option value="+34">🇪🇸 +34</option>
+          <option value="+1">🇺🇸 +1</option>
+          <option value="+44">🇬🇧 +44</option>
+        </select>
+        <input type="tel" class="modal-input phone-num" id="leadTelefono" placeholder="612 345 678" autocomplete="tel-national" onkeydown="if(event.key==='Enter')submitLead()">
+      </div>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Empresa <span style="color:var(--td)">(opcional)</span></label>
+      <input type="text" class="modal-input" id="leadEmpresa" placeholder="Ej: Clínica Dental Norte" autocomplete="organization" onkeydown="if(event.key==='Enter')submitLead()">
+    </div>
+    <button class="modal-btn" id="leadBtn" onclick="submitLead()">Ver la demo →</button>
+    <div class="modal-privacy">Tus datos son confidenciales y solo serán usados<br>por el equipo de NODO One para contactarte.</div>
+  </div>
+</div>
+
+<!-- ── TOPBAR ── -->
+<header class="topbar">
+  <div class="topbar-logo"><span>NODO One</span></div>
+  <div class="topbar-badge">Propuesta Comercial · Live</div>
+</header>
+
+<!-- ── SIDENAV ── -->
+<nav class="sidenav">
+  <div class="snav-dot active" data-section="0" data-label="Inicio"></div>
+  <div class="snav-dot" data-section="1" data-label="El Problema"></div>
+  <div class="snav-dot" data-section="2" data-label="La Solución"></div>
+  <div class="snav-dot" data-section="3" data-label="Demo en Vivo"></div>
+  <div class="snav-dot" data-section="4" data-label="Lo que Obtienes"></div>
+  <div class="snav-dot" data-section="5" data-label="Oficina Digital"></div>
+  <div class="snav-dot" data-section="6" data-label="Agenda tu Llamada"></div>
+</nav>
+
+<!-- ════════════════════════════════
+     S0: HERO
+════════════════════════════════ -->
+<section id="s0">
+  <div class="bg-grid"></div>
+  <div class="glow" style="width:600px;height:600px;top:-200px;right:-100px;background:radial-gradient(circle,rgba(192,38,168,.15) 0%,transparent 70%)"></div>
+  <div class="glow" style="width:400px;height:400px;bottom:-100px;left:-50px;background:radial-gradient(circle,rgba(139,34,232,.1) 0%,transparent 70%)"></div>
+  <div class="hero-inner">
+    <div class="hero-clock">🕐 &nbsp;03:22 AM &nbsp;— &nbsp;tu negocio</div>
+    <div class="hero-msg-wrap">
+      <div class="hero-wamsg"><div class="hero-wamsg-dot"></div><span>Hola, ¿tienen disponibilidad para mañana? Necesito info sobre precios 👋</span></div>
+      <div style="display:flex;padding-left:12px;margin-top:6px">
+        <div class="hero-typing"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>
+      </div>
+    </div>
+    <div class="hero-no-resp">Sin respuesta.</div>
+    <div class="hero-gone">Este cliente esperó 6 horas. Luego le escribió a tu competencia.</div>
+    <div class="hero-counter-wrap">
+      <div class="hero-counter-num" id="heroCounter">40%</div>
+      <div class="hero-counter-label">de las consultas llegan fuera del horario laboral — sin respuesta</div>
+    </div>
+    <div class="hero-logo-wrap">
+      <div class="hero-logo">NODO One · BPO Digital</div>
+      <h1 class="hero-tagline">Tu negocio responde<br>y vende <em>24/7 sin depender de personas.</em></h1>
+    </div>
+    <div class="hero-scroll" onclick="goTo(1)">
+      <span>Continuar</span><div class="hero-scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S1: EL PROBLEMA
+════════════════════════════════ -->
+<section id="s1">
+  <div class="bg-grid"></div>
+  <div class="s-inner">
+    <div class="s-label reveal">01 · El problema que resuelve NODO</div>
+    <h2 class="s-title reveal d1">Tu negocio es <span class="grad-text">humano-dependiente.</span></h2>
+    <p class="s-sub reveal d2">Depende de una persona para cada área. De su disponibilidad. De su estado de ánimo. Cuando un negocio depende de alguien para continuar, también se limita al esfuerzo de ese alguien.</p>
+    <div class="prob-quote reveal d3">
+      <div class="prob-quote-eye">La nueva regla del mercado</div>
+      <div class="prob-quote-text">Hoy gana el que primero responde.<br><em>El que más rápido se mueve.</em></div>
+      <p class="prob-quote-sub">Los clientes prefieren la eficiencia a esperar. Si no respondes en el momento, alguien más lo hace. No mañana — ahora.</p>
+    </div>
+    <div class="ba-grid reveal d4">
+      <div class="bac bab">
+        <div class="bat">❌ Sin NODO — hoy</div>
+        <div class="bai"><span class="dot-r"></span>El cliente escribe y espera horas — o no espera y se va</div>
+        <div class="bai"><span class="dot-r"></span>Fuera de horario no hay nadie — el lead se pierde</div>
+        <div class="bai"><span class="dot-r"></span>La atención depende del humor de quien atiende ese día</div>
+        <div class="bai"><span class="dot-r"></span>Para crecer hay que contratar — coste fijo constante</div>
+        <div class="bai"><span class="dot-r"></span>El equipo responde siempre las mismas preguntas</div>
+      </div>
+      <div class="bac baa">
+        <div class="bat">✅ Con NODO — el cambio</div>
+        <div class="bai"><span class="dot-g"></span>Respuesta en menos de 45 segundos — siempre</div>
+        <div class="bai"><span class="dot-g"></span>El negocio opera cuando el equipo descansa, 365 días</div>
+        <div class="bai"><span class="dot-g"></span>El agente responde siempre igual de bien, sin variación</div>
+        <div class="bai"><span class="dot-g"></span>Capacidad infinita sin aumentar estructura ni costes</div>
+        <div class="bai"><span class="dot-g"></span>El equipo se enfoca en lo que mueve el negocio</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S2: LA SOLUCIÓN
+════════════════════════════════ -->
+<section id="s2">
+  <div class="bg-grid"></div>
+  <div class="s-inner">
+    <div class="s-label reveal">02 · Qué es NODO y cómo funciona</div>
+    <h2 class="s-title reveal d1">El primer <span class="grad-text">BPO Digital</span> de habla hispana</h2>
+    <div class="sol-intro reveal d2">
+      <div class="sol-intro-lbl">La lógica del modelo</div>
+      <div class="sol-intro-text">NODO no vende software. No vende herramientas. Instala empleados digitales dentro de la operación del cliente — agentes de inteligencia artificial que trabajan de forma continua, con total visibilidad para el negocio.</div>
+    </div>
+    <div class="agents-grid reveal d3">
+      <div class="agent-card ac-pk">
+        <div class="ac-top"><div class="ac-av">👩</div><div><div class="ac-name">Claudia</div><div class="ac-role">Ventas por WhatsApp · 24/7</div></div></div>
+        <div class="ac-body">
+          <div class="ac-desc">Atiende a todos los que escriben, convierte conversaciones en ventas y mantiene el negocio activo incluso cuando tú no estás.</div>
+          <ul class="ac-caps">
+            <li>Respuesta en menos de 45 segundos — siempre</li>
+            <li>Explica servicios, productos y precios con detalle</li>
+            <li>Agenda y confirma citas automáticamente</li>
+            <li>1.000 conversaciones simultáneas · 5 idiomas</li>
+          </ul>
+          <div class="ac-metrics">
+            <div class="am"><div class="am-val">157k+</div><div class="am-lbl">Clientes</div></div>
+            <div class="am"><div class="am-val">$429k</div><div class="am-lbl">Ingresos</div></div>
+            <div class="am"><div class="am-val">99,9%</div><div class="am-lbl">Precisión</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card ac-vio">
+        <div class="ac-top"><div class="ac-av">👩🏽‍🦱</div><div><div class="ac-name">Lucía</div><div class="ac-role">Ventas telefónicas · 24/7</div></div></div>
+        <div class="ac-body">
+          <div class="ac-desc">Atiende llamadas entrantes, confirma citas y cierra ventas sin importar el horario ni el idioma del cliente.</div>
+          <ul class="ac-caps">
+            <li>Recepción y emisión de llamadas inmediatas</li>
+            <li>Clasificación y filtrado de contactos</li>
+            <li>Transferencia a humano en vivo cuando aplica</li>
+            <li>Multilingüe — hasta 5 idiomas simultáneos</li>
+          </ul>
+          <div class="ac-metrics">
+            <div class="am"><div class="am-val">1M+</div><div class="am-lbl">Llamadas</div></div>
+            <div class="am"><div class="am-val">19x</div><div class="am-lbl">ROI/mes</div></div>
+            <div class="am"><div class="am-val">95,9%</div><div class="am-lbl">SLA</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="met-row reveal d4">
+      <div class="met"><div class="met-val">157k+</div><div class="met-lbl">Clientes gestionados</div><div class="met-sub">Solo Claudia · WhatsApp</div></div>
+      <div class="met"><div class="met-val">1M+</div><div class="met-lbl">Llamadas efectivas</div><div class="met-sub">Solo Lucía · Voz</div></div>
+      <div class="met"><div class="met-val">$700k+</div><div class="met-lbl">Ingresos generados</div><div class="met-sub">Claudia + Lucía</div></div>
+      <div class="met"><div class="met-val">39+</div><div class="met-lbl">Empresas activas</div><div class="met-sub">Hoy en operación</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S3: DEMO EN VIVO
+════════════════════════════════ -->
+<section id="s3">
+  <div class="bg-grid"></div>
+  <div style="position:relative;z-index:2;width:100%;max-width:1100px;margin:0 auto">
+    <div class="demo-header">
+      <div class="live-badge"><div class="live-dot"></div>Propuesta comercial · IA real · Live</div>
+      <h2 class="demo-title">Tu empleado digital <span class="grad-text">en acción ahora mismo</span></h2>
+      <p class="demo-sub">Selecciona el sector y habla con Claudia — así es como atiende a tus clientes</p>
+    </div>
+    <div class="demo-tabs">
+      <button class="dtab active" data-agent="clinica" onclick="switchAgent('clinica')"><span>🦷</span> Clínica Palacios · Bogotá</button>
+      <button class="dtab" data-agent="inmobiliaria" onclick="switchAgent('inmobiliaria')"><span>🏠</span> Inmobiliaria Avinguda · Valencia</button>
+      <button class="dtab" data-agent="lujo" onclick="switchAgent('lujo')"><span>⛵</span> LuxuriBiz · Ibiza</button>
+    </div>
+    <div class="demo-wrap">
+
+      <!-- Panel Clínica -->
+      <div class="dpanel active" id="panel-clinica">
+        <div class="chat-win">
+          <div class="chat-hdr">
+            <div class="chat-av">🦷</div>
+            <div><div class="chat-aname">Claudia</div><div class="chat-arole">Clínica Palacios · Bogotá</div></div>
+            <div class="chat-status"><div class="chat-sdot"></div>Activo · 24/7</div>
+          </div>
+          <div class="chat-msgs" id="msgs-clinica">
+            <div class="cmsg cmsg-a">¡Hola! Soy Claudia, de Clínica Palacios 😊 cuéntame, ¿en qué te puedo ayudar?<div class="cmsg-time" id="t0-clinica"></div></div>
+          </div>
+          <div class="typing-ind" id="typing-clinica"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div><span style="font-size:11px;color:var(--tm);margin-left:6px">Claudia escribe…</span></div>
+          <div class="chat-foot">
+            <div class="chat-in-row">
+              <input class="chat-in" id="in-clinica" placeholder="Escribe tu mensaje…" onkeydown="handleKey(event,'clinica')">
+              <button class="chat-send" id="btn-clinica" onclick="sendMsg('clinica')">Enviar →</button>
+            </div>
+            <div class="suggs">
+              <div class="sugg" onclick="useSugg('clinica','¿Cuánto cuesta una limpieza dental?')">¿Cuánto cuesta la limpieza?</div>
+              <div class="sugg" onclick="useSugg('clinica','Quiero agendar una cita para mañana')">Agendar cita</div>
+              <div class="sugg" onclick="useSugg('clinica','¿Tienen ortodoncia y blanqueamiento?')">Ortodoncia y blanqueamiento</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Inmobiliaria -->
+      <div class="dpanel" id="panel-inmobiliaria">
+        <div class="chat-win">
+          <div class="chat-hdr">
+            <div class="chat-av">🏠</div>
+            <div><div class="chat-aname">Claudia</div><div class="chat-arole">Inmobiliaria Avinguda · Valencia</div></div>
+            <div class="chat-status"><div class="chat-sdot"></div>Activo · 24/7</div>
+          </div>
+          <div class="chat-msgs" id="msgs-inmobiliaria">
+            <div class="cmsg cmsg-a">¡Hola! Soy Claudia, de Inmobiliaria Avinguda 🏡 cuéntame qué estás buscando y te ayudo.<div class="cmsg-time" id="t0-inmobiliaria"></div></div>
+          </div>
+          <div class="typing-ind" id="typing-inmobiliaria"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div><span style="font-size:11px;color:var(--tm);margin-left:6px">Claudia escribe…</span></div>
+          <div class="chat-foot">
+            <div class="chat-in-row">
+              <input class="chat-in" id="in-inmobiliaria" placeholder="Escribe tu mensaje…" onkeydown="handleKey(event,'inmobiliaria')">
+              <button class="chat-send" id="btn-inmobiliaria" onclick="sendMsg('inmobiliaria')">Enviar →</button>
+            </div>
+            <div class="suggs">
+              <div class="sugg" onclick="useSugg('inmobiliaria','Busco piso en Valencia hasta 250.000€')">Piso hasta 250k€</div>
+              <div class="sugg" onclick="useSugg('inmobiliaria','¿Tienen pisos en alquiler cerca de la playa?')">Alquiler playa</div>
+              <div class="sugg" onclick="useSugg('inmobiliaria','Quiero vender mi apartamento en el centro')">Vender mi piso</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Lujo -->
+      <div class="dpanel" id="panel-lujo">
+        <div class="chat-win">
+          <div class="chat-hdr">
+            <div class="chat-av">⛵</div>
+            <div><div class="chat-aname">Claudia</div><div class="chat-arole">LuxuriBiz · Ibiza</div></div>
+            <div class="chat-status"><div class="chat-sdot"></div>Activo · 24/7</div>
+          </div>
+          <div class="chat-msgs" id="msgs-lujo">
+            <div class="cmsg cmsg-a">Hola 👋 soy Claudia, de LuxuriBiz. ¿Qué tienes en mente para Ibiza?<div class="cmsg-time" id="t0-lujo"></div></div>
+          </div>
+          <div class="typing-ind" id="typing-lujo"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div><span style="font-size:11px;color:var(--tm);margin-left:6px">Claudia escribe…</span></div>
+          <div class="chat-foot">
+            <div class="chat-in-row">
+              <input class="chat-in" id="in-lujo" placeholder="Escribe tu mensaje…" onkeydown="handleKey(event,'lujo')">
+              <button class="chat-send" id="btn-lujo" onclick="sendMsg('lujo')">Enviar →</button>
+            </div>
+            <div class="suggs">
+              <div class="sugg" onclick="useSugg('lujo','¿Cuánto cuesta alquilar una lancha para un día?')">Precio lancha</div>
+              <div class="sugg" onclick="useSugg('lujo','Quiero alquilar una villa para 8 personas en julio')">Villa 8 personas julio</div>
+              <div class="sugg" onclick="useSugg('lujo','¿Qué coches de lujo tienen disponibles?')">Coches de lujo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar info -->
+      <div class="demo-sidebar">
+        <div id="si-clinica">
+          <div class="dscard"><div class="dscard-t">🦷 Clínica Palacios</div>
+            <div class="dscard-i">Bogotá, Colombia</div>
+            <div class="dscard-i">Limpiezas · Blanqueamiento</div>
+            <div class="dscard-i">Ortodoncia metálica e invisible</div>
+            <div class="dscard-i">Implantes · Carillas · Conductos</div>
+            <div class="dscard-i">Lun–Vie 8am–6pm · Sáb 8am–2pm</div>
+          </div>
+        </div>
+        <div id="si-inmobiliaria" style="display:none">
+          <div class="dscard"><div class="dscard-t">🏠 Inmobiliaria Avinguda</div>
+            <div class="dscard-i">Valencia, España</div>
+            <div class="dscard-i">Compra · Venta · Alquiler</div>
+            <div class="dscard-i">Pisos, áticos y chalets</div>
+            <div class="dscard-i">Tasaciones e inversión</div>
+          </div>
+        </div>
+        <div id="si-lujo" style="display:none">
+          <div class="dscard"><div class="dscard-t">⛵ LuxuriBiz · Ibiza</div>
+            <div class="dscard-i">Náutica · Lanchas · Catamaranes</div>
+            <div class="dscard-i">Coches de lujo · Ferrari · Lambo</div>
+            <div class="dscard-i">Villas exclusivas · hasta 12 pax</div>
+            <div class="dscard-i">Temporada alta jun–sep</div>
+          </div>
+        </div>
+        <div class="pwrd">
+          <div class="pwrd-t">Powered by</div>
+          <div class="pwrd-s">Claude AI · Anthropic<br><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--td)">claude-haiku-4-5</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S4: LO QUE OBTIENES
+════════════════════════════════ -->
+<section id="s4">
+  <div class="bg-grid"></div>
+  <div class="s-inner">
+    <div class="s-label reveal">04 · La inteligencia que obtienes</div>
+    <h2 class="s-title reveal d1">Tu negocio, con más <span class="grad-text">inteligencia</span> que nunca</h2>
+    <p class="s-sub reveal d2">NODO no opera en oscuridad. Tienes trazabilidad total de cada conversación, cada cliente y cada resultado. Datos que antes simplemente no existían.</p>
+    <div class="intel-grid reveal d3">
+      <div class="ic"><div class="ic-icon">💬</div><div class="ic-t">Volumen conversacional</div><div class="ic-d">Cuántos mensajes entran, cuántos se responden y cuál es la tasa de conversión real.</div></div>
+      <div class="ic"><div class="ic-icon">🕐</div><div class="ic-t">Horas pico del negocio</div><div class="ic-d">A qué hora llegan más clientes, cuándo se generan más ventas, cuándo actúa el agente fuera de horario.</div></div>
+      <div class="ic"><div class="ic-icon">📋</div><div class="ic-t">Servicios más solicitados</div><div class="ic-d">Qué productos generan más consultas, cuáles convierten mejor y dónde hay más fricción.</div></div>
+      <div class="ic"><div class="ic-icon">📅</div><div class="ic-t">Agendas y confirmaciones</div><div class="ic-d">Cuántas citas se agendan, confirman, cancelan y cuál es la tasa de asistencia real.</div></div>
+      <div class="ic"><div class="ic-icon">🔍</div><div class="ic-t">Trazabilidad del cliente</div><div class="ic-d">Flujo completo de cada conversación: qué preguntó, qué respondió el agente, dónde paró.</div></div>
+      <div class="ic"><div class="ic-icon">📉</div><div class="ic-t">Leads que desaparecieron</div><div class="ic-d">Quién mostró interés y desapareció, en qué punto del flujo se fue y cómo recuperarlo.</div></div>
+    </div>
+    <div class="impact-bar reveal d4">
+      <div class="impact-icon">📊</div>
+      <div>
+        <div class="impact-text">El sistema equivale a <em>+11 empleados a tiempo completo</em> — activos 365 días, sin estado de ánimo, sin límite de volumen.</div>
+        <div class="impact-sub">CAPACIDAD OPERATIVA QUE ESCALA SIN MÁS PERSONAS</div>
+      </div>
+    </div>
+    <div class="roi-compare reveal d5">
+      <div class="roi-col roi-before">
+        <div class="roi-lbl">Modelo humano-dependiente</div>
+        <div class="roi-row"><span>Coste mensual atención</span><span>1.800–2.200 €</span></div>
+        <div class="roi-row"><span>Cobertura</span><span>8h/día · 5 días</span></div>
+        <div class="roi-row"><span>Conversaciones simult.</span><span>1–2 máximo</span></div>
+        <div class="roi-row"><span>Consistencia</span><span>Variable</span></div>
+        <div class="roi-row"><span>Para crecer</span><span>Contratar más</span></div>
+      </div>
+      <div class="roi-col roi-after">
+        <div class="roi-lbl">Empleado digital NODO</div>
+        <div class="roi-row"><span>Inversión mensual</span><span>desde $789/mes</span></div>
+        <div class="roi-row"><span>Cobertura</span><span>24/7 · 365 días</span></div>
+        <div class="roi-row"><span>Conversaciones simult.</span><span>1.000+</span></div>
+        <div class="roi-row"><span>Consistencia</span><span>99,9% · siempre igual</span></div>
+        <div class="roi-row"><span>Para crecer</span><span>Instantáneo · sin coste</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S5: EQUIPO HÍBRIDO
+════════════════════════════════ -->
+<section id="s5">
+  <div class="bg-grid"></div>
+  <div class="s-inner">
+    <div class="s-label reveal">05 · El equipo que necesitas en 2026</div>
+    <h2 class="s-title reveal d1">Los negocios que más crecerán son <span class="grad-text">los híbridos</span></h2>
+    <p class="s-sub reveal d2">Empleados humanos + empleados digitales trabajando juntos. NODO instala ese equipo digital dentro de tu negocio.</p>
+    <div class="office-scene reveal d3">
+      <canvas id="officeCanvas"></canvas>
+      <div class="office-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#4a6fa5"></div><span>Empleado humano</span></div>
+        <div class="leg-item"><div class="leg-dot" style="background:#e040a0;box-shadow:0 0 7px rgba(224,64,160,.7)"></div><span>Claudia · IA WhatsApp</span></div>
+        <div class="leg-item"><div class="leg-dot" style="background:#a855f7;box-shadow:0 0 7px rgba(168,85,247,.7)"></div><span>Lucía · IA Voz</span></div>
+      </div>
+    </div>
+    <div class="hybrid-row reveal d4">
+      <div class="hyb"><div class="hyb-icon">🔄</div><div class="hyb-t">Sin fricción operativa</div><div class="hyb-d">Los agentes digitales trabajan en paralelo al equipo humano sin interrumpir la operación existente.</div></div>
+      <div class="hyb"><div class="hyb-icon">📈</div><div class="hyb-t">Escala sin contratar</div><div class="hyb-d">El volumen puede multiplicarse por 10 sin una sola contratación nueva ni coste fijo adicional.</div></div>
+      <div class="hyb"><div class="hyb-icon">👁</div><div class="hyb-t">Tú tienes el control</div><div class="hyb-d">Cada conversación, cada cita, cada venta — visible y trazable para el negocio en todo momento.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S6: CTA
+════════════════════════════════ -->
+<section id="s6">
+  <div class="bg-grid"></div>
+  <div class="glow" style="width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(192,38,168,.12) 0%,transparent 70%)"></div>
+  <div class="cta-inner">
+    <div class="cta-eye">El siguiente paso</div>
+    <h2 class="cta-title">¿Listo para instalar tu <em>empleado digital?</em></h2>
+    <p class="cta-sub">En 2 semanas tu negocio responde en menos de 45 segundos, los 365 días del año. Sin contratar a nadie. Sin complejidad técnica.</p>
+    <div class="cta-btns">
+      <a href="https://wa.link/nbrnmq" target="_blank" class="cta-btn1">💬 &nbsp;Habla con nosotros ahora</a>
+      <a href="https://cal.com/nodo-digital-besczy/secret" target="_blank" class="cta-btn2">📅 &nbsp;Agenda una llamada</a>
+    </div>
+    <div class="cta-proof">
+      <div class="cpp"><div class="cpp-val">39+</div><div class="cpp-lbl">Empresas activas</div></div>
+      <div class="cpp"><div class="cpp-val">$700k+</div><div class="cpp-lbl">Ingresos generados</div></div>
+      <div class="cpp"><div class="cpp-val">19x</div><div class="cpp-lbl">ROI mensual</div></div>
+      <div class="cpp"><div class="cpp-val">2 sem</div><div class="cpp-lbl">Activación</div></div>
+    </div>
+    <div class="cta-foot">NODO One · BPO Digital · <em>info.nodoone.com</em></div>
+  </div>
+</section>
+
+<script>
+/* ── SUPABASE CONFIG ── */
+const SB_URL  = 'https://qmwoxwpopgkmkiinlgoj.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtd294d3BvcGdrbWtpaW5sZ29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzODI1NTQsImV4cCI6MjA4OTk1ODU1NH0.7A_OFGJo-cFXo4BfD2F5aMrqeDuRMplTZa4vJXKQtYo';
+
+let _leadId = null;
+let _demoVisto = null;
+
+/* ── LEAD CAPTURE ── */
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('leadNombre').focus(), 400);
+  document.querySelectorAll('[id^="t0-"]').forEach(el => {
+    el.textContent = new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+  });
+});
+
+async function submitLead() {
+  const nombre   = document.getElementById('leadNombre').value.trim();
+  const pais     = document.getElementById('leadPais').value;
+  const numRaw   = document.getElementById('leadTelefono').value.trim().replace(/\s+/g,'');
+  const telefono = numRaw ? `${pais} ${numRaw}` : '';
+  const empresa  = document.getElementById('leadEmpresa').value.trim();
+  const errEl    = document.getElementById('leadErr');
+  const btn      = document.getElementById('leadBtn');
+
+  if (!nombre || !telefono) {
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/leads_demo`, {
+      method: 'POST',
+      headers: {
+        'apikey': SB_ANON,
+        'Authorization': `Bearer ${SB_ANON}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({ nombre, telefono, empresa: empresa || null, fuente: 'presentacion_nodo_demo' })
+    });
+    const data = await res.json();
+    if (data?.[0]?.id) _leadId = data[0].id;
+  } catch(e) {
+    console.warn('Supabase insert error:', e);
+  }
+
+  document.getElementById('welcomeModal').style.display = 'none';
+}
+
+async function updateDemoVisto(agentKey) {
+  if (!_leadId || _demoVisto === agentKey) return;
+  _demoVisto = agentKey;
+  try {
+    await fetch(`${SB_URL}/rest/v1/leads_demo?id=eq.${_leadId}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SB_ANON,
+        'Authorization': `Bearer ${SB_ANON}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ demo_visto: agentKey })
+    });
+  } catch(e) { /* silencioso */ }
+}
+
+/* ── NAVIGATION ── */
+const SECS = ['s0','s1','s2','s3','s4','s5','s6'];
+let cur = 0;
+function goTo(i) {
+  document.getElementById(SECS[i])?.scrollIntoView({behavior:'smooth'});
+}
+document.querySelectorAll('.snav-dot').forEach(d => d.addEventListener('click', () => goTo(+d.dataset.section)));
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowDown' || e.key === 'PageDown') { if(cur < SECS.length-1) goTo(cur+1); }
+  else if (e.key === 'ArrowUp' || e.key === 'PageUp') { if(cur > 0) goTo(cur-1); }
+});
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && e.intersectionRatio > 0.5) {
+      cur = SECS.indexOf(e.target.id);
+      document.querySelectorAll('.snav-dot').forEach((d,i) => d.classList.toggle('active', i===cur));
+      if (cur === 5) startOffice();
+    }
+  });
+}, {threshold:0.5});
+SECS.forEach(id => { const el=document.getElementById(id); if(el) obs.observe(el); });
+
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+
+/* ── HERO COUNTER ── */
+setTimeout(() => {
+  const el = document.getElementById('heroCounter');
+  if (!el) return;
+  let n=40; el.textContent='40%'; const t=setInterval(()=>{ n=Math.min(n+1,47); el.textContent=n+'%'; if(n>=47) clearInterval(t); }, 120);
+}, 6200);
+setTimeout(() => {
+  const t = document.querySelector('.hero-typing');
+  if (t) { t.style.transition='opacity .5s'; t.style.opacity='0'; }
+}, 4000);
+
+/* ── AGENTS ── */
+const AGENTS = {
+  clinica: {
+    msgs: [],
+    sys: `Eres Claudia, asistente de Clínica Palacios en Bogotá. Escribes exactamente como una persona real en WhatsApp: natural, cálida, directa, sin asteriscos, sin listas, sin formato markdown, sin guiones como viñetas.
+
+Servicios disponibles: limpieza 80 mil pesos, blanqueamiento 350 mil, ortodoncia metálica desde 2 millones y medio, ortodoncia invisible desde 4 millones y medio, implantes desde 1 millón 800 por pieza, carillas 450 mil cada una, conductos 250 mil, extracción 120 mil, consulta de valoración 60 mil.
+
+Horario: lunes a viernes de 8am a 6pm, sábados de 8 a 2. Calle 85 15-23, Bogotá. WhatsApp +57 300 555 1234.
+
+Instrucciones de escritura:
+- Sigue la corriente de lo que el cliente pregunta, responde exactamente a eso
+- Escribe máximo 2 oraciones por respuesta, como mensaje de chat real
+- Nunca uses asteriscos, guiones de lista, ni ningún formato especial
+- Los números escríbelos en palabras o de forma natural: "80 mil" no "$80.000 COP"
+- Si el cliente pregunta algo que no sabes, dile que lo consultas y le confirmas pronto
+- Para agendar pide solo el nombre y qué necesita, nada más por ahora`
+  },
+  inmobiliaria: {
+    msgs: [],
+    sys: `Eres Claudia, asistente de Inmobiliaria Avinguda en Valencia. Escribes como una persona real en un chat, de forma natural, cercana y directa. Sin asteriscos, sin listas, sin formato markdown.
+
+Lo que manejamos: pisos en venta desde 180 mil en el centro, desde 220 mil cerca de la playa, áticos desde 290 mil, chalets desde 380 mil. En alquiler pisos entre 700 y 1.200 al mes, estudios entre 550 y 750. También hacemos tasaciones e inversión. Horario lunes a viernes de 9 a 7, sábados de 10 a 2. Tel +34 963 555 789.
+
+Instrucciones de escritura:
+- Sigue exactamente lo que el cliente pregunta, responde a eso primero
+- Máximo 2 oraciones por respuesta, tono de chat real
+- Sin asteriscos, sin guiones de lista, sin markdown
+- Los precios en lenguaje natural: "desde 180 mil euros" no "€180.000"
+- Para coordinar una visita solo pide el nombre y qué tipo de propiedad busca`
+  },
+  lujo: {
+    msgs: [],
+    sys: `Eres Claudia, de LuxuriBiz en Ibiza. Tono premium pero cercano, como si fueras alguien que conoce bien la isla y sabe lo que el cliente quiere. Escribes natural, como en un chat entre conocidos. Sin asteriscos, sin listas, sin markdown.
+
+Lo que ofrecemos: náutica — motos de agua desde 250 euros el día, lancha Axopar 37 a 1.200, catamarán Leopard 45 a 2.500, RIB 700 a 650. Coches — Lamborghini Huracán 1.500 al día, Ferrari 488 a 1.200, Porsche 911 Cabrio a 800, Range Rover a 500. Villas — Sa Talaia para 8 personas a 5.500 la noche, Formentera View para 12 a 8.000, Penthouse para 4 a 2.500. Mínimos: 2 días para coches, 3 para embarcaciones y villas. Temporada alta junio-septiembre.
+
+Instrucciones de escritura:
+- Responde exactamente a lo que pregunta el cliente, de forma fluida y directa
+- Máximo 2 oraciones por mensaje, como WhatsApp real
+- Sin asteriscos, sin guiones de lista, sin markdown
+- Precios de forma natural: "1.200 al día" no "€1.200/día"
+- Si encaja con lo que busca, puedes sugerir combinar experiencias de forma espontánea`
+  }
+};
+
+function switchAgent(key) {
+  updateDemoVisto(key);
+  document.querySelectorAll('.dpanel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${key}`).classList.add('active');
+  document.querySelectorAll('.dtab').forEach(t => t.classList.toggle('active', t.dataset.agent===key));
+  ['clinica','inmobiliaria','lujo'].forEach(k => {
+    const si = document.getElementById(`si-${k}`);
+    if (si) si.style.display = k===key ? 'block' : 'none';
+  });
+}
+
+function handleKey(e, key) { if(e.key==='Enter') sendMsg(key); }
+function useSugg(key, text) { const el=document.getElementById(`in-${key}`); if(el){el.value=text;el.focus();} }
+
+function nowTime() { return new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}); }
+
+function appendMsg(key, text, role) {
+  const c = document.getElementById(`msgs-${key}`);
+  if (!c) return;
+  const d = document.createElement('div');
+  d.className = `cmsg cmsg-${role==='user'?'u':'a'}`;
+  d.innerHTML = text.replace(/\n/g,'<br>');
+  const t = document.createElement('div');
+  t.className = 'cmsg-time'; t.textContent = nowTime();
+  d.appendChild(t);
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+
+/* ── CHAT — llama al proxy local en lugar de la API directamente ── */
+async function sendMsg(key) {
+  const inp = document.getElementById(`in-${key}`);
+  const btn = document.getElementById(`btn-${key}`);
+  const typ = document.getElementById(`typing-${key}`);
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  btn.disabled = true;
+  appendMsg(key, text, 'user');
+  AGENTS[key].msgs.push({role:'user', content:text});
+  typ.classList.add('show');
+  document.getElementById(`msgs-${key}`).scrollTop = 9999;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 400,
+        system: AGENTS[key].sys,
+        messages: AGENTS[key].msgs
+      })
+    });
+    const data = await res.json();
+    typ.classList.remove('show');
+    if (data.content?.[0]?.text) {
+      const reply = data.content[0].text;
+      AGENTS[key].msgs.push({role:'assistant', content:reply});
+      appendMsg(key, reply, 'agent');
+    } else if (data.error) {
+      appendMsg(key, `⚠ ${data.error.message || 'Error de API'}`, 'agent');
+    }
+  } catch(err) {
+    typ.classList.remove('show');
+    appendMsg(key, '⚠ Error de conexión con el servidor local.', 'agent');
+  }
+  btn.disabled = false;
+  inp.focus();
+}
+
+/* ── ISOMETRIC OFFICE ── */
+let officeOn = false;
+function startOffice() {
+  if (officeOn) return; officeOn = true;
+  drawOffice();
+  window.addEventListener('resize', drawOffice);
+}
+
+function drawOffice() {
+  const canvas = document.getElementById('officeCanvas');
+  if (!canvas) return;
+  const PW = canvas.parentElement.offsetWidth;
+  const PH = Math.min(380, Math.round(PW * 0.50));
+  const DPR = window.devicePixelRatio || 1;
+  canvas.width  = PW * DPR;
+  canvas.height = PH * DPR;
+  canvas.style.width  = PW + 'px';
+  canvas.style.height = PH + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(DPR, DPR);
+
+  const COLS=9, ROWS=5;
+  const TW = Math.max(28, Math.min(46, PW / 16));
+  const TH = TW * 0.5;
+  const WH = TH * 6.5;  // wall height
+  const OX = PW * 0.50;
+  const OY = WH + TH * 2.5;
+
+  function ix(c,r){ return (c-r)*TW + OX; }
+  function iy(c,r){ return (c+r)*TH + OY; }
+
+  // floor quad corners
+  const floorTop   = { x: OX,                         y: OY - TH };
+  const floorRight = { x: OX + COLS*TW,                y: OY + (COLS-1)*TH };
+  const floorLeft  = { x: OX - ROWS*TW,                y: OY + (ROWS-1)*TH };
+
+  // ── WALLS (drawn first, behind everything) ──
+  // right wall (top→right edge of floor)
+  ctx.beginPath();
+  ctx.moveTo(floorTop.x,            floorTop.y - WH);
+  ctx.lineTo(floorRight.x,          floorRight.y - WH);
+  ctx.lineTo(floorRight.x,          floorRight.y);
+  ctx.lineTo(floorTop.x,            floorTop.y);
+  ctx.closePath();
+  ctx.fillStyle = '#0e0c1e';
+  ctx.fill();
+  // right wall grid lines (horizontal)
+  ctx.strokeStyle = 'rgba(42,32,72,0.45)'; ctx.lineWidth = 0.7;
+  for(let i=1;i<5;i++){
+    const yy = floorTop.y - WH + (WH/5)*i;
+    // interpolate x along the wall
+    const t = i/5;
+    const x0 = floorTop.x, x1 = floorRight.x;
+    const y0a = floorTop.y - WH, y1a = floorRight.y - WH;
+    const y0b = floorTop.y,      y1b = floorRight.y;
+    ctx.beginPath();
+    ctx.moveTo(x0 + (x1-x0)*0, (y0a + (y0b-y0a)*i/5));
+    ctx.lineTo(x1,              (y1a + (y1b-y1a)*i/5));
+    ctx.stroke();
+  }
+  for(let c=1;c<COLS;c++){
+    ctx.beginPath();
+    ctx.moveTo(OX+c*TW, OY+(c-1)*TH - WH);
+    ctx.lineTo(OX+c*TW, OY+(c-1)*TH);
+    ctx.stroke();
+  }
+  // window on right wall
+  const wx1=OX+3*TW, wy1=OY+2*TH-WH*0.68, wx2=OX+5*TW, wy2=OY+4*TH-WH*0.28;
+  ctx.fillStyle='rgba(139,34,232,0.08)';
+  ctx.strokeStyle='rgba(42,32,72,0.7)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.rect(wx1,wy1,wx2-wx1,wy2-wy1); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle='rgba(42,32,72,0.4)'; ctx.lineWidth=0.6;
+  ctx.beginPath(); ctx.moveTo((wx1+wx2)/2,wy1); ctx.lineTo((wx1+wx2)/2,wy2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(wx1,(wy1+wy2)/2); ctx.lineTo(wx2,(wy1+wy2)/2); ctx.stroke();
+
+  // left wall (top→left edge of floor)
+  ctx.beginPath();
+  ctx.moveTo(floorTop.x,  floorTop.y - WH);
+  ctx.lineTo(floorLeft.x, floorLeft.y - WH);
+  ctx.lineTo(floorLeft.x, floorLeft.y);
+  ctx.lineTo(floorTop.x,  floorTop.y);
+  ctx.closePath();
+  ctx.fillStyle = '#0b0a1a';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(42,32,72,0.4)'; ctx.lineWidth = 0.7;
+  for(let i=1;i<5;i++){
+    ctx.beginPath();
+    ctx.moveTo(floorTop.x + (floorLeft.x-floorTop.x)*0, floorTop.y-WH+(WH/5)*i);
+    ctx.lineTo(floorLeft.x, floorLeft.y-WH+(WH/5)*i);
+    ctx.stroke();
+  }
+  for(let r=1;r<ROWS;r++){
+    ctx.beginPath();
+    ctx.moveTo(OX-r*TW, OY+(r-1)*TH-WH);
+    ctx.lineTo(OX-r*TW, OY+(r-1)*TH);
+    ctx.stroke();
+  }
+
+  // wall border / ridge
+  ctx.strokeStyle='rgba(42,32,72,0.8)'; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(floorTop.x, floorTop.y-WH);
+  ctx.lineTo(floorRight.x, floorRight.y-WH);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(floorTop.x, floorTop.y-WH);
+  ctx.lineTo(floorLeft.x, floorLeft.y-WH);
+  ctx.stroke();
+
+  // ── FLOOR TILES ──
+  function tile(c,r){
+    const cx=ix(c,r), cy=iy(c,r);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy-TH); ctx.lineTo(cx+TW, cy);
+    ctx.lineTo(cx, cy+TH); ctx.lineTo(cx-TW, cy);
+    ctx.closePath();
+    ctx.fillStyle = (c+r)%2===0 ? '#100e20' : '#0d0b1c';
+    ctx.fill();
+    ctx.strokeStyle='rgba(42,32,72,0.5)'; ctx.lineWidth=0.6; ctx.stroke();
+  }
+  for(let s=0;s<=COLS+ROWS-2;s++)
+    for(let c=0;c<=Math.min(s,COLS-1);c++){
+      const r=s-c; if(r>=0&&r<ROWS) tile(c,r);
+    }
+
+  // ── HELPERS ──
+  function box(c,r,h,top,sR,sL){
+    const cx=ix(c,r), cy=iy(c,r);
+    ctx.lineWidth=0.7; ctx.strokeStyle='rgba(0,0,0,0.3)';
+    // left
+    ctx.beginPath();
+    ctx.moveTo(cx-TW,cy-h); ctx.lineTo(cx-TW,cy); ctx.lineTo(cx,cy+TH); ctx.lineTo(cx,cy+TH-h);
+    ctx.closePath(); ctx.fillStyle=sL; ctx.fill(); ctx.stroke();
+    // right
+    ctx.beginPath();
+    ctx.moveTo(cx+TW,cy-h); ctx.lineTo(cx+TW,cy); ctx.lineTo(cx,cy+TH); ctx.lineTo(cx,cy+TH-h);
+    ctx.closePath(); ctx.fillStyle=sR; ctx.fill(); ctx.stroke();
+    // top
+    ctx.beginPath();
+    ctx.moveTo(cx,cy-TH-h); ctx.lineTo(cx+TW,cy-h); ctx.lineTo(cx,cy+TH-h); ctx.lineTo(cx-TW,cy-h);
+    ctx.closePath(); ctx.fillStyle=top; ctx.fill(); ctx.stroke();
+  }
+
+  function monitor(c,r){
+    const cx=ix(c,r)-TW*0.18, cy=iy(c,r)-TH*1.05-8;
+    const mh=TH*1.3, mw=TW*0.6;
+    ctx.fillStyle='#1c1840'; ctx.strokeStyle='rgba(42,32,72,0.7)'; ctx.lineWidth=0.7;
+    ctx.beginPath(); ctx.rect(cx-mw/2,cy-mh,mw,mh); ctx.fill(); ctx.stroke();
+    // screen content glow
+    const sg=ctx.createLinearGradient(cx-mw/2+2,cy-mh+2,cx+mw/2-2,cy-2);
+    sg.addColorStop(0,'#1a1040'); sg.addColorStop(1,'#120e28');
+    ctx.fillStyle=sg; ctx.fillRect(cx-mw/2+2,cy-mh+2,mw-4,mh-4);
+    ctx.fillStyle='rgba(168,85,247,0.3)'; ctx.fillRect(cx-mw/4,cy-mh+4,mw*0.4,1);
+    ctx.fillStyle='rgba(168,85,247,0.15)'; ctx.fillRect(cx-mw/4,cy-mh+7,mw*0.55,1);
+    // stand
+    ctx.fillStyle='#141030'; ctx.fillRect(cx-3,cy,6,4);
+  }
+
+  // small chair (box behind desk)
+  function chair(c,r, side){
+    const cx=ix(c,r)+(side==='r'?TW*0.5:-TW*0.5);
+    const cy=iy(c,r)+TH*0.5;
+    const s=TH*0.65;
+    ctx.fillStyle='#1e1840'; ctx.strokeStyle='rgba(0,0,0,0.2)'; ctx.lineWidth=0.5;
+    ctx.beginPath(); ctx.rect(cx-s/2,cy-s/2,s,s); ctx.fill(); ctx.stroke();
+  }
+
+  // plant (small cylinder-ish)
+  function plant(c,r){
+    const cx=ix(c,r), cy=iy(c,r)-TH*0.4;
+    ctx.fillStyle='#1a2e1a';
+    ctx.beginPath(); ctx.ellipse(cx,cy,TW*0.28,TH*0.28,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#1f3a1f';
+    ctx.beginPath(); ctx.arc(cx,cy-TH*0.5,TW*0.22,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#2a4a28';
+    ctx.beginPath(); ctx.arc(cx-TW*0.12,cy-TH*0.7,TW*0.14,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx+TW*0.14,cy-TH*0.8,TW*0.13,0,Math.PI*2); ctx.fill();
+  }
+
+  function char(c,r,bodyCol,name,isDigital,glowCol){
+    const cx=ix(c,r), cy=iy(c,r);
+    const bw=TW*0.34, bh=TH*1.6, hr=TW*0.2;
+    const fy=cy+TH*0.1, by=fy-bh, hy=by-hr;
+
+    if(isDigital){
+      ctx.save(); ctx.translate(cx,fy); ctx.scale(1,0.35);
+      const g=ctx.createRadialGradient(0,0,0,0,0,TW*0.9);
+      g.addColorStop(0,glowCol+'70'); g.addColorStop(1,'transparent');
+      ctx.beginPath(); ctx.arc(0,0,TW*0.9,0,Math.PI*2);
+      ctx.fillStyle=g; ctx.fill(); ctx.restore();
+    }
+    ctx.fillStyle=bodyCol;
+    ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(cx-bw/2,by,bw,bh,2);
+    else ctx.rect(cx-bw/2,by,bw,bh);
+    ctx.fill();
+    // collar / shirt detail
+    ctx.fillStyle='rgba(255,255,255,0.07)';
+    ctx.beginPath(); ctx.rect(cx-bw*0.2,by,bw*0.4,bh*0.3); ctx.fill();
+
+    ctx.beginPath(); ctx.arc(cx,hy,hr,0,Math.PI*2);
+    ctx.fillStyle='#ddb88a'; ctx.fill();
+    if(isDigital){
+      ctx.beginPath(); ctx.arc(cx,hy,hr+2.5,0,Math.PI*2);
+      ctx.strokeStyle=glowCol+'aa'; ctx.lineWidth=1.2; ctx.stroke();
+    }
+    if(name){
+      ctx.font=`bold ${Math.max(9,TW*0.20)}px "DM Sans",sans-serif`;
+      const tw=ctx.measureText(name).width;
+      const pad=6, tagW=tw+pad*2+(isDigital?11:0), tagH=16;
+      const tx=cx-tagW/2, ty=hy-hr-tagH-3;
+      ctx.fillStyle=isDigital ? glowCol+'ee' : 'rgba(8,7,15,0.92)';
+      ctx.beginPath();
+      if(ctx.roundRect) ctx.roundRect(tx,ty,tagW,tagH,3);
+      else ctx.rect(tx,ty,tagW,tagH);
+      ctx.fill();
+      ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(name,cx-(isDigital?4:0),ty+tagH/2);
+      ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+      if(isDigital){
+        ctx.beginPath(); ctx.arc(tx+tagW-6,ty+tagH/2,2.5,0,Math.PI*2);
+        ctx.fillStyle='#4ade80'; ctx.fill();
+      }
+    }
+  }
+
+  // ── FURNITURE (back → front) ──
+  const dT='#201a3c', dR='#16122e', dL='#1b1534';
+  const mT='#281e46', mR='#1c163a', mL='#221a40';
+
+  // back row desks (r=0)
+  box(1,0,TH*1.1,dT,dR,dL); monitor(1,0); chair(1,0,'r');
+  box(3,0,TH*1.1,dT,dR,dL); monitor(3,0); chair(3,0,'r');
+  box(5,0,TH*1.1,dT,dR,dL); monitor(5,0); chair(5,0,'r');
+  box(7,0,TH*1.1,dT,dR,dL); monitor(7,0); chair(7,0,'r');
+  // plants in corners
+  plant(0,0); plant(8,0);
+  // mid row desks (r=2)
+  box(0,2,TH*1.1,dT,dR,dL); monitor(0,2); chair(0,2,'r');
+  box(2,2,TH*1.1,dT,dR,dL); monitor(2,2); chair(2,2,'r');
+  box(6,2,TH*1.1,dT,dR,dL); monitor(6,2); chair(6,2,'r');
+  box(8,2,TH*1.1,dT,dR,dL); monitor(8,2); chair(8,2,'r');
+  // meeting table (r=4)
+  box(3,4,TH*0.65,mT,mR,mL);
+  box(4,4,TH*0.65,mT,mR,mL);
+  box(5,4,TH*0.65,mT,mR,mL);
+  // shelf / cabinet (left wall)
+  box(0,1,TH*2.2,'#1a1535','#110e26','#15112e');
+  box(0,3,TH*2.2,'#1a1535','#110e26','#15112e');
+
+  // ── CHARACTERS ──
+  char(1,1,'#3a5a8a',null,false,null);
+  char(3,1,'#3d5e78',null,false,null);
+  char(5,1,'#4a5e72',null,false,null);
+  char(7,1,'#3a5a8a',null,false,null);
+  char(2,3,'#3d5870',null,false,null);
+  char(6,3,'#445e78',null,false,null);
+
+  // digital agents last (on top)
+  char(0,4,'#7c3aed','Lucía',   true,'#a855f7');
+  char(4,3,'#be185d','Claudia', true,'#e040a0');
+}
+
+function animCount(id, to, ms) {
+  const el=document.getElementById(id); if(!el) return;
+  const steps=40, inc=to/steps, iv=ms/steps; let n=0,s=0;
+  const t=setInterval(()=>{ s++; n=Math.min(inc*s,to); el.textContent=Math.round(n); if(s>=steps) clearInterval(t); }, iv);
+}
+</script>
+</body>
+</html>
