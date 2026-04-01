@@ -175,7 +175,7 @@ def personalizar_html(html, d):
     # 2 · Modal: título personalizado
     html = html.replace(
         'Propuesta para hacer que<br>tu negocio <em>responda y venda 24/7</em>',
-        f'Propuesta para <em>{nombre}</em>'
+        f'Propuesta para {nombre}<br><em>para atender, responder y vender 24/7 sin depender de personas</em>'
     )
 
     # 3 · Tab del demo: emoji + nombre
@@ -237,8 +237,6 @@ def personalizar_html(html, d):
     # 8 · System prompt del agente
     old_sys_start = "  clinica: {\n    msgs: [],\n    sys: `Eres Claudia, asistente de Clínica Palacios en Bogotá."
     if old_sys_start in html:
-        # Find the full clinica sys block and replace just the sys content
-        # The sys string ends with the backtick before the closing brace
         sys_block_pattern = r"(  clinica: \{\n    msgs: \[\],\n    sys: `)([^`]+)(`\n  \})"
         html = re.sub(
             sys_block_pattern,
@@ -246,6 +244,42 @@ def personalizar_html(html, d):
             html,
             count=1
         )
+
+    # 9 · Eliminar tabs de inmobiliaria y lujo — dejar solo el del cliente
+    html = html.replace(
+        '\n      <button class="dtab" data-agent="inmobiliaria" onclick="switchAgent(\'inmobiliaria\')"><span>🏠</span> Inmobiliaria Avinguda · Valencia</button>',
+        ''
+    )
+    html = html.replace(
+        '\n      <button class="dtab" data-agent="lujo" onclick="switchAgent(\'lujo\')"><span>⛵</span> LuxuriBiz · Ibiza</button>',
+        ''
+    )
+
+    # 10 · Eliminar paneles de chat de inmobiliaria y lujo
+    # Panel inmobiliaria
+    html = re.sub(
+        r'\n\s+<!-- Panel Inmobiliaria -->.*?</div>\n      </div>\n\n      <!-- Panel Lujo -->',
+        '\n\n      <!-- Panel Lujo -->',
+        html, count=1, flags=re.DOTALL
+    )
+    # Panel lujo
+    html = re.sub(
+        r'\n\s+<!-- Panel Lujo -->.*?</div>\n      </div>\n\n      <!-- Sidebar',
+        '\n\n      <!-- Sidebar',
+        html, count=1, flags=re.DOTALL
+    )
+
+    # 11 · Eliminar sidebar items de inmobiliaria y lujo
+    html = re.sub(
+        r'\n        <div id="si-inmobiliaria".*?</div>\n        </div>',
+        '',
+        html, count=1, flags=re.DOTALL
+    )
+    html = re.sub(
+        r'\n        <div id="si-lujo".*?</div>\n        </div>',
+        '',
+        html, count=1, flags=re.DOTALL
+    )
 
     return html
 
@@ -288,11 +322,6 @@ def main():
 
         with open(html_path, 'w', encoding='utf-8') as f:
             f.write(html)
-
-        # Escribir la API key en un archivo .env dentro del output (para Vercel CLI la lea)
-        env_out = os.path.join(out, '.env.vercel_setup')
-        with open(env_out, 'w') as f:
-            f.write(api_key)
 
         print(f'✅  Propuesta personalizada lista en {out}', file=sys.stderr)
 

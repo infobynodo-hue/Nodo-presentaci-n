@@ -12,36 +12,35 @@ Ejecuta cada paso en orden. Si alguno falla, informa al usuario y detente.
 
 ### Paso 1 — Extraer datos del cliente y personalizar el HTML
 
-Ejecuta el script de generación con el nombre y URL proporcionados. Crea el output en /tmp/propuesta-{slug} donde {slug} es el nombre en minúsculas con guiones:
+Ejecuta el script desde el directorio del proyecto:
 
 ```bash
-python3 scripts/generar_propuesta.py --nombre "NOMBRE_CLIENTE" --url "URL_CLIENTE" --output-dir /tmp/propuesta-SLUG
+cd "/Users/santiagorodriguez/Downloads/NODO presentaciones " && python3 scripts/generar_propuesta.py --nombre "NOMBRE_CLIENTE" --url "URL_CLIENTE" --output-dir /tmp/propuesta-SLUG
 ```
 
-Reemplaza NOMBRE_CLIENTE, URL_CLIENTE y SLUG con los valores del usuario. El script imprimirá el JSON con los datos extraídos. Muéstrale al usuario un resumen de lo que se encontró: nombre, ciudad, sector, horario.
+Reemplaza NOMBRE_CLIENTE, URL_CLIENTE y SLUG con los valores del usuario. Muéstrale un resumen: nombre, ciudad, sector, horario.
 
-### Paso 2 — Verificar la personalización
-
-Lee el archivo `/tmp/propuesta-SLUG/public/index.html` y confirma que contiene el nombre del cliente en el título y en el demo del chat.
-
-### Paso 3 — Crear repositorio en GitHub
-
-Desde el directorio del proyecto personalizado, inicializa git y crea el repo:
+### Paso 2 — Crear repositorio en GitHub
 
 ```bash
-cd /tmp/propuesta-SLUG && git init && git add . && git commit -m "Propuesta NODO One · NOMBRE_CLIENTE"
-gh repo create infobynodo-hue/nodo-propuesta-SLUG --public --source=. --push
+cd /tmp/propuesta-SLUG && git init && git add . && git commit -m "Propuesta NODO One · NOMBRE_CLIENTE" && gh repo create infobynodo-hue/nodo-propuesta-SLUG --public --source=. --push
 ```
 
-### Paso 4 — Desplegar en Vercel y agregar API key
-
-Desde el mismo directorio, despliega y agrega la API key automáticamente:
+### Paso 3 — Desplegar en Vercel
 
 ```bash
-cd /tmp/propuesta-SLUG && vercel --yes --prod --name nodo-propuesta-SLUG && cat .env.vercel_setup | vercel env add ANTHROPIC_KEY production && vercel --yes --prod
+cd /tmp/propuesta-SLUG && vercel --yes --prod --name nodo-propuesta-SLUG
 ```
 
-El segundo deploy aplica la env var. Captura la URL de producción final.
+### Paso 4 — Agregar API key y redesplegar
+
+Lee la API key del archivo .env del proyecto base y agrégala al proyecto de Vercel:
+
+```bash
+ANTHROPIC_KEY=$(grep ANTHROPIC_KEY "/Users/santiagorodriguez/Downloads/NODO presentaciones /.env" | cut -d= -f2) && echo "$ANTHROPIC_KEY" | vercel env add ANTHROPIC_KEY production --cwd /tmp/propuesta-SLUG && cd /tmp/propuesta-SLUG && vercel --yes --prod
+```
+
+Captura la URL de producción final.
 
 ### Paso 5 — Resultado final
 
