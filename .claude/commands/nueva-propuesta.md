@@ -33,15 +33,15 @@ cd /tmp/propuesta-SLUG && git init && git add . && git commit -m "Propuesta NODO
 gh repo create infobynodo-hue/nodo-propuesta-SLUG --public --source=. --push
 ```
 
-### Paso 4 — Desplegar en Vercel
+### Paso 4 — Desplegar en Vercel y agregar API key
 
-Desde el mismo directorio, despliega en Vercel con el nombre del proyecto:
+Desde el mismo directorio, despliega y agrega la API key automáticamente:
 
 ```bash
-cd /tmp/propuesta-SLUG && vercel --yes --prod --name nodo-propuesta-SLUG
+cd /tmp/propuesta-SLUG && vercel --yes --prod --name nodo-propuesta-SLUG && cat .env.vercel_setup | vercel env add ANTHROPIC_KEY production && vercel --yes --prod
 ```
 
-El comando devuelve la URL de producción. Captúrala.
+El segundo deploy aplica la env var. Captura la URL de producción final.
 
 ### Paso 5 — Resultado final
 

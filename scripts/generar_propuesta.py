@@ -289,6 +289,11 @@ def main():
         with open(html_path, 'w', encoding='utf-8') as f:
             f.write(html)
 
+        # Escribir la API key en un archivo .env dentro del output (para Vercel CLI la lea)
+        env_out = os.path.join(out, '.env.vercel_setup')
+        with open(env_out, 'w') as f:
+            f.write(api_key)
+
         print(f'✅  Propuesta personalizada lista en {out}', file=sys.stderr)
 
     # Siempre imprimir el JSON con los datos
