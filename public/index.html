@@ -18,6 +18,30 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html{overflow-x:hidden;overflow-y:scroll;scroll-behavior:smooth}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t);overflow-x:hidden}
+
+/* ── LIQUID GLASS BASE ── */
+.lg{
+  position:relative;overflow:hidden;isolation:isolate;
+  border-radius:16px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.13);
+  backdrop-filter:blur(16px) saturate(1.6) brightness(1.05);
+  -webkit-backdrop-filter:blur(16px) saturate(1.6) brightness(1.05);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,.35),
+    inset 0 1.5px 0 0 rgba(255,255,255,.28),
+    inset 0 -1px 0 0 rgba(255,255,255,.06),
+    inset 1.5px 0 0 0 rgba(255,255,255,.12),
+    inset -1.5px 0 0 0 rgba(255,255,255,.06);
+}
+.lg::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;
+  background:linear-gradient(160deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.04) 40%,transparent 100%);
+}
+.lg::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;border-radius:inherit;pointer-events:none;z-index:2;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
+}
 section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .grad-text{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
@@ -43,7 +67,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 
 /* ── WELCOME / LEAD CAPTURE MODAL ── */
 .modal-overlay{position:fixed;inset:0;z-index:999;background:rgba(8,7,15,.96);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.modal-box{background:rgba(15,13,26,.7);border:1px solid rgba(192,38,168,.35);border-radius:20px;padding:44px 48px;max-width:500px;width:92%;position:relative;overflow:hidden;isolation:isolate;backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);box-shadow:0 40px 100px rgba(0,0,0,.6),inset 2px 2px 1px 0 rgba(255,255,255,.1),inset -1px -1px 1px 0 rgba(255,255,255,.05)}
+.modal-box{padding:44px 48px;max-width:500px;width:92%;border-radius:20px;border-color:rgba(192,38,168,.4)!important}
 .modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
 .modal-glow{position:absolute;top:-80px;right:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(192,38,168,.12) 0%,transparent 70%);pointer-events:none}
 .modal-brand{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px}
@@ -118,9 +142,9 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 .prob-quote-text em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .prob-quote-sub{font-size:13px;color:var(--tm);line-height:1.7;max-width:500px;margin:14px auto 0}
 .ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
-.bac{padding:26px 28px;border-radius:12px;position:relative;overflow:hidden;isolation:isolate;backdrop-filter:blur(8px) saturate(1.2);-webkit-backdrop-filter:blur(8px) saturate(1.2);box-shadow:0 4px 16px rgba(0,0,0,.2),inset 1px 1px 1px 0 rgba(255,255,255,.08),inset -1px -1px 1px 0 rgba(255,255,255,.04)}
-.bab{background:rgba(232,68,26,.06);border:1px solid rgba(232,68,26,.25)}
-.baa{background:rgba(37,163,90,.06);border:1px solid rgba(37,163,90,.25)}
+.bac{padding:26px 28px}
+.bab{border-color:rgba(232,68,26,.3)!important;background:rgba(232,68,26,.05)!important}
+.baa{border-color:rgba(37,163,90,.3)!important;background:rgba(37,163,90,.05)!important}
 .bat{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:14px}
 .bab .bat{color:#f07050}.baa .bat{color:var(--g2)}
 .bai{font-size:13px;color:var(--tm);display:flex;gap:10px;margin-bottom:9px;line-height:1.5;align-items:flex-start}
@@ -129,13 +153,13 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 
 /* ── S2 SOLUCIÓN ── */
 #s2{align-items:flex-start;padding:100px 60px 60px}
-.sol-intro{background:linear-gradient(135deg,rgba(224,64,160,.08) 0%,rgba(139,34,232,.05) 100%);border:1px solid rgba(192,38,168,.3);border-radius:14px;padding:22px 30px;margin-bottom:32px;position:relative;overflow:hidden;isolation:isolate;backdrop-filter:blur(10px) saturate(1.3);-webkit-backdrop-filter:blur(10px) saturate(1.3);box-shadow:0 4px 20px rgba(0,0,0,.2),inset 1px 1px 1px 0 rgba(255,255,255,.1),inset -1px -1px 1px 0 rgba(255,255,255,.05)}
+.sol-intro{padding:22px 30px;margin-bottom:32px;border-color:rgba(192,38,168,.35)!important}
 .sol-intro::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--grad)}
 .sol-intro-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--pk-l);margin-bottom:7px}
 .sol-intro-text{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;line-height:1.55}
 .agents-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px}
-.agent-card{background:rgba(15,13,26,.6);border:1px solid rgba(42,32,72,.6);border-radius:14px;overflow:hidden;transition:all .4s cubic-bezier(.175,.885,.32,1.5);isolation:isolate;backdrop-filter:blur(10px) saturate(1.3);-webkit-backdrop-filter:blur(10px) saturate(1.3);box-shadow:0 4px 20px rgba(0,0,0,.25),inset 1px 1px 1px 0 rgba(255,255,255,.07),inset -1px -1px 1px 0 rgba(255,255,255,.03)}
-.agent-card:hover{border-color:rgba(192,38,168,.45);transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.3),0 0 20px rgba(192,38,168,.1),inset 1px 1px 1px 0 rgba(255,255,255,.1)}
+.agent-card{overflow:hidden;transition:transform .4s cubic-bezier(.175,.885,.32,1.5),box-shadow .3s}
+.agent-card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.4),0 0 24px rgba(192,38,168,.15),inset 0 1.5px 0 0 rgba(255,255,255,.35)!important}
 .ac-top{padding:22px;border-bottom:1px solid var(--bo);display:flex;align-items:center;gap:14px}
 .ac-pk .ac-top{background:rgba(224,64,160,.06)}.ac-vio .ac-top{background:rgba(139,34,232,.06)}
 .ac-av{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
@@ -155,8 +179,8 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 .am-val{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:3px}
 .am-lbl{font-size:9px;color:var(--tm)}
 .met-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.met{background:rgba(15,13,26,.6);border:1px solid rgba(42,32,72,.6);border-radius:12px;padding:18px;text-align:center;transition:all .4s cubic-bezier(.175,.885,.32,1.5);isolation:isolate;backdrop-filter:blur(8px) saturate(1.2);-webkit-backdrop-filter:blur(8px) saturate(1.2);box-shadow:0 4px 16px rgba(0,0,0,.2),inset 1px 1px 1px 0 rgba(255,255,255,.07),inset -1px -1px 1px 0 rgba(255,255,255,.03)}
-.met:hover{border-color:rgba(192,38,168,.4);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 16px rgba(192,38,168,.1),inset 1px 1px 1px 0 rgba(255,255,255,.1)}
+.met{padding:18px;text-align:center;transition:transform .4s cubic-bezier(.175,.885,.32,1.5),box-shadow .3s}
+.met:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.35),0 0 16px rgba(192,38,168,.12),inset 0 1.5px 0 0 rgba(255,255,255,.35)!important}
 .met-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:5px}
 .met-lbl{font-size:11px;color:var(--tm);line-height:1.4}
 .met-sub{font-size:9px;color:var(--td);font-family:'DM Mono',monospace;margin-top:3px;letter-spacing:.06em}
@@ -174,7 +198,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 .dtab.active{background:var(--grad-soft);border-color:rgba(192,38,168,.4);color:var(--t);box-shadow:0 0 20px rgba(192,38,168,.12)}
 .demo-wrap{display:grid;grid-template-columns:1fr 340px;gap:18px;width:100%;max-width:1100px;margin:0 auto}
 .dpanel{display:none}.dpanel.active{display:flex;flex-direction:column}
-.chat-win{background:rgba(15,13,26,.65);border:1px solid rgba(42,32,72,.7);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;height:420px;backdrop-filter:blur(12px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3);box-shadow:0 8px 32px rgba(0,0,0,.3),inset 1px 1px 1px 0 rgba(255,255,255,.08),inset -1px -1px 1px 0 rgba(255,255,255,.03)}
+.chat-win{overflow:hidden;display:flex;flex-direction:column;height:420px}
 .chat-hdr{padding:13px 18px;border-bottom:1px solid var(--bo);display:flex;align-items:center;gap:11px;flex-shrink:0}
 .chat-av{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--grad-soft);border:1px solid rgba(192,38,168,.3);flex-shrink:0}
 .chat-aname{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
@@ -200,7 +224,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 .sugg{padding:5px 11px;border-radius:20px;border:1px solid var(--bo);font-size:11px;color:var(--tm);cursor:pointer;background:rgba(255,255,255,.02);transition:all .2s;font-family:'DM Mono',monospace;letter-spacing:.02em}
 .sugg:hover{border-color:rgba(192,38,168,.4);color:var(--pk-l);background:rgba(224,64,160,.06)}
 .demo-sidebar{display:flex;flex-direction:column;gap:11px}
-.dscard{background:rgba(15,13,26,.65);border:1px solid rgba(42,32,72,.7);border-radius:12px;padding:17px;backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2);box-shadow:0 4px 16px rgba(0,0,0,.2),inset 1px 1px 1px 0 rgba(255,255,255,.07),inset -1px -1px 1px 0 rgba(255,255,255,.03)}
+.dscard{padding:17px;border-radius:12px}
 .dscard-t{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--pk-l);margin-bottom:9px;text-transform:uppercase;letter-spacing:.05em}
 .dscard-i{font-size:12px;color:var(--tm);display:flex;gap:7px;margin-bottom:5px;line-height:1.4}
 .dscard-i::before{content:'·';color:var(--pk);flex-shrink:0}
@@ -211,20 +235,20 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 /* ── S4 BENEFICIOS ── */
 #s4{align-items:flex-start;padding:100px 60px 60px}
 .intel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:24px}
-.ic{background:rgba(15,13,26,.6);border:1px solid rgba(42,32,72,.6);border-radius:14px;padding:19px;transition:all .4s cubic-bezier(.175,.885,.32,1.5);isolation:isolate;backdrop-filter:blur(8px) saturate(1.2);-webkit-backdrop-filter:blur(8px) saturate(1.2);box-shadow:0 4px 16px rgba(0,0,0,.2),inset 1px 1px 1px 0 rgba(255,255,255,.07),inset -1px -1px 1px 0 rgba(255,255,255,.03)}
-.ic:hover{border-color:rgba(192,38,168,.4);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 16px rgba(192,38,168,.1),inset 1px 1px 1px 0 rgba(255,255,255,.1)}
+.ic{padding:19px;transition:transform .4s cubic-bezier(.175,.885,.32,1.5),box-shadow .3s}
+.ic:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.35),0 0 16px rgba(192,38,168,.12),inset 0 1.5px 0 0 rgba(255,255,255,.35)!important}
 .ic-icon{font-size:22px;margin-bottom:9px}
 .ic-t{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--pk-l);margin-bottom:5px}
 .ic-d{font-size:12px;color:var(--tm);line-height:1.6}
-.impact-bar{background:linear-gradient(135deg,rgba(224,64,160,.1),rgba(139,34,232,.06));border:1px solid rgba(192,38,168,.28);border-left:3px solid var(--pk);border-radius:0 14px 14px 0;padding:18px 26px;display:flex;align-items:center;gap:16px;margin-bottom:18px;isolation:isolate;backdrop-filter:blur(8px) saturate(1.2);-webkit-backdrop-filter:blur(8px) saturate(1.2);box-shadow:0 4px 16px rgba(0,0,0,.2),inset 1px 1px 1px 0 rgba(255,255,255,.07)}
+.impact-bar{border-left:3px solid var(--pk);border-radius:0 14px 14px 0!important;padding:18px 26px;display:flex;align-items:center;gap:16px;margin-bottom:18px;border-color:rgba(192,38,168,.28)!important;background:linear-gradient(135deg,rgba(224,64,160,.1),rgba(139,34,232,.06))!important}
 .impact-icon{font-size:26px;flex-shrink:0}
 .impact-text{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;line-height:1.4}
 .impact-text em{color:var(--pk-l);font-style:normal}
 .impact-sub{font-size:11px;color:var(--tm);margin-top:3px;font-family:'DM Mono',monospace}
 .roi-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.roi-col{border-radius:14px;padding:22px;isolation:isolate;backdrop-filter:blur(8px) saturate(1.2);-webkit-backdrop-filter:blur(8px) saturate(1.2);box-shadow:0 4px 16px rgba(0,0,0,.2),inset 1px 1px 1px 0 rgba(255,255,255,.07),inset -1px -1px 1px 0 rgba(255,255,255,.03)}
-.roi-before{background:rgba(232,68,26,.05);border:1px solid rgba(232,68,26,.22)}
-.roi-after{background:linear-gradient(135deg,rgba(224,64,160,.08) 0%,rgba(139,34,232,.05) 100%);border:1px solid rgba(192,38,168,.28);position:relative;overflow:hidden}
+.roi-col{padding:22px}
+.roi-before{border-color:rgba(232,68,26,.3)!important;background:rgba(232,68,26,.05)!important}
+.roi-after{border-color:rgba(192,38,168,.35)!important;position:relative;overflow:hidden}
 .roi-after::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
 .roi-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:13px}
 .roi-before .roi-lbl{color:#f07050}.roi-after .roi-lbl{color:var(--pk-l)}
@@ -270,14 +294,14 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 .of-item.pk .of-itype{color:var(--pk-l)}.of-item.vio .of-itype{color:var(--vio-l)}.of-item.g .of-itype{color:var(--g2)}
 
 /* ── S5 OFICINA ISOMÉTRICA ── */
-.office-scene{background:rgba(15,13,26,.65);border:1px solid rgba(42,32,72,.7);border-radius:14px;overflow:hidden;margin-bottom:18px;backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2);box-shadow:0 4px 20px rgba(0,0,0,.25),inset 1px 1px 1px 0 rgba(255,255,255,.07),inset -1px -1px 1px 0 rgba(255,255,255,.03)}
+.office-scene{overflow:hidden;margin-bottom:18px}
 #officeCanvas{width:100%;display:block;max-height:340px}
 .office-legend{display:flex;gap:22px;padding:10px 20px;border-top:1px solid var(--bo);flex-wrap:wrap}
 .leg-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--tm);font-family:'DM Mono',monospace;letter-spacing:.06em}
 .leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .hybrid-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.hyb{background:rgba(15,13,26,.6);border:1px solid rgba(42,32,72,.6);border-radius:14px;padding:20px;transition:all .4s cubic-bezier(.175,.885,.32,1.5);isolation:isolate;backdrop-filter:blur(8px) saturate(1.2);-webkit-backdrop-filter:blur(8px) saturate(1.2);box-shadow:0 4px 16px rgba(0,0,0,.2),inset 1px 1px 1px 0 rgba(255,255,255,.07),inset -1px -1px 1px 0 rgba(255,255,255,.03)}
-.hyb:hover{border-color:rgba(192,38,168,.4);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 16px rgba(192,38,168,.1),inset 1px 1px 1px 0 rgba(255,255,255,.1)}
+.hyb{padding:20px;transition:transform .4s cubic-bezier(.175,.885,.32,1.5),box-shadow .3s}
+.hyb:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.35),0 0 16px rgba(192,38,168,.12),inset 0 1.5px 0 0 rgba(255,255,255,.35)!important}
 .hyb-icon{font-size:20px;margin-bottom:9px}
 .hyb-t{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--pk-l);margin-bottom:5px}
 .hyb-d{font-size:12px;color:var(--tm);line-height:1.6}
@@ -376,9 +400,25 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 </head>
 <body>
 
+<!-- ── SVG GLASS FILTER ── -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs>
+    <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
+      <feTurbulence type="fractalNoise" baseFrequency="0.001 0.004" numOctaves="1" seed="17" result="turbulence"/>
+      <feComponentTransfer in="turbulence" result="mapped">
+        <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5"/>
+        <feFuncG type="gamma" amplitude="0" exponent="1" offset="0"/>
+        <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5"/>
+      </feComponentTransfer>
+      <feGaussianBlur in="turbulence" stdDeviation="2" result="softMap"/>
+      <feDisplacementMap in="SourceGraphic" in2="softMap" scale="80" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
 <!-- ── WELCOME / LEAD CAPTURE ── -->
 <div class="modal-overlay" id="welcomeModal">
-  <div class="modal-box">
+  <div class="modal-box lg">
     <div class="modal-glow"></div>
     <div class="modal-brand">NODO One · BPO Digital</div>
     <div class="modal-title">Propuesta para hacer que<br>tu negocio <em>responda y venda 24/7</em></div>
@@ -474,7 +514,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
       <p class="prob-quote-sub">Los clientes prefieren la eficiencia a esperar. Si no respondes en el momento, alguien más lo hace. No mañana — ahora.</p>
     </div>
     <div class="ba-grid reveal d4">
-      <div class="bac bab">
+      <div class="bac bab lg">
         <div class="bat">❌ Sin NODO — hoy</div>
         <div class="bai"><span class="dot-r"></span>El cliente escribe y espera horas — o no espera y se va</div>
         <div class="bai"><span class="dot-r"></span>Fuera de horario no hay nadie — el lead se pierde</div>
@@ -482,7 +522,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
         <div class="bai"><span class="dot-r"></span>Para crecer hay que contratar — coste fijo constante</div>
         <div class="bai"><span class="dot-r"></span>El equipo responde siempre las mismas preguntas</div>
       </div>
-      <div class="bac baa">
+      <div class="bac baa lg">
         <div class="bat">✅ Con NODO — el cambio</div>
         <div class="bai"><span class="dot-g"></span>Respuesta en menos de 45 segundos — siempre</div>
         <div class="bai"><span class="dot-g"></span>El negocio opera cuando el equipo descansa, 365 días</div>
@@ -502,12 +542,12 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
   <div class="s-inner">
     <div class="s-label reveal">02 · Qué es NODO y cómo funciona</div>
     <h2 class="s-title reveal d1">El primer <span class="grad-text">BPO Digital</span> de habla hispana</h2>
-    <div class="sol-intro reveal d2">
+    <div class="sol-intro lg reveal d2">
       <div class="sol-intro-lbl">La lógica del modelo</div>
       <div class="sol-intro-text">NODO no vende software. No vende herramientas. Instala empleados digitales dentro de la operación del cliente — agentes de inteligencia artificial que trabajan de forma continua, con total visibilidad para el negocio.</div>
     </div>
     <div class="agents-grid reveal d3">
-      <div class="agent-card ac-pk">
+      <div class="agent-card ac-pk lg">
         <div class="ac-top"><div class="ac-av">👩</div><div><div class="ac-name">Claudia</div><div class="ac-role">Ventas por WhatsApp · 24/7</div></div></div>
         <div class="ac-body">
           <div class="ac-desc">Atiende a todos los que escriben, convierte conversaciones en ventas y mantiene el negocio activo incluso cuando tú no estás.</div>
@@ -524,7 +564,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
           </div>
         </div>
       </div>
-      <div class="agent-card ac-vio">
+      <div class="agent-card ac-vio lg">
         <div class="ac-top"><div class="ac-av">👩🏽‍🦱</div><div><div class="ac-name">Lucía</div><div class="ac-role">Ventas telefónicas · 24/7</div></div></div>
         <div class="ac-body">
           <div class="ac-desc">Atiende llamadas entrantes, confirma citas y cierra ventas sin importar el horario ni el idioma del cliente.</div>
@@ -543,10 +583,10 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
       </div>
     </div>
     <div class="met-row reveal d4">
-      <div class="met"><div class="met-val">157k+</div><div class="met-lbl">Clientes gestionados</div><div class="met-sub">Solo Claudia · WhatsApp</div></div>
-      <div class="met"><div class="met-val">1M+</div><div class="met-lbl">Llamadas efectivas</div><div class="met-sub">Solo Lucía · Voz</div></div>
-      <div class="met"><div class="met-val">$700k+</div><div class="met-lbl">Ingresos generados</div><div class="met-sub">Claudia + Lucía</div></div>
-      <div class="met"><div class="met-val">39+</div><div class="met-lbl">Empresas activas</div><div class="met-sub">Hoy en operación</div></div>
+      <div class="met lg"><div class="met-val">157k+</div><div class="met-lbl">Clientes gestionados</div><div class="met-sub">Solo Claudia · WhatsApp</div></div>
+      <div class="met lg"><div class="met-val">1M+</div><div class="met-lbl">Llamadas efectivas</div><div class="met-sub">Solo Lucía · Voz</div></div>
+      <div class="met lg"><div class="met-val">$700k+</div><div class="met-lbl">Ingresos generados</div><div class="met-sub">Claudia + Lucía</div></div>
+      <div class="met lg"><div class="met-val">39+</div><div class="met-lbl">Empresas activas</div><div class="met-sub">Hoy en operación</div></div>
     </div>
   </div>
 </section>
@@ -571,7 +611,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 
       <!-- Panel Clínica -->
       <div class="dpanel active" id="panel-clinica">
-        <div class="chat-win">
+        <div class="chat-win lg">
           <div class="chat-hdr">
             <div class="chat-av">🦷</div>
             <div><div class="chat-aname">Claudia</div><div class="chat-arole">Clínica Palacios · Bogotá</div></div>
@@ -597,7 +637,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 
       <!-- Panel Inmobiliaria -->
       <div class="dpanel" id="panel-inmobiliaria">
-        <div class="chat-win">
+        <div class="chat-win lg">
           <div class="chat-hdr">
             <div class="chat-av">🏠</div>
             <div><div class="chat-aname">Claudia</div><div class="chat-arole">Inmobiliaria Avinguda · Valencia</div></div>
@@ -623,7 +663,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 
       <!-- Panel Lujo -->
       <div class="dpanel" id="panel-lujo">
-        <div class="chat-win">
+        <div class="chat-win lg">
           <div class="chat-hdr">
             <div class="chat-av">⛵</div>
             <div><div class="chat-aname">Claudia</div><div class="chat-arole">LuxuriBiz · Ibiza</div></div>
@@ -650,7 +690,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
       <!-- Sidebar info -->
       <div class="demo-sidebar">
         <div id="si-clinica">
-          <div class="dscard"><div class="dscard-t">🦷 Clínica Palacios</div>
+          <div class="dscard lg"><div class="dscard-t">🦷 Clínica Palacios</div>
             <div class="dscard-i">Bogotá, Colombia</div>
             <div class="dscard-i">Limpiezas · Blanqueamiento</div>
             <div class="dscard-i">Ortodoncia metálica e invisible</div>
@@ -659,7 +699,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
           </div>
         </div>
         <div id="si-inmobiliaria" style="display:none">
-          <div class="dscard"><div class="dscard-t">🏠 Inmobiliaria Avinguda</div>
+          <div class="dscard lg"><div class="dscard-t">🏠 Inmobiliaria Avinguda</div>
             <div class="dscard-i">Valencia, España</div>
             <div class="dscard-i">Compra · Venta · Alquiler</div>
             <div class="dscard-i">Pisos, áticos y chalets</div>
@@ -667,7 +707,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
           </div>
         </div>
         <div id="si-lujo" style="display:none">
-          <div class="dscard"><div class="dscard-t">⛵ LuxuriBiz · Ibiza</div>
+          <div class="dscard lg"><div class="dscard-t">⛵ LuxuriBiz · Ibiza</div>
             <div class="dscard-i">Náutica · Lanchas · Catamaranes</div>
             <div class="dscard-i">Coches de lujo · Ferrari · Lambo</div>
             <div class="dscard-i">Villas exclusivas · hasta 12 pax</div>
@@ -694,14 +734,14 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
     <h2 class="s-title reveal d1">Tu negocio, con más <span class="grad-text">inteligencia</span> que nunca</h2>
     <p class="s-sub reveal d2">NODO no opera en oscuridad. Tienes trazabilidad total de cada conversación, cada cliente y cada resultado. Datos que antes simplemente no existían.</p>
     <div class="intel-grid reveal d3">
-      <div class="ic"><div class="ic-icon">💬</div><div class="ic-t">Volumen conversacional</div><div class="ic-d">Cuántos mensajes entran, cuántos se responden y cuál es la tasa de conversión real.</div></div>
-      <div class="ic"><div class="ic-icon">🕐</div><div class="ic-t">Horas pico del negocio</div><div class="ic-d">A qué hora llegan más clientes, cuándo se generan más ventas, cuándo actúa el agente fuera de horario.</div></div>
-      <div class="ic"><div class="ic-icon">📋</div><div class="ic-t">Servicios más solicitados</div><div class="ic-d">Qué productos generan más consultas, cuáles convierten mejor y dónde hay más fricción.</div></div>
-      <div class="ic"><div class="ic-icon">📅</div><div class="ic-t">Agendas y confirmaciones</div><div class="ic-d">Cuántas citas se agendan, confirman, cancelan y cuál es la tasa de asistencia real.</div></div>
-      <div class="ic"><div class="ic-icon">🔍</div><div class="ic-t">Trazabilidad del cliente</div><div class="ic-d">Flujo completo de cada conversación: qué preguntó, qué respondió el agente, dónde paró.</div></div>
-      <div class="ic"><div class="ic-icon">📉</div><div class="ic-t">Leads que desaparecieron</div><div class="ic-d">Quién mostró interés y desapareció, en qué punto del flujo se fue y cómo recuperarlo.</div></div>
+      <div class="ic lg"><div class="ic-icon">💬</div><div class="ic-t">Volumen conversacional</div><div class="ic-d">Cuántos mensajes entran, cuántos se responden y cuál es la tasa de conversión real.</div></div>
+      <div class="ic lg"><div class="ic-icon">🕐</div><div class="ic-t">Horas pico del negocio</div><div class="ic-d">A qué hora llegan más clientes, cuándo se generan más ventas, cuándo actúa el agente fuera de horario.</div></div>
+      <div class="ic lg"><div class="ic-icon">📋</div><div class="ic-t">Servicios más solicitados</div><div class="ic-d">Qué productos generan más consultas, cuáles convierten mejor y dónde hay más fricción.</div></div>
+      <div class="ic lg"><div class="ic-icon">📅</div><div class="ic-t">Agendas y confirmaciones</div><div class="ic-d">Cuántas citas se agendan, confirman, cancelan y cuál es la tasa de asistencia real.</div></div>
+      <div class="ic lg"><div class="ic-icon">🔍</div><div class="ic-t">Trazabilidad del cliente</div><div class="ic-d">Flujo completo de cada conversación: qué preguntó, qué respondió el agente, dónde paró.</div></div>
+      <div class="ic lg"><div class="ic-icon">📉</div><div class="ic-t">Leads que desaparecieron</div><div class="ic-d">Quién mostró interés y desapareció, en qué punto del flujo se fue y cómo recuperarlo.</div></div>
     </div>
-    <div class="impact-bar reveal d4">
+    <div class="impact-bar lg reveal d4">
       <div class="impact-icon">📊</div>
       <div>
         <div class="impact-text">El sistema equivale a <em>+11 empleados a tiempo completo</em> — activos 365 días, sin estado de ánimo, sin límite de volumen.</div>
@@ -709,7 +749,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
       </div>
     </div>
     <div class="roi-compare reveal d5">
-      <div class="roi-col roi-before">
+      <div class="roi-col roi-before lg">
         <div class="roi-lbl">Modelo humano-dependiente</div>
         <div class="roi-row"><span>Coste mensual atención</span><span>1.800–2.200 €</span></div>
         <div class="roi-row"><span>Cobertura</span><span>8h/día · 5 días</span></div>
@@ -717,7 +757,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
         <div class="roi-row"><span>Consistencia</span><span>Variable</span></div>
         <div class="roi-row"><span>Para crecer</span><span>Contratar más</span></div>
       </div>
-      <div class="roi-col roi-after">
+      <div class="roi-col roi-after lg">
         <div class="roi-lbl">Empleado digital NODO</div>
         <div class="roi-row"><span>Inversión mensual</span><span>desde $789/mes</span></div>
         <div class="roi-row"><span>Cobertura</span><span>24/7 · 365 días</span></div>
@@ -738,7 +778,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
     <div class="s-label reveal">05 · El equipo que necesitas en 2026</div>
     <h2 class="s-title reveal d1">Los negocios que más crecerán son <span class="grad-text">los híbridos</span></h2>
     <p class="s-sub reveal d2">Empleados humanos + empleados digitales trabajando juntos. NODO instala ese equipo digital dentro de tu negocio.</p>
-    <div class="office-scene reveal d3">
+    <div class="office-scene lg reveal d3">
       <canvas id="officeCanvas"></canvas>
       <div class="office-legend">
         <div class="leg-item"><div class="leg-dot" style="background:#4a6fa5"></div><span>Empleado humano</span></div>
@@ -747,9 +787,9 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
       </div>
     </div>
     <div class="hybrid-row reveal d4">
-      <div class="hyb"><div class="hyb-icon">🔄</div><div class="hyb-t">Sin fricción operativa</div><div class="hyb-d">Los agentes digitales trabajan en paralelo al equipo humano sin interrumpir la operación existente.</div></div>
-      <div class="hyb"><div class="hyb-icon">📈</div><div class="hyb-t">Escala sin contratar</div><div class="hyb-d">El volumen puede multiplicarse por 10 sin una sola contratación nueva ni coste fijo adicional.</div></div>
-      <div class="hyb"><div class="hyb-icon">👁</div><div class="hyb-t">Tú tienes el control</div><div class="hyb-d">Cada conversación, cada cita, cada venta — visible y trazable para el negocio en todo momento.</div></div>
+      <div class="hyb lg"><div class="hyb-icon">🔄</div><div class="hyb-t">Sin fricción operativa</div><div class="hyb-d">Los agentes digitales trabajan en paralelo al equipo humano sin interrumpir la operación existente.</div></div>
+      <div class="hyb lg"><div class="hyb-icon">📈</div><div class="hyb-t">Escala sin contratar</div><div class="hyb-d">El volumen puede multiplicarse por 10 sin una sola contratación nueva ni coste fijo adicional.</div></div>
+      <div class="hyb lg"><div class="hyb-icon">👁</div><div class="hyb-t">Tú tienes el control</div><div class="hyb-d">Cada conversación, cada cita, cada venta — visible y trazable para el negocio en todo momento.</div></div>
     </div>
   </div>
 </section>
