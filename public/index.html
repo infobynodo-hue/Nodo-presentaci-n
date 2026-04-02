@@ -296,7 +296,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 
 /* ── S5 OFICINA ISOMÉTRICA ── */
 .office-scene{overflow:hidden;margin-bottom:18px}
-#officeCanvas{width:100%;display:block;max-height:340px}
+#officeCanvas{width:100%;display:block;max-height:340px;image-rendering:pixelated;image-rendering:crisp-edges}
 .office-legend{display:flex;gap:22px;padding:10px 20px;border-top:1px solid var(--bo);flex-wrap:wrap}
 .leg-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--tm);font-family:'DM Mono',monospace;letter-spacing:.06em}
 .leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
@@ -1057,255 +1057,317 @@ function drawOffice() {
   const canvas = document.getElementById('officeCanvas');
   if (!canvas) return;
   const PW = canvas.parentElement.offsetWidth;
-  const PH = Math.min(380, Math.round(PW * 0.50));
-  const DPR = window.devicePixelRatio || 1;
-  canvas.width  = PW * DPR;
-  canvas.height = PH * DPR;
+  const PH = Math.min(340, Math.round(PW * 0.52));
+
+  // ── PIXEL ART: render at low resolution, scale up via CSS ──
+  const SCALE = Math.max(2, Math.min(5, Math.floor(PW / 120)));
+  const IW = Math.ceil(PW / SCALE);
+  const IH = Math.ceil(PH / SCALE);
+  canvas.width  = IW;
+  canvas.height = IH;
   canvas.style.width  = PW + 'px';
   canvas.style.height = PH + 'px';
+
   const ctx = canvas.getContext('2d');
-  ctx.scale(DPR, DPR);
+  ctx.imageSmoothingEnabled = false;
 
-  const COLS=9, ROWS=5;
-  const TW = Math.max(28, Math.min(46, PW / 16));
-  const TH = TW * 0.5;
-  const WH = TH * 6.5;  // wall height
-  const OX = PW * 0.50;
-  const OY = WH + TH * 2.5;
+  // Tile unit — 2:1 isometric ratio
+  const U  = Math.max(3, Math.floor(IW / 30));
+  const TW = U * 2;
+  const TH = U;
+  const COLS = 7, ROWS = 5;
+  const WH = TH * 9;
+  const OX = Math.floor(IW * 0.50);
+  const OY = Math.floor(IH * 0.28) + WH;
 
-  function ix(c,r){ return (c-r)*TW + OX; }
-  function iy(c,r){ return (c+r)*TH + OY; }
+  const px  = (x,y,w,h,c) => { ctx.fillStyle=c; ctx.fillRect(Math.round(x),Math.round(y),Math.round(w)||1,Math.round(h)||1); };
+  const isoX = (c,r) => OX + (c-r)*TW;
+  const isoY = (c,r) => OY + (c+r)*TH;
 
-  // floor quad corners
-  const floorTop   = { x: OX,                         y: OY - TH };
-  const floorRight = { x: OX + COLS*TW,                y: OY + (COLS-1)*TH };
-  const floorLeft  = { x: OX - ROWS*TW,                y: OY + (ROWS-1)*TH };
-
-  // ── WALLS (drawn first, behind everything) ──
-  // right wall (top→right edge of floor)
-  ctx.beginPath();
-  ctx.moveTo(floorTop.x,            floorTop.y - WH);
-  ctx.lineTo(floorRight.x,          floorRight.y - WH);
-  ctx.lineTo(floorRight.x,          floorRight.y);
-  ctx.lineTo(floorTop.x,            floorTop.y);
-  ctx.closePath();
-  ctx.fillStyle = '#0e0c1e';
-  ctx.fill();
-  // right wall grid lines (horizontal)
-  ctx.strokeStyle = 'rgba(42,32,72,0.45)'; ctx.lineWidth = 0.7;
-  for(let i=1;i<5;i++){
-    const yy = floorTop.y - WH + (WH/5)*i;
-    // interpolate x along the wall
-    const t = i/5;
-    const x0 = floorTop.x, x1 = floorRight.x;
-    const y0a = floorTop.y - WH, y1a = floorRight.y - WH;
-    const y0b = floorTop.y,      y1b = floorRight.y;
+  // Draw filled isometric polygon
+  function poly(pts, col) {
+    ctx.fillStyle = col;
     ctx.beginPath();
-    ctx.moveTo(x0 + (x1-x0)*0, (y0a + (y0b-y0a)*i/5));
-    ctx.lineTo(x1,              (y1a + (y1b-y1a)*i/5));
-    ctx.stroke();
+    ctx.moveTo(Math.round(pts[0].x), Math.round(pts[0].y));
+    for(let i=1;i<pts.length;i++) ctx.lineTo(Math.round(pts[i].x), Math.round(pts[i].y));
+    ctx.closePath(); ctx.fill();
   }
-  for(let c=1;c<COLS;c++){
+  function polyStroke(pts, col, lw) {
+    ctx.strokeStyle = col; ctx.lineWidth = lw||1;
     ctx.beginPath();
-    ctx.moveTo(OX+c*TW, OY+(c-1)*TH - WH);
-    ctx.lineTo(OX+c*TW, OY+(c-1)*TH);
-    ctx.stroke();
-  }
-  // window on right wall
-  const wx1=OX+3*TW, wy1=OY+2*TH-WH*0.68, wx2=OX+5*TW, wy2=OY+4*TH-WH*0.28;
-  ctx.fillStyle='rgba(139,34,232,0.08)';
-  ctx.strokeStyle='rgba(42,32,72,0.7)'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.rect(wx1,wy1,wx2-wx1,wy2-wy1); ctx.fill(); ctx.stroke();
-  ctx.strokeStyle='rgba(42,32,72,0.4)'; ctx.lineWidth=0.6;
-  ctx.beginPath(); ctx.moveTo((wx1+wx2)/2,wy1); ctx.lineTo((wx1+wx2)/2,wy2); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(wx1,(wy1+wy2)/2); ctx.lineTo(wx2,(wy1+wy2)/2); ctx.stroke();
-
-  // left wall (top→left edge of floor)
-  ctx.beginPath();
-  ctx.moveTo(floorTop.x,  floorTop.y - WH);
-  ctx.lineTo(floorLeft.x, floorLeft.y - WH);
-  ctx.lineTo(floorLeft.x, floorLeft.y);
-  ctx.lineTo(floorTop.x,  floorTop.y);
-  ctx.closePath();
-  ctx.fillStyle = '#0b0a1a';
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(42,32,72,0.4)'; ctx.lineWidth = 0.7;
-  for(let i=1;i<5;i++){
-    ctx.beginPath();
-    ctx.moveTo(floorTop.x + (floorLeft.x-floorTop.x)*0, floorTop.y-WH+(WH/5)*i);
-    ctx.lineTo(floorLeft.x, floorLeft.y-WH+(WH/5)*i);
-    ctx.stroke();
-  }
-  for(let r=1;r<ROWS;r++){
-    ctx.beginPath();
-    ctx.moveTo(OX-r*TW, OY+(r-1)*TH-WH);
-    ctx.lineTo(OX-r*TW, OY+(r-1)*TH);
-    ctx.stroke();
+    ctx.moveTo(Math.round(pts[0].x), Math.round(pts[0].y));
+    for(let i=1;i<pts.length;i++) ctx.lineTo(Math.round(pts[i].x), Math.round(pts[i].y));
+    ctx.closePath(); ctx.stroke();
   }
 
-  // wall border / ridge
-  ctx.strokeStyle='rgba(42,32,72,0.8)'; ctx.lineWidth=1;
-  ctx.beginPath();
-  ctx.moveTo(floorTop.x, floorTop.y-WH);
-  ctx.lineTo(floorRight.x, floorRight.y-WH);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(floorTop.x, floorTop.y-WH);
-  ctx.lineTo(floorLeft.x, floorLeft.y-WH);
-  ctx.stroke();
+  // PIXEL ART PALETTE
+  const P = {
+    wallR:'#b8cfe0', wallRd:'#a4bed4', wallRl:'#ccdde8',  // right wall (blue-ish)
+    wallL:'#c8d8e8', wallLd:'#b0c8dc',                      // left wall (lighter)
+    wallEdge:'#7898b4',
+    winF:'#a8d8f0',  winL:'#d8f0ff', winFr:'#888899',
+    flA:'#d4956a', flB:'#c8855c', flC:'#be7550', flLine:'#a86840',
+    deskT:'#a07040', deskR:'#7a5030', deskL:'#8a6038',
+    monF:'#222233', monS:'#3355aa', monG:'#6688cc',
+    chairD:'#2a2a38', chairS:'#333344',
+    shelfT:'#8a6038', shelfR:'#5a3820', shelfL:'#6a4828',
+    shelfBookA:'#cc4444', shelfBookB:'#4488cc', shelfBookC:'#44aa66',
+    potT:'#3a8888', potS:'#2a6868',
+    leafA:'#2a7a28', leafB:'#3a9a38', leafC:'#4ab048',
+    humanH:'#d4a870', humanS:'#c89858',
+    humanB1:'#4a6fa5', humanB2:'#3a5e94',
+    claudiaB:'#c026a8', claudiaL:'#e060c8',
+    luciaB:'#7c3aed', luciaL:'#9a5af0',
+    aiBadge:'#ffffff', aiBadgeBg:'#111122',
+    outline:'#00000044',
+  };
 
-  // ── FLOOR TILES ──
+  // ── RIGHT WALL ──
+  const rTop = {x:isoX(0,0), y:isoY(0,0)-WH};
+  const rBotL = {x:isoX(0,0), y:isoY(0,0)};
+  const rBotR = {x:isoX(COLS,0), y:isoY(COLS,0)};
+  const rTopR = {x:isoX(COLS,0), y:isoY(COLS,0)-WH};
+  // Wall base fill
+  poly([rTop, rTopR, rBotR, rBotL], P.wallR);
+  // Subtle horizontal bands
+  for(let i=0;i<4;i++){
+    const t0=i/4, t1=(i+0.5)/4;
+    const y0=rTop.y+WH*t0, y1=rTop.y+WH*t1;
+    poly([
+      {x:rBotL.x, y:y0},{x:rBotR.x, y:y0+(rBotR.y-rBotL.y)*0},
+      {x:rBotR.x, y:y1+(rBotR.y-rBotL.y)*0},{x:rBotL.x, y:y1}
+    ], i%2===0 ? P.wallR : P.wallRd);
+  }
+  // Vertical grid lines on right wall
+  ctx.strokeStyle=P.wallEdge; ctx.lineWidth=1;
+  for(let c=0;c<=COLS;c++){
+    const bx=isoX(c,0), by=isoY(c,0);
+    ctx.beginPath(); ctx.moveTo(Math.round(bx),Math.round(by-WH)); ctx.lineTo(Math.round(bx),Math.round(by)); ctx.stroke();
+  }
+  // Horizontal grid lines
+  for(let i=1;i<4;i++){
+    const y=rBotL.y - WH*(i/4);
+    ctx.beginPath(); ctx.moveTo(Math.round(rBotL.x),Math.round(y)); ctx.lineTo(Math.round(rBotR.x),Math.round(rBotR.y-WH*(i/4))); ctx.stroke();
+  }
+  // Window on right wall
+  const wx=isoX(3,0), wy=isoY(3,0)-WH*0.75;
+  const ww=TW*1.8, wh=WH*0.42;
+  poly([{x:wx,y:wy},{x:wx+ww,y:wy+(ww/TW)*TH*0},{x:wx+ww,y:wy+wh},{x:wx,y:wy+wh}], P.winF);
+  // window sheen stripes
+  for(let s=0;s<3;s++) px(wx+ww*0.15+s*(ww*0.22), wy+wh*0.1, ww*0.08, wh*0.8, P.winL);
+  ctx.strokeStyle=P.winFr; ctx.lineWidth=1;
+  ctx.strokeRect(Math.round(wx),Math.round(wy),Math.round(ww),Math.round(wh));
+  ctx.beginPath(); ctx.moveTo(Math.round(wx+ww/2),Math.round(wy)); ctx.lineTo(Math.round(wx+ww/2),Math.round(wy+wh)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(Math.round(wx),Math.round(wy+wh/2)); ctx.lineTo(Math.round(wx+ww),Math.round(wy+wh/2)); ctx.stroke();
+  // Picture frame on right wall
+  const fx=isoX(5.5,0), fy=isoY(5.5,0)-WH*0.6;
+  const fw=TW*1.2, fh=WH*0.28;
+  poly([{x:fx,y:fy},{x:fx+fw,y:fy},{x:fx+fw,y:fy+fh},{x:fx,y:fy+fh}], '#cc8844');
+  px(fx+2,fy+2,fw-4,fh-4,'#4466aa');
+  // chart bars
+  for(let b=0;b<4;b++) px(fx+3+b*(fw*0.2), fy+fh-4-b*2, fw*0.14, b*2+2, ['#e05050','#50b050','#5080e0','#e0a030'][b]);
+
+  // ── LEFT WALL ──
+  const lBotR = {x:isoX(0,0), y:isoY(0,0)};
+  const lBotL = {x:isoX(0,ROWS), y:isoY(0,ROWS)};
+  const lTopL = {x:isoX(0,ROWS), y:isoY(0,ROWS)-WH};
+  const lTopR = {x:isoX(0,0), y:isoY(0,0)-WH};
+  poly([lTopR, lTopL, lBotL, lBotR], P.wallL);
+  // subtle bands on left wall
+  for(let i=0;i<4;i++){
+    const t0=i/4, t1=(i+0.5)/4;
+    poly([
+      {x:lBotR.x,y:lBotR.y-WH*(1-t0)},{x:lBotL.x+(lBotR.x-lBotL.x)*0,y:lBotL.y-WH*(1-t0)},
+      {x:lBotL.x,y:lBotL.y-WH*(1-t1)},{x:lBotR.x,y:lBotR.y-WH*(1-t1)}
+    ], i%2===0 ? P.wallL : P.wallLd);
+  }
+  ctx.strokeStyle=P.wallEdge; ctx.lineWidth=1;
+  for(let r=0;r<=ROWS;r++){
+    const bx=isoX(0,r), by=isoY(0,r);
+    ctx.beginPath(); ctx.moveTo(Math.round(bx),Math.round(by-WH)); ctx.lineTo(Math.round(bx),Math.round(by)); ctx.stroke();
+  }
+  for(let i=1;i<4;i++){
+    ctx.beginPath();
+    ctx.moveTo(Math.round(lBotR.x),Math.round(lBotR.y-WH*(i/4)));
+    ctx.lineTo(Math.round(lBotL.x),Math.round(lBotL.y-WH*(i/4)));
+    ctx.stroke();
+  }
+  // Wall ridge / corner
+  ctx.strokeStyle=P.wallEdge; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(Math.round(rTop.x),Math.round(rTop.y)); ctx.lineTo(Math.round(rTopR.x),Math.round(rTopR.y)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(Math.round(rTop.x),Math.round(rTop.y)); ctx.lineTo(Math.round(lTopL.x),Math.round(lTopL.y)); ctx.stroke();
+
+  // ── FLOOR TILES — wood strips ──
   function tile(c,r){
-    const cx=ix(c,r), cy=iy(c,r);
-    ctx.beginPath();
-    ctx.moveTo(cx, cy-TH); ctx.lineTo(cx+TW, cy);
-    ctx.lineTo(cx, cy+TH); ctx.lineTo(cx-TW, cy);
-    ctx.closePath();
-    ctx.fillStyle = (c+r)%2===0 ? '#100e20' : '#0d0b1c';
-    ctx.fill();
-    ctx.strokeStyle='rgba(42,32,72,0.5)'; ctx.lineWidth=0.6; ctx.stroke();
+    const cx=isoX(c,r), cy=isoY(c,r);
+    const col = r%2===0 ? P.flA : P.flB;
+    poly([
+      {x:cx,    y:cy-TH},
+      {x:cx+TW, y:cy},
+      {x:cx,    y:cy+TH},
+      {x:cx-TW, y:cy}
+    ], col);
+    // wood grain line
+    ctx.strokeStyle = P.flLine; ctx.lineWidth=0.5;
+    ctx.beginPath(); ctx.moveTo(Math.round(cx-TW),Math.round(cy)); ctx.lineTo(Math.round(cx),Math.round(cy+TH)); ctx.stroke();
   }
   for(let s=0;s<=COLS+ROWS-2;s++)
     for(let c=0;c<=Math.min(s,COLS-1);c++){
       const r=s-c; if(r>=0&&r<ROWS) tile(c,r);
     }
 
-  // ── HELPERS ──
-  function box(c,r,h,top,sR,sL){
-    const cx=ix(c,r), cy=iy(c,r);
-    ctx.lineWidth=0.7; ctx.strokeStyle='rgba(0,0,0,0.3)';
-    // left
-    ctx.beginPath();
-    ctx.moveTo(cx-TW,cy-h); ctx.lineTo(cx-TW,cy); ctx.lineTo(cx,cy+TH); ctx.lineTo(cx,cy+TH-h);
-    ctx.closePath(); ctx.fillStyle=sL; ctx.fill(); ctx.stroke();
-    // right
-    ctx.beginPath();
-    ctx.moveTo(cx+TW,cy-h); ctx.lineTo(cx+TW,cy); ctx.lineTo(cx,cy+TH); ctx.lineTo(cx,cy+TH-h);
-    ctx.closePath(); ctx.fillStyle=sR; ctx.fill(); ctx.stroke();
-    // top
-    ctx.beginPath();
-    ctx.moveTo(cx,cy-TH-h); ctx.lineTo(cx+TW,cy-h); ctx.lineTo(cx,cy+TH-h); ctx.lineTo(cx-TW,cy-h);
-    ctx.closePath(); ctx.fillStyle=top; ctx.fill(); ctx.stroke();
+  // ── PIXEL ART HELPERS ──
+
+  // Isometric box: top + right + left face
+  function box(c,r,bh,tC,rC,lC){
+    const cx=isoX(c,r), cy=isoY(c,r);
+    // left face
+    poly([{x:cx-TW,y:cy-bh},{x:cx-TW,y:cy},{x:cx,y:cy+TH},{x:cx,y:cy+TH-bh}], lC);
+    // right face
+    poly([{x:cx+TW,y:cy-bh},{x:cx+TW,y:cy},{x:cx,y:cy+TH},{x:cx,y:cy+TH-bh}], rC);
+    // top face
+    poly([{x:cx,y:cy-TH-bh},{x:cx+TW,y:cy-bh},{x:cx,y:cy+TH-bh},{x:cx-TW,y:cy-bh}], tC);
+    // outline
+    ctx.strokeStyle='rgba(0,0,0,0.25)'; ctx.lineWidth=0.5;
+    polyStroke([{x:cx,y:cy-TH-bh},{x:cx+TW,y:cy-bh},{x:cx,y:cy+TH-bh},{x:cx-TW,y:cy-bh}], 'rgba(0,0,0,0.2)', 0.5);
   }
 
+  // Pixel monitor
   function monitor(c,r){
-    const cx=ix(c,r)-TW*0.18, cy=iy(c,r)-TH*1.05-8;
-    const mh=TH*1.3, mw=TW*0.6;
-    ctx.fillStyle='#1c1840'; ctx.strokeStyle='rgba(42,32,72,0.7)'; ctx.lineWidth=0.7;
-    ctx.beginPath(); ctx.rect(cx-mw/2,cy-mh,mw,mh); ctx.fill(); ctx.stroke();
-    // screen content glow
-    const sg=ctx.createLinearGradient(cx-mw/2+2,cy-mh+2,cx+mw/2-2,cy-2);
-    sg.addColorStop(0,'#1a1040'); sg.addColorStop(1,'#120e28');
-    ctx.fillStyle=sg; ctx.fillRect(cx-mw/2+2,cy-mh+2,mw-4,mh-4);
-    ctx.fillStyle='rgba(168,85,247,0.3)'; ctx.fillRect(cx-mw/4,cy-mh+4,mw*0.4,1);
-    ctx.fillStyle='rgba(168,85,247,0.15)'; ctx.fillRect(cx-mw/4,cy-mh+7,mw*0.55,1);
+    const cx=isoX(c,r)-TW*0.15, cy=isoY(c,r)-TH-8;
+    const mw=Math.round(TW*0.7), mh=Math.round(TH*2.2);
+    // frame
+    px(cx-mw/2, cy-mh, mw, mh, P.monF);
+    // screen
+    px(cx-mw/2+1, cy-mh+1, mw-2, mh-3, P.monS);
+    // pixel "code" lines on screen
+    px(cx-mw/2+2, cy-mh+2, mw*0.55, 1, P.monG);
+    px(cx-mw/2+2, cy-mh+4, mw*0.35, 1, P.monG);
+    px(cx-mw/2+2, cy-mh+6, mw*0.45, 1, P.monG);
     // stand
-    ctx.fillStyle='#141030'; ctx.fillRect(cx-3,cy,6,4);
+    px(cx-1, cy, 2, 2, P.monF);
   }
 
-  // small chair (box behind desk)
-  function chair(c,r, side){
-    const cx=ix(c,r)+(side==='r'?TW*0.5:-TW*0.5);
-    const cy=iy(c,r)+TH*0.5;
-    const s=TH*0.65;
-    ctx.fillStyle='#1e1840'; ctx.strokeStyle='rgba(0,0,0,0.2)'; ctx.lineWidth=0.5;
-    ctx.beginPath(); ctx.rect(cx-s/2,cy-s/2,s,s); ctx.fill(); ctx.stroke();
+  // Pixel chair
+  function chair(c,r){
+    const cx=isoX(c,r)+TW*0.3, cy=isoY(c,r)+TH*0.6;
+    const s=Math.round(TH*0.9);
+    px(cx-s/2, cy-s/2, s, s, P.chairD);
+    px(cx-s/2+1, cy-s/2, s-2, 1, P.chairS);
   }
 
-  // plant (small cylinder-ish)
+  // Pixel plant
   function plant(c,r){
-    const cx=ix(c,r), cy=iy(c,r)-TH*0.4;
-    ctx.fillStyle='#1a2e1a';
-    ctx.beginPath(); ctx.ellipse(cx,cy,TW*0.28,TH*0.28,0,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#1f3a1f';
-    ctx.beginPath(); ctx.arc(cx,cy-TH*0.5,TW*0.22,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#2a4a28';
-    ctx.beginPath(); ctx.arc(cx-TW*0.12,cy-TH*0.7,TW*0.14,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(cx+TW*0.14,cy-TH*0.8,TW*0.13,0,Math.PI*2); ctx.fill();
+    const cx=isoX(c,r), cy=isoY(c,r);
+    // pot — isometric box style
+    const pw=Math.round(TW*0.5), ph=Math.round(TH*0.7);
+    px(cx-pw/2, cy-ph, pw, ph, P.potT);
+    px(cx-pw/2, cy-ph, pw, 1, P.potS);
+    // soil top
+    px(cx-pw/2+1, cy-ph+1, pw-2, 1, '#5a3820');
+    // leaves — pixel blobs
+    const lx=Math.round(cx), ly=Math.round(cy-ph);
+    px(lx-2, ly-4, 4, 2, P.leafB);
+    px(lx-3, ly-6, 5, 3, P.leafA);
+    px(lx-1, ly-8, 3, 3, P.leafC);
+    px(lx+2,  ly-6, 2, 2, P.leafA);
+    px(lx-4, ly-5, 2, 2, P.leafB);
   }
 
-  function char(c,r,bodyCol,name,isDigital,glowCol){
-    const cx=ix(c,r), cy=iy(c,r);
-    const bw=TW*0.34, bh=TH*1.6, hr=TW*0.2;
-    const fy=cy+TH*0.1, by=fy-bh, hy=by-hr;
+  // Pixel art character
+  function char(c,r,bodyA,bodyB,headC,name,isAI,glowC){
+    const cx=isoX(c,r), cy=isoY(c,r);
+    const bw=Math.round(TW*0.32), bh=Math.round(TH*1.8);
+    const hsize=Math.round(TW*0.22);
+    const fy=Math.round(cy+TH*0.1);
+    const by=fy-bh;
+    const hy=by-hsize;
 
-    if(isDigital){
-      ctx.save(); ctx.translate(cx,fy); ctx.scale(1,0.35);
-      const g=ctx.createRadialGradient(0,0,0,0,0,TW*0.9);
-      g.addColorStop(0,glowCol+'70'); g.addColorStop(1,'transparent');
-      ctx.beginPath(); ctx.arc(0,0,TW*0.9,0,Math.PI*2);
-      ctx.fillStyle=g; ctx.fill(); ctx.restore();
+    // AI glow ring
+    if(isAI){
+      ctx.fillStyle = glowC+'40';
+      ctx.beginPath(); ctx.arc(cx,fy-bh/2,TW*0.7,0,Math.PI*2); ctx.fill();
     }
-    ctx.fillStyle=bodyCol;
-    ctx.beginPath();
-    if(ctx.roundRect) ctx.roundRect(cx-bw/2,by,bw,bh,2);
-    else ctx.rect(cx-bw/2,by,bw,bh);
-    ctx.fill();
-    // collar / shirt detail
-    ctx.fillStyle='rgba(255,255,255,0.07)';
-    ctx.beginPath(); ctx.rect(cx-bw*0.2,by,bw*0.4,bh*0.3); ctx.fill();
-
-    ctx.beginPath(); ctx.arc(cx,hy,hr,0,Math.PI*2);
-    ctx.fillStyle='#ddb88a'; ctx.fill();
-    if(isDigital){
-      ctx.beginPath(); ctx.arc(cx,hy,hr+2.5,0,Math.PI*2);
-      ctx.strokeStyle=glowCol+'aa'; ctx.lineWidth=1.2; ctx.stroke();
+    // body (pixel style — 2 colors for depth)
+    px(cx-bw/2, by, bw, bh, bodyA);
+    px(cx-bw/2, by, bw/2, bh, bodyB);
+    // collar
+    px(cx-1, by, 2, Math.round(bh*0.3), '#ffffff33');
+    // head
+    px(cx-hsize/2, hy, hsize, hsize, headC);
+    // pixel eyes
+    px(cx-hsize*0.25, hy+hsize*0.3, 1, 1, '#000');
+    px(cx+hsize*0.15, hy+hsize*0.3, 1, 1, '#000');
+    // AI halo ring
+    if(isAI){
+      ctx.strokeStyle = glowC; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(Math.round(cx),Math.round(hy+hsize/2),hsize/2+2,0,Math.PI*2); ctx.stroke();
     }
+    // Name tag
     if(name){
-      ctx.font=`bold ${Math.max(9,TW*0.20)}px "DM Sans",sans-serif`;
-      const tw=ctx.measureText(name).width;
-      const pad=6, tagW=tw+pad*2+(isDigital?11:0), tagH=16;
-      const tx=cx-tagW/2, ty=hy-hr-tagH-3;
-      ctx.fillStyle=isDigital ? glowCol+'ee' : 'rgba(8,7,15,0.92)';
-      ctx.beginPath();
-      if(ctx.roundRect) ctx.roundRect(tx,ty,tagW,tagH,3);
-      else ctx.rect(tx,ty,tagW,tagH);
-      ctx.fill();
+      const fs = Math.max(5, Math.round(TW*0.28));
+      ctx.font = `bold ${fs}px "DM Mono",monospace`;
+      const tw = ctx.measureText(name).width;
+      const pad=3, tagW=tw+pad*2, tagH=fs+4;
+      const tx=cx-tagW/2, ty=hy-tagH-3;
+      px(tx, ty, tagW, tagH, isAI ? glowC : '#1e1b4b');
       ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(name,cx-(isDigital?4:0),ty+tagH/2);
+      ctx.fillText(name, cx, ty+tagH/2);
       ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-      if(isDigital){
-        ctx.beginPath(); ctx.arc(tx+tagW-6,ty+tagH/2,2.5,0,Math.PI*2);
-        ctx.fillStyle='#4ade80'; ctx.fill();
+      if(isAI){
+        // green live dot
+        px(tx+tagW-4, ty+tagH/2-1, 2, 2, '#4ade80');
       }
     }
   }
 
-  // ── FURNITURE (back → front) ──
-  const dT='#201a3c', dR='#16122e', dL='#1b1534';
-  const mT='#281e46', mR='#1c163a', mL='#221a40';
+  // ── SCENE: back → front ──
+  const dT=P.deskT, dR=P.deskR, dL=P.deskL;
+  const dh = Math.round(TH*1.2);
 
-  // back row desks (r=0)
-  box(1,0,TH*1.1,dT,dR,dL); monitor(1,0); chair(1,0,'r');
-  box(3,0,TH*1.1,dT,dR,dL); monitor(3,0); chair(3,0,'r');
-  box(5,0,TH*1.1,dT,dR,dL); monitor(5,0); chair(5,0,'r');
-  box(7,0,TH*1.1,dT,dR,dL); monitor(7,0); chair(7,0,'r');
-  // plants in corners
-  plant(0,0); plant(8,0);
-  // mid row desks (r=2)
-  box(0,2,TH*1.1,dT,dR,dL); monitor(0,2); chair(0,2,'r');
-  box(2,2,TH*1.1,dT,dR,dL); monitor(2,2); chair(2,2,'r');
-  box(6,2,TH*1.1,dT,dR,dL); monitor(6,2); chair(6,2,'r');
-  box(8,2,TH*1.1,dT,dR,dL); monitor(8,2); chair(8,2,'r');
-  // meeting table (r=4)
-  box(3,4,TH*0.65,mT,mR,mL);
-  box(4,4,TH*0.65,mT,mR,mL);
-  box(5,4,TH*0.65,mT,mR,mL);
-  // shelf / cabinet (left wall)
-  box(0,1,TH*2.2,'#1a1535','#110e26','#15112e');
-  box(0,3,TH*2.2,'#1a1535','#110e26','#15112e');
+  // Back shelves on left wall
+  box(0,0, TH*2.5, P.shelfT, P.shelfR, P.shelfL);
+  // Shelf books (pixel rectangles on front face)
+  const sx=isoX(0,0), sy=isoY(0,0);
+  px(sx-TW*0.8, sy-TH*2.2, TW*0.18, TH*1.4, P.shelfBookA);
+  px(sx-TW*0.58, sy-TH*2.2, TW*0.18, TH*1.4, P.shelfBookB);
+  px(sx-TW*0.36, sy-TH*2.2, TW*0.18, TH*1.4, P.shelfBookC);
+  px(sx-TW*0.14, sy-TH*2.2, TW*0.16, TH*1.1, P.shelfBookA);
 
-  // ── CHARACTERS ──
-  char(1,1,'#3a5a8a',null,false,null);
-  char(3,1,'#3d5e78',null,false,null);
-  char(5,1,'#4a5e72',null,false,null);
-  char(7,1,'#3a5a8a',null,false,null);
-  char(2,3,'#3d5870',null,false,null);
-  char(6,3,'#445e78',null,false,null);
+  box(0,2, TH*2.5, P.shelfT, P.shelfR, P.shelfL);
+  // Second shelf books
+  const sx2=isoX(0,2), sy2=isoY(0,2);
+  px(sx2-TW*0.8, sy2-TH*2.2, TW*0.18, TH*1.4, P.shelfBookB);
+  px(sx2-TW*0.58, sy2-TH*2.2, TW*0.16, TH*0.9, P.shelfBookC);
+  px(sx2-TW*0.36, sy2-TH*2.2, TW*0.18, TH*1.4, P.shelfBookA);
 
-  // digital agents last (on top)
-  char(0,4,'#7c3aed','Lucía',   true,'#a855f7');
-  char(4,3,'#be185d','Claudia', true,'#e040a0');
+  // Back row desks (r=0)
+  box(2,0,dh,dT,dR,dL); monitor(2,0); chair(2,0);
+  box(4,0,dh,dT,dR,dL); monitor(4,0); chair(4,0);
+  box(6,0,dh,dT,dR,dL); monitor(6,0); chair(6,0);
+
+  // Plants at corners
+  plant(1,0); plant(6,1);
+
+  // Mid row desks (r=2)
+  box(2,2,dh,dT,dR,dL); monitor(2,2); chair(2,2);
+  box(4,2,dh,dT,dR,dL); monitor(4,2); chair(4,2);
+
+  // Plant near meeting area
+  plant(1,3);
+
+  // Front row / meeting desks
+  box(2,4,dh,dT,dR,dL); monitor(2,4); chair(2,4);
+  box(4,4,dh,dT,dR,dL); monitor(4,4); chair(4,4);
+
+  // ── CHARACTERS: human employees ──
+  char(3,1, P.humanB1, P.humanB2, P.humanH, null, false, null);
+  char(5,1, P.humanB1, P.humanB2, P.humanH, null, false, null);
+  char(3,3, P.humanB1, P.humanB2, P.humanH, null, false, null);
+
+  // ── DIGITAL AGENTS (rendered on top) ──
+  char(5,3, P.luciaB,   '#5a28b0', P.humanH, 'Lucía',   true, P.luciaL);
+  char(5,4, P.claudiaB, '#900080', P.humanH, 'Claudia', true, P.claudiaL);
 }
 
 function animCount(id, to, ms) {
