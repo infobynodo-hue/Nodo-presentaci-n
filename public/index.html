@@ -142,6 +142,10 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 .prob-quote-text{font-family:'Syne',sans-serif;font-size:clamp(20px,2.5vw,32px);font-weight:800;line-height:1.25;letter-spacing:-.01em}
 .prob-quote-text em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .prob-quote-sub{font-size:13px;color:var(--tm);line-height:1.7;max-width:500px;margin:14px auto 0}
+.prob-stat{display:inline-flex;align-items:baseline;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:20px;padding:10px 20px;background:rgba(192,38,168,.08);border:1px solid rgba(192,38,168,.2);border-radius:40px}
+.prob-stat-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.prob-stat-txt{font-size:13px;font-weight:600;color:var(--tx)}
+.prob-stat-src{font-size:10px;color:var(--tm);font-family:'DM Mono',monospace;letter-spacing:.05em}
 .ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
 .bac{padding:26px 28px}
 .bab{border-color:rgba(232,68,26,.3)!important;background:rgba(232,68,26,.05)!important}
@@ -639,6 +643,11 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
       <div class="prob-quote-eye">La nueva regla del mercado</div>
       <div class="prob-quote-text">Hoy gana el que primero responde.<br><em>El que más rápido se mueve.</em></div>
       <p class="prob-quote-sub">Los clientes prefieren la eficiencia a esperar. Si no respondes en el momento, alguien más lo hace. No mañana — ahora.</p>
+      <div class="prob-stat">
+        <span class="prob-stat-num">78%</span>
+        <span class="prob-stat-txt">de los clientes compran al primero que responde</span>
+        <span class="prob-stat-src">— Harvard Business Review, 2024</span>
+      </div>
     </div>
     <div class="ba-grid reveal d4">
       <div class="bac bab lg">
