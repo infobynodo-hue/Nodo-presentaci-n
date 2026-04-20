@@ -12,7 +12,7 @@ Ejecuta cada paso en orden. Si alguno falla, informa al usuario y detente.
 
 ### Paso 1 — Extraer datos del cliente y personalizar el HTML
 
-Ejecuta el script desde el directorio del proyecto:
+Calcula el slug (nombre en minúsculas con guiones, sin acentos, ej: "clinica-dental-norte"). Ejecuta el script desde el directorio del proyecto:
 
 ```bash
 cd "/Users/santiagorodriguez/Downloads/NODO presentaciones " && python3 scripts/generar_propuesta.py --nombre "NOMBRE_CLIENTE" --url "URL_CLIENTE" --output-dir /tmp/propuesta-SLUG

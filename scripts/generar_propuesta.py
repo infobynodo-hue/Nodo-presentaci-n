@@ -110,14 +110,14 @@ Responde ÚNICAMENTE con un JSON válido, sin explicaciones, con esta estructura
     "servicio o dato clave 3",
     "horario resumido"
   ],
-  "sys_prompt": "prompt completo del sistema para el agente Claudia. Debe incluir: nombre del negocio y ciudad, servicios disponibles con precios si los hay, horario, teléfono si disponible. Instrucciones de escritura: escribir exactamente como persona real en WhatsApp, natural y cálido, sin asteriscos, sin listas, sin formato markdown. Máximo 2 oraciones por respuesta. Si no sabe algo decir que lo consulta."
+  "sys_prompt": "INSTRUCCIONES: genera el prompt completo siguiendo EXACTAMENTE esta estructura (sustituye los corchetes con datos reales del negocio):\\n\\nEres Claudia, asistente de [NOMBRE NEGOCIO] en [CIUDAD]. Escribes exactamente como una persona real en WhatsApp: natural, cálida, directa. Sin asteriscos, sin listas, sin guiones, sin markdown de ningún tipo.\\n\\nSERVICIOS Y PRECIOS: [lista servicios principales con precios si están disponibles, en lenguaje natural]\\n\\nHORARIO: [horario de atención y dirección si disponible. Indica si solo es atención presencial o también online.]\\n\\nFLUJO DE ATENCIÓN — sigue este proceso natural:\\n1. Si preguntan por un servicio o precio: responde con la info + haz una pregunta para entender mejor su necesidad (para quién es, cuándo, qué busca exactamente).\\n2. Si el cliente muestra interés o hace más preguntas: profundiza y guíale hacia el siguiente paso lógico de este negocio.\\n3. Para agendar, reservar o visitar: pide solo el mínimo necesario — nombre y disponibilidad. En el siguiente mensaje confirma.\\n4. Si el cliente ya dio nombre y disponibilidad: confirma el agendamiento/reserva y di que recibirán confirmación.\\n5. Si preguntan algo fuera del negocio o del sector: explica con amabilidad qué sí puedes hacer y ofrece ayudar con eso.\\n\\nREGLAS IMPORTANTES:\\n- Máximo 2-3 oraciones por mensaje, como WhatsApp real\\n- Sin asteriscos, sin guiones de lista ni ningún formato especial\\n- Si el cliente da info vaga, haz una sola pregunta concreta para avanzar\\n- Siempre termina con el siguiente paso claro: una pregunta, una sugerencia o una confirmación"
 }}
 
 Si no encuentras información suficiente en la web, genera datos plausibles y coherentes con el nombre y sector del negocio."""
 
     payload = json.dumps({
         'model': 'claude-haiku-4-5-20251001',
-        'max_tokens': 1800,
+        'max_tokens': 2400,
         'messages': [{'role': 'user', 'content': prompt}]
     }).encode('utf-8')
 
@@ -156,15 +156,15 @@ def slugify(text):
 
 # ── Personaliza el HTML ──────────────────────────────────────
 def personalizar_html(html, d):
-    nombre      = d['nombre']
+    nombre       = d['nombre']
     nombre_corto = d['nombre_corto']
-    ciudad      = d['ciudad']
-    emoji       = d['emoji']
-    saludo      = d['saludo_inicial']
-    sugs        = d['sugerencias']
-    sugs_full   = d['sugerencias_full']
-    sidebar     = d['sidebar_items']
-    sys_prompt  = d['sys_prompt']
+    ciudad       = d['ciudad']
+    emoji        = d['emoji']
+    saludo       = d['saludo_inicial']
+    sugs         = d['sugerencias']
+    sugs_full    = d['sugerencias_full']
+    sidebar      = d['sidebar_items']
+    sys_prompt   = d['sys_prompt']
 
     # 1 · Título de la página
     html = html.replace(
@@ -209,10 +209,10 @@ def personalizar_html(html, d):
     )
     html = html.replace(old_suggs, new_suggs)
 
-    # 7 · Sidebar card del cliente
+    # 7 · Sidebar card del cliente (con clase lg)
     old_sidebar = (
         '        <div id="si-clinica">\n'
-        '          <div class="dscard"><div class="dscard-t">🦷 Clínica Palacios</div>\n'
+        '          <div class="dscard lg"><div class="dscard-t">🦷 Clínica Palacios</div>\n'
         '            <div class="dscard-i">Bogotá, Colombia</div>\n'
         '            <div class="dscard-i">Limpiezas · Blanqueamiento</div>\n'
         '            <div class="dscard-i">Ortodoncia metálica e invisible</div>\n'
@@ -226,7 +226,7 @@ def personalizar_html(html, d):
     )
     new_sidebar = (
         f'        <div id="si-clinica">\n'
-        f'          <div class="dscard"><div class="dscard-t">{emoji} {nombre}</div>\n'
+        f'          <div class="dscard lg"><div class="dscard-t">{emoji} {nombre}</div>\n'
         f'            <div class="dscard-i">{ciudad}</div>\n'
         f'{new_sidebar_items}\n'
         f'          </div>\n'
@@ -234,16 +234,19 @@ def personalizar_html(html, d):
     )
     html = html.replace(old_sidebar, new_sidebar)
 
-    # 8 · System prompt del agente
-    old_sys_start = "  clinica: {\n    msgs: [],\n    sys: `Eres Claudia, asistente de Clínica Palacios en Bogotá."
-    if old_sys_start in html:
-        sys_block_pattern = r"(  clinica: \{\n    msgs: \[\],\n    sys: `)([^`]+)(`\n  \})"
-        html = re.sub(
-            sys_block_pattern,
-            lambda m: m.group(1) + sys_prompt + m.group(3),
-            html,
-            count=1
-        )
+    # 8 · System prompt del agente — reemplazo robusto sin regex
+    start_marker = "  clinica: {\n    msgs: [],\n    sys: `"
+    end_marker   = "`\n  },"
+    start_idx = html.find(start_marker)
+    if start_idx != -1:
+        content_start = start_idx + len(start_marker)
+        end_idx = html.find(end_marker, content_start)
+        if end_idx != -1:
+            html = html[:content_start] + sys_prompt + html[end_idx:]
+        else:
+            print('⚠  No se encontró el cierre del sys prompt — se omite el reemplazo', file=sys.stderr)
+    else:
+        print('⚠  No se encontró el bloque clinica sys — se omite el reemplazo', file=sys.stderr)
 
     # 9 · Eliminar tabs de inmobiliaria y lujo — dejar solo el del cliente
     html = html.replace(
@@ -256,13 +259,11 @@ def personalizar_html(html, d):
     )
 
     # 10 · Eliminar paneles de chat de inmobiliaria y lujo
-    # Panel inmobiliaria
     html = re.sub(
         r'\n\s+<!-- Panel Inmobiliaria -->.*?</div>\n      </div>\n\n      <!-- Panel Lujo -->',
         '\n\n      <!-- Panel Lujo -->',
         html, count=1, flags=re.DOTALL
     )
-    # Panel lujo
     html = re.sub(
         r'\n\s+<!-- Panel Lujo -->.*?</div>\n      </div>\n\n      <!-- Sidebar',
         '\n\n      <!-- Sidebar',
