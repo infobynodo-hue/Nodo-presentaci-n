@@ -110,8 +110,8 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 /* ── S0 HERO ── */
 #s0{flex-direction:column;text-align:center}
 .hero-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;max-width:800px;padding:0 40px}
-.hero-clock{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--tm);margin-bottom:40px;opacity:0;animation:fadeUp .6s ease .5s both}
-.hero-msg-wrap{margin-bottom:32px;opacity:0;animation:fadeUp .7s ease 1.4s both}
+.hero-clock{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--tm);margin-bottom:10px}
+.hero-msg-wrap{margin-bottom:32px;opacity:0;animation:fadeUp .7s ease .5s both}
 .hero-wamsg{display:inline-flex;align-items:center;gap:12px;background:var(--s);border:1px solid var(--bo);border-radius:18px 18px 4px 18px;padding:12px 18px;font-size:14px;color:var(--tm)}
 .hero-wamsg-dot{width:8px;height:8px;border-radius:50%;background:var(--g2);flex-shrink:0}
 .hero-typing{display:inline-flex;align-items:center;gap:4px;padding:10px 16px;background:var(--s2);border:1px solid var(--bo);border-radius:4px 18px 18px 18px;margin-top:6px;opacity:0;animation:fadeUp .4s ease 2.4s both}
@@ -551,18 +551,18 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
   <div class="glow" style="width:600px;height:600px;top:-200px;right:-100px;background:radial-gradient(circle,rgba(192,38,168,.15) 0%,transparent 70%)"></div>
   <div class="glow" style="width:400px;height:400px;bottom:-100px;left:-50px;background:radial-gradient(circle,rgba(139,34,232,.1) 0%,transparent 70%)"></div>
   <div class="hero-inner">
-    <div class="hero-clock">🕐 &nbsp;03:22 AM &nbsp;— &nbsp;tu negocio</div>
     <div class="hero-msg-wrap">
+      <div class="hero-clock">🕐 &nbsp;03:22 AM &nbsp;— &nbsp;tu negocio</div>
       <div class="hero-wamsg"><div class="hero-wamsg-dot"></div><span>Hola, ¿tienen disponibilidad para mañana? Necesito info sobre precios 👋</span></div>
       <div style="display:flex;padding-left:12px;margin-top:6px">
         <div class="hero-typing"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>
       </div>
     </div>
     <div class="hero-no-resp">Sin respuesta.</div>
-    <div class="hero-gone">Este cliente esperó 6 horas. Luego le escribió a tu competencia.</div>
+    <div class="hero-gone">Este cliente no va a esperarte 6 horas. Le escribió, te comparó con tu competencia y se quedó con el que primero respondió.</div>
     <div class="hero-counter-wrap">
       <div class="hero-counter-num" id="heroCounter">40%</div>
-      <div class="hero-counter-label">de las consultas llegan fuera del horario laboral — sin respuesta</div>
+      <div class="hero-counter-label">de las consultas llegan fuera del horario laboral — y tu negocio no les responde.</div>
     </div>
     <div class="hero-logo-wrap">
       <div class="hero-logo">NODO One · BPO Digital</div>
