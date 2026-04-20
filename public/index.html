@@ -294,18 +294,20 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 .of-itype{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1px}
 .of-item.pk .of-itype{color:var(--pk-l)}.of-item.vio .of-itype{color:var(--vio-l)}.of-item.g .of-itype{color:var(--g2)}
 
-/* ── S5 OFICINA ISOMÉTRICA ── */
-.office-scene{overflow:hidden;margin-bottom:18px}
-#officeCanvas{width:100%;height:auto;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
-.office-legend{display:flex;gap:22px;padding:10px 20px;border-top:1px solid var(--bo);flex-wrap:wrap}
-.leg-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--tm);font-family:'DM Mono',monospace;letter-spacing:.06em}
-.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+/* ── S5 PORTAL PREVIEW ── */
+.portal-wrap{margin-bottom:20px;overflow:hidden;border-radius:18px}
+.portal-bar{display:flex;align-items:center;gap:10px;padding:11px 18px;background:rgba(255,255,255,.7);border-bottom:1px solid var(--bo)}
+.portal-bar-dot{width:10px;height:10px;border-radius:50%;background:#f5a623;box-shadow:0 0 6px rgba(245,166,35,.5)}
+.portal-bar-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#92600a;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);padding:3px 10px;border-radius:100px}
+.portal-bar-url{margin-left:auto;font-family:'DM Mono',monospace;font-size:10px;color:var(--td)}
+.portal-iframe{width:100%;height:580px;border:none;display:block;background:#f8f7ff}
 .hybrid-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .hyb{padding:20px;transition:transform .4s cubic-bezier(.175,.885,.32,1.5),box-shadow .3s}
 .hyb:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.35),0 0 16px rgba(192,38,168,.12),inset 0 1.5px 0 0 rgba(255,255,255,.35)!important}
 .hyb-icon{font-size:20px;margin-bottom:9px}
 .hyb-t{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--pk-l);margin-bottom:5px}
 .hyb-d{font-size:12px;color:var(--tm);line-height:1.6}
+.hyb-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:6px}
 
 /* ── S6 CTA ── */
 #s6{flex-direction:column;text-align:center}
@@ -840,21 +842,36 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 <section id="s5">
   <div class="bg-grid"></div>
   <div class="s-inner">
-    <div class="s-label reveal">05 · El equipo que necesitas en 2026</div>
-    <h2 class="s-title reveal d1">Los negocios que más crecerán son <span class="grad-text">los híbridos</span></h2>
-    <p class="s-sub reveal d2">Empleados humanos + empleados digitales trabajando juntos. NODO instala ese equipo digital dentro de tu negocio.</p>
-    <div class="office-scene lg reveal d3">
-      <canvas id="officeCanvas"></canvas>
-      <div class="office-legend">
-        <div class="leg-item"><div class="leg-dot" style="background:#4a6fa5"></div><span>Empleado humano</span></div>
-        <div class="leg-item"><div class="leg-dot" style="background:#e040a0;box-shadow:0 0 7px rgba(224,64,160,.7)"></div><span>Claudia · IA WhatsApp</span></div>
-        <div class="leg-item"><div class="leg-dot" style="background:#a855f7;box-shadow:0 0 7px rgba(168,85,247,.7)"></div><span>Lucía · IA Voz</span></div>
+    <div class="s-label reveal">05 · Tu panel de control en tiempo real</div>
+    <h2 class="s-title reveal d1">Sabes exactamente qué pasa. <span class="grad-text">En tiempo real.</span></h2>
+    <p class="s-sub reveal d2">Cada conversación registrada. Cada resolución. Cada alerta. NODO te da visibilidad total — datos que antes no existían en tu negocio.</p>
+    <div class="lg portal-wrap reveal d3">
+      <div class="portal-bar">
+        <div class="portal-bar-dot"></div>
+        <div class="portal-bar-lbl">Vista previa del portal de cliente</div>
+        <div class="portal-bar-url">nodo-os · Métricas del agente</div>
       </div>
+      <iframe class="portal-iframe" src="portal-preview.html" title="Portal NODO · Métricas del agente" loading="lazy" scrolling="yes"></iframe>
     </div>
     <div class="hybrid-row reveal d4">
-      <div class="hyb lg"><div class="hyb-icon">🔄</div><div class="hyb-t">Sin fricción operativa</div><div class="hyb-d">Los agentes digitales trabajan en paralelo al equipo humano sin interrumpir la operación existente.</div></div>
-      <div class="hyb lg"><div class="hyb-icon">📈</div><div class="hyb-t">Escala sin contratar</div><div class="hyb-d">El volumen puede multiplicarse por 10 sin una sola contratación nueva ni coste fijo adicional.</div></div>
-      <div class="hyb lg"><div class="hyb-icon">👁</div><div class="hyb-t">Tú tienes el control</div><div class="hyb-d">Cada conversación, cada cita, cada venta — visible y trazable para el negocio en todo momento.</div></div>
+      <div class="hyb lg">
+        <div class="hyb-num">5.847</div>
+        <div class="hyb-icon">💬</div>
+        <div class="hyb-t">Conversaciones en un mes</div>
+        <div class="hyb-d">Tu agente gestiona miles de conversaciones simultáneas sin perder una sola — 24 horas al día, 7 días a la semana.</div>
+      </div>
+      <div class="hyb lg">
+        <div class="hyb-num">55%</div>
+        <div class="hyb-icon">🌙</div>
+        <div class="hyb-t">Fuera de horario laboral</div>
+        <div class="hyb-d">Más de la mitad de tus clientes contactan cuando tu negocio está cerrado. NODO responde en menos de 37 segundos.</div>
+      </div>
+      <div class="hyb lg">
+        <div class="hyb-num">92%</div>
+        <div class="hyb-icon">✅</div>
+        <div class="hyb-t">Resuelto sin intervención</div>
+        <div class="hyb-d">El agente gestiona autónomamente casi todas las conversaciones. Tu equipo solo interviene cuando es realmente necesario.</div>
+      </div>
     </div>
   </div>
 </section>
