@@ -90,6 +90,9 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 .modal-select{background:var(--s2);border:1px solid var(--bo);border-radius:10px;padding:13px 10px;font-size:16px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;transition:border-color .2s;flex-shrink:0;-webkit-appearance:none;appearance:none;text-align:center;min-width:90px}
 .modal-select:focus{border-color:rgba(192,38,168,.5);background:var(--bg)}
 .phone-num{flex:1}
+.phone-hint{font-family:'DM Mono',monospace;font-size:10px;color:var(--td);margin-top:5px;letter-spacing:.04em;transition:color .2s}
+.phone-hint.ok{color:#25a35a}
+.phone-hint.bad{color:#f07050}
 
 /* ── BG ── */
 .bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(99,102,241,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.07) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
@@ -561,16 +564,22 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
     <div class="modal-field">
       <label class="modal-label">Teléfono / WhatsApp</label>
       <div class="phone-row">
-        <select class="modal-select" id="leadPais">
-          <option value="+57">🇨🇴 +57</option>
-          <option value="+52">🇲🇽 +52</option>
-          <option value="+58">🇻🇪 +58</option>
-          <option value="+34">🇪🇸 +34</option>
-          <option value="+1">🇺🇸 +1</option>
-          <option value="+44">🇬🇧 +44</option>
+        <select class="modal-select" id="leadPais" onchange="updatePhoneField()">
+          <option value="+57" data-digits="10" data-ph="300 123 4567" data-name="Colombia">🇨🇴 +57</option>
+          <option value="+52" data-digits="10" data-ph="55 1234 5678" data-name="México">🇲🇽 +52</option>
+          <option value="+58" data-digits="10" data-ph="414 123 4567" data-name="Venezuela">🇻🇪 +58</option>
+          <option value="+54" data-digits="10" data-ph="11 1234 5678" data-name="Argentina">🇦🇷 +54</option>
+          <option value="+56" data-digits="9"  data-ph="9 1234 5678"  data-name="Chile">🇨🇱 +56</option>
+          <option value="+51" data-digits="9"  data-ph="987 654 321"  data-name="Perú">🇵🇪 +51</option>
+          <option value="+34" data-digits="9"  data-ph="612 345 678"  data-name="España">🇪🇸 +34</option>
+          <option value="+1"  data-digits="10" data-ph="305 123 4567" data-name="EE.UU.">🇺🇸 +1</option>
+          <option value="+44" data-digits="10" data-ph="7911 123456"  data-name="R. Unido">🇬🇧 +44</option>
         </select>
-        <input type="tel" class="modal-input phone-num" id="leadTelefono" placeholder="612 345 678" autocomplete="tel-national" onkeydown="if(event.key==='Enter')submitLead()">
+        <input type="tel" inputmode="numeric" class="modal-input phone-num" id="leadTelefono"
+          placeholder="300 123 4567" autocomplete="tel-national"
+          oninput="sanitizePhone(this)" onkeydown="if(event.key==='Enter')submitLead()">
       </div>
+      <div class="phone-hint" id="phoneHint">Colombia · 10 dígitos</div>
     </div>
     <div class="modal-field">
       <label class="modal-label">Empresa <span style="color:var(--td)">(opcional)</span></label>
@@ -1194,16 +1203,70 @@ window.addEventListener('load', () => {
   });
 });
 
+// ── Phone validation helpers ─────────────────────────────────
+function _phoneRule() {
+  const opt = document.getElementById('leadPais').selectedOptions[0];
+  return { digits: parseInt(opt.dataset.digits||10), name: opt.dataset.name||'', ph: opt.dataset.ph||'' };
+}
+function updatePhoneField() {
+  const rule = _phoneRule();
+  const inp  = document.getElementById('leadTelefono');
+  const hint = document.getElementById('phoneHint');
+  inp.placeholder = rule.ph;
+  inp.value = '';
+  hint.textContent = rule.name + ' · ' + rule.digits + ' dígitos';
+  hint.className = 'phone-hint';
+}
+function sanitizePhone(el) {
+  const rule  = _phoneRule();
+  const hint  = document.getElementById('phoneHint');
+  // Strip anything that's not a digit or space
+  let val = el.value.replace(/[^\d\s]/g, '');
+  // Count only digits
+  const digits = val.replace(/\D/g,'');
+  // Hard-cap digits (allow spaces in display)
+  if (digits.length > rule.digits) {
+    // Trim excess digits from the end
+    let count = 0;
+    val = val.split('').filter(c => {
+      if (/\d/.test(c)) { if (count < rule.digits) { count++; return true; } return false; }
+      return count < rule.digits; // keep spaces only before cap
+    }).join('');
+  }
+  el.value = val;
+  const n = val.replace(/\D/g,'').length;
+  const left = rule.digits - n;
+  if (n === 0) {
+    hint.textContent = rule.name + ' · ' + rule.digits + ' dígitos';
+    hint.className = 'phone-hint';
+  } else if (n < rule.digits) {
+    hint.textContent = 'Faltan ' + left + ' dígito' + (left===1?'':'s');
+    hint.className = 'phone-hint bad';
+  } else {
+    hint.textContent = '✓ Número completo';
+    hint.className = 'phone-hint ok';
+  }
+}
+// ─────────────────────────────────────────────────────────────
+
 async function submitLead() {
   const nombre   = document.getElementById('leadNombre').value.trim();
   const pais     = document.getElementById('leadPais').value;
   const numRaw   = document.getElementById('leadTelefono').value.trim().replace(/\s+/g,'');
+  const digits   = numRaw.replace(/\D/g,'');
+  const rule     = _phoneRule();
   const telefono = numRaw ? `${pais} ${numRaw}` : '';
   const empresa  = document.getElementById('leadEmpresa').value.trim();
   const errEl    = document.getElementById('leadErr');
   const btn      = document.getElementById('leadBtn');
 
-  if (!nombre || !telefono) {
+  if (!nombre || !digits) {
+    errEl.textContent = '⚠ Por favor completa tu nombre y teléfono.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (digits.length !== rule.digits) {
+    errEl.textContent = `⚠ El número de ${rule.name} debe tener ${rule.digits} dígitos (llevas ${digits.length}).`;
     errEl.style.display = 'block';
     return;
   }
