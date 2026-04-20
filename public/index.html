@@ -296,7 +296,7 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 
 /* ── S5 OFICINA ISOMÉTRICA ── */
 .office-scene{overflow:hidden;margin-bottom:18px}
-#officeCanvas{width:100%;display:block;max-height:340px;image-rendering:pixelated;image-rendering:crisp-edges}
+#officeCanvas{width:100%;height:auto;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
 .office-legend{display:flex;gap:22px;padding:10px 20px;border-top:1px solid var(--bo);flex-wrap:wrap}
 .leg-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--tm);font-family:'DM Mono',monospace;letter-spacing:.06em}
 .leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
@@ -397,6 +397,69 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
   .intel-grid{grid-template-columns:1fr}
   .met-row{grid-template-columns:1fr}
 }
+
+/* ── S6 ROI CALCULATOR ── */
+#s6{align-items:flex-start;padding:100px 60px 80px;min-height:auto}
+.roi-controls{padding:26px 30px;margin-bottom:24px}
+.roi-ctrl-row{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:22px}
+.roi-ctrl-row:last-child{margin-bottom:0}
+.roi-ctrl-block{flex:1;min-width:200px}
+.roi-ctrl-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--tm);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.roi-ctrl-lbl span{font-size:14px;font-weight:600;color:var(--pk2);letter-spacing:0;text-transform:none;font-family:'Syne',sans-serif}
+.roi-tgl{display:flex;gap:6px;flex-wrap:wrap}
+.roi-tgl-btn{padding:7px 18px;border-radius:100px;border:1.5px solid var(--bo);background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--td);cursor:pointer;transition:all .2s}
+.roi-tgl-btn.active{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(192,38,168,.3)}
+.roi-slider{width:100%;-webkit-appearance:none;height:5px;border-radius:4px;background:linear-gradient(90deg,var(--pk),var(--vio));outline:none;cursor:pointer}
+.roi-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:2.5px solid var(--pk);box-shadow:0 2px 10px rgba(192,38,168,.3);cursor:pointer;transition:transform .15s}
+.roi-slider::-webkit-slider-thumb:hover{transform:scale(1.2)}
+.roi-slider-hint{display:flex;justify-content:space-between;font-size:10px;color:var(--td);margin-top:5px}
+.roi-ticket-wrap{display:flex;align-items:center;border:1.5px solid var(--bo);border-radius:12px;background:rgba(255,255,255,.5);overflow:hidden;transition:border-color .2s}
+.roi-ticket-wrap:focus-within{border-color:var(--pk)}
+.roi-ticket-sym{padding:11px 13px;font-family:'DM Mono',monospace;font-size:15px;font-weight:500;color:var(--pk2);background:rgba(192,38,168,.06);border-right:1px solid var(--bo)}
+.roi-ticket-inp{border:none;background:transparent;padding:11px 14px;font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--t);width:100%;outline:none}
+.roi-compare{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
+.roi-col{padding:24px 26px}
+.roi-col-hot{border:1.5px solid rgba(192,38,168,.35)!important;background:linear-gradient(135deg,rgba(192,38,168,.09) 0%,rgba(124,58,237,.07) 100%)!important}
+.roi-col-hot::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;background:linear-gradient(155deg,rgba(255,255,255,.4) 0%,rgba(255,255,255,.04) 40%,transparent 100%)}
+.roi-col-hot>*{position:relative;z-index:1}
+.roi-col-hdr{display:flex;align-items:center;gap:9px;margin-bottom:20px}
+.roi-col-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.roi-col-tag{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;line-height:1.2}
+.roi-col-tag small{display:block;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--td);margin-top:1px}
+.roi-plan-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--pk2);background:rgba(192,38,168,.08);border:1px solid rgba(192,38,168,.2);padding:3px 11px;border-radius:100px;margin-bottom:14px}
+.roi-stat{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(99,102,241,.1)}
+.roi-stat:last-of-type{border-bottom:none}
+.roi-stat-n{font-size:12px;color:var(--td)}
+.roi-stat-v{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--t);text-align:right}
+.roi-stat-v.muted{color:#94a3b8}
+.roi-stat-v.red{color:var(--r)}
+.roi-stat-v.green{color:var(--g2)}
+.roi-stat-v.hot{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.roi-badge-gray{display:inline-flex;align-items:center;font-family:'DM Mono',monospace;font-size:11px;padding:2px 9px;border-radius:100px;background:rgba(148,163,184,.15);color:#64748b}
+.roi-badge-pink{display:inline-flex;align-items:center;font-family:'DM Mono',monospace;font-size:11px;padding:2px 9px;border-radius:100px;background:rgba(192,38,168,.1);color:var(--pk2)}
+.roi-big{text-align:center;padding:18px 0 6px;border-top:1px solid rgba(99,102,241,.12);margin-top:14px}
+.roi-big-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--td);margin-bottom:3px}
+.roi-big-num{font-family:'Syne',sans-serif;font-size:clamp(36px,5vw,58px);font-weight:800;line-height:1;transition:all .3s}
+.roi-big-sub{font-size:11px;color:var(--td);margin-top:3px}
+.roi-stmt{padding:26px 30px;text-align:center;margin-bottom:18px}
+.roi-stmt-icon{font-size:26px;margin-bottom:10px}
+.roi-stmt-main{font-family:'Syne',sans-serif;font-size:clamp(16px,2vw,21px);font-weight:700;color:var(--t);line-height:1.4;margin-bottom:7px}
+.roi-stmt-sub{font-size:13px;color:var(--td);line-height:1.65}
+.roi-be-track{height:7px;background:rgba(99,102,241,.1);border-radius:100px;overflow:hidden;margin:16px 8px 6px}
+.roi-be-fill{height:100%;background:var(--grad);border-radius:100px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.roi-be-lbls{display:flex;justify-content:space-between;font-size:10px;color:var(--td);padding:0 8px}
+.roi-sources{text-align:center;font-size:10px;color:#a0aec0;line-height:1.9;margin-top:6px}
+.roi-sources strong{color:var(--td)}
+@keyframes roiPop{0%{transform:scale(.9)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+.roi-pop{animation:roiPop .3s ease}
+@media(max-width:860px){
+  .roi-compare{grid-template-columns:1fr}
+  .roi-ctrl-row{flex-direction:column;gap:18px}
+  #s6{padding:80px 24px 60px}
+  .roi-controls{padding:20px}
+  .roi-col{padding:20px}
+  .roi-stmt{padding:20px}
+}
 </style>
 </head>
 <body>
@@ -466,7 +529,8 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
   <div class="snav-dot" data-section="3" data-label="Demo en Vivo"></div>
   <div class="snav-dot" data-section="4" data-label="Lo que Obtienes"></div>
   <div class="snav-dot" data-section="5" data-label="Oficina Digital"></div>
-  <div class="snav-dot" data-section="6" data-label="Agenda tu Llamada"></div>
+  <div class="snav-dot" data-section="6" data-label="ROI · Tu Retorno"></div>
+  <div class="snav-dot" data-section="7" data-label="Agenda tu Llamada"></div>
 </nav>
 
 <!-- ════════════════════════════════
@@ -796,9 +860,119 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 </section>
 
 <!-- ════════════════════════════════
-     S6: CTA
+     S6: ROI CALCULATOR
 ════════════════════════════════ -->
 <section id="s6">
+  <div class="bg-grid"></div>
+  <div class="glow" style="width:600px;height:600px;top:10%;right:-100px;background:radial-gradient(circle,rgba(192,38,168,.1) 0%,transparent 70%)"></div>
+  <div class="s-inner">
+    <div class="s-label reveal">06 · Retorno de inversión</div>
+    <h2 class="s-title reveal d1">¿Cuánto estás dejando de ganar <span class="grad-text">cada mes?</span></h2>
+    <p class="s-sub reveal d2">Introduce los datos de tu negocio y ve en tiempo real la diferencia entre responder tarde y responder en segundos.</p>
+
+    <!-- CONTROLS -->
+    <div class="lg roi-controls reveal d3">
+      <div class="roi-ctrl-row">
+        <div class="roi-ctrl-block" style="flex:0;min-width:unset">
+          <div class="roi-ctrl-lbl">Moneda</div>
+          <div class="roi-tgl">
+            <button class="roi-tgl-btn active" id="roi-btn-usd" onclick="roiSetCurrency('usd')">$ USD</button>
+            <button class="roi-tgl-btn" id="roi-btn-eur" onclick="roiSetCurrency('eur')">€ EUR</button>
+          </div>
+        </div>
+        <div class="roi-ctrl-block">
+          <div class="roi-ctrl-lbl">Plan NODO</div>
+          <div class="roi-tgl">
+            <button class="roi-tgl-btn active" id="roi-btn-anual" onclick="roiSetPlan('anual')">
+              Claudia · Anual <span id="roi-lbl-anual" style="opacity:.65;font-size:11px;font-family:'DM Mono',monospace">($789/mes)</span>
+            </button>
+            <button class="roi-tgl-btn" id="roi-btn-semestral" onclick="roiSetPlan('semestral')">
+              Semestral <span id="roi-lbl-semestral" style="opacity:.65;font-size:11px;font-family:'DM Mono',monospace">($1,116/mes)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="roi-ctrl-row">
+        <div class="roi-ctrl-block">
+          <div class="roi-ctrl-lbl">Chats perdidos / semana <span id="roi-val-chats">30</span></div>
+          <input type="range" class="roi-slider" id="roi-slider" min="5" max="150" value="30" oninput="roiUpdateChats(this.value)">
+          <div class="roi-slider-hint"><span>5</span><span>fuera de horario</span><span>150</span></div>
+        </div>
+        <div class="roi-ctrl-block">
+          <div class="roi-ctrl-lbl">Ticket medio por cliente</div>
+          <div class="roi-ticket-wrap">
+            <div class="roi-ticket-sym" id="roi-sym">$</div>
+            <input type="number" class="roi-ticket-inp" id="roi-ticket" value="300" min="10" max="99999" oninput="roiCalc()" onchange="roiCalc()">
+          </div>
+        </div>
+      </div>
+    </div><!-- /controls -->
+
+    <!-- COMPARISON -->
+    <div class="roi-compare reveal d4">
+
+      <!-- SIN NODO -->
+      <div class="lg roi-col">
+        <div class="roi-col-hdr">
+          <div class="roi-col-dot" style="background:#94a3b8"></div>
+          <div class="roi-col-tag">Sin NODO<small>Respuesta promedio: 47 horas</small></div>
+        </div>
+        <div class="roi-stat"><span class="roi-stat-n">Chats / mes</span><span class="roi-stat-v muted" id="roi-sin-chats">120</span></div>
+        <div class="roi-stat"><span class="roi-stat-n">Tasa de cierre</span><span class="roi-badge-gray">3% · promedio mercado</span></div>
+        <div class="roi-stat"><span class="roi-stat-n">Clientes cerrados / mes</span><span class="roi-stat-v red" id="roi-sin-cli">4</span></div>
+        <div class="roi-stat"><span class="roi-stat-n">Ingresos recuperados</span><span class="roi-stat-v red" id="roi-sin-ing">$1,200</span></div>
+        <div class="roi-stat"><span class="roi-stat-n">Inversión NODO</span><span class="roi-stat-v muted">—</span></div>
+        <div class="roi-stat"><span class="roi-stat-n">Beneficio neto</span><span class="roi-stat-v muted" id="roi-sin-neto">$1,200</span></div>
+        <div class="roi-big">
+          <div class="roi-big-lbl">Lo que pierdes al mes</div>
+          <div class="roi-big-num" style="background:linear-gradient(135deg,#dc2626,#f97316);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent" id="roi-sin-perdida">–$4,200</div>
+          <div class="roi-big-sub">vs potencial con NODO</div>
+        </div>
+      </div>
+
+      <!-- CON NODO -->
+      <div class="lg roi-col roi-col-hot">
+        <div class="roi-col-hdr">
+          <div class="roi-col-dot" style="background:linear-gradient(135deg,#c026a8,#7c3aed)"></div>
+          <div class="roi-col-tag">Con NODO<small>Respuesta en &lt; 45 segundos · 24/7</small></div>
+        </div>
+        <div class="roi-plan-badge" id="roi-plan-badge">⚡ Claudia · Contrato anual</div>
+        <div class="roi-stat"><span class="roi-stat-n">Chats / mes</span><span class="roi-stat-v" id="roi-con-chats">120</span></div>
+        <div class="roi-stat"><span class="roi-stat-n">Tasa de cierre</span><span class="roi-badge-pink">15% · respuesta inmediata ★</span></div>
+        <div class="roi-stat"><span class="roi-stat-n">Clientes cerrados / mes</span><span class="roi-stat-v hot" id="roi-con-cli">18</span></div>
+        <div class="roi-stat"><span class="roi-stat-n">Ingresos recuperados</span><span class="roi-stat-v hot" id="roi-con-ing">$5,400</span></div>
+        <div class="roi-stat"><span class="roi-stat-n">Inversión NODO</span><span class="roi-stat-v" id="roi-con-precio">$789/mes</span></div>
+        <div class="roi-stat" style="border-bottom:none"><span class="roi-stat-n" style="font-weight:600;color:var(--t)">Beneficio neto</span><span class="roi-stat-v green" id="roi-con-neto">$4,611</span></div>
+        <div class="roi-big">
+          <div class="roi-big-lbl">Retorno sobre inversión</div>
+          <div class="roi-big-num grad-text" id="roi-num">6.8x</div>
+          <div class="roi-big-sub">por cada <span id="roi-sym2">$</span>1 invertido en NODO</div>
+        </div>
+      </div>
+
+    </div><!-- /compare -->
+
+    <!-- STATEMENT -->
+    <div class="lg roi-stmt reveal d5">
+      <div class="roi-stmt-icon">🎯</div>
+      <div class="roi-stmt-main" id="roi-stmt-main">Con solo <strong id="roi-be-n">3 clientes</strong> ya recuperas la inversión — el resto es tuyo.</div>
+      <div class="roi-stmt-sub" id="roi-stmt-sub">De los <strong id="roi-con-cli2">18 clientes</strong> que cerrarías con NODO, solo necesitas <strong id="roi-be-n2">3</strong> para cubrir el plan. Los <strong id="roi-extra">15</strong> restantes son beneficio puro.</div>
+      <div class="roi-be-track"><div class="roi-be-fill" id="roi-be-fill" style="width:17%"></div></div>
+      <div class="roi-be-lbls"><span>0 clientes</span><span id="roi-be-mid">Break-even: 3 clientes</span><span id="roi-be-end">18 cerrados</span></div>
+    </div>
+
+    <div class="roi-sources reveal">
+      <strong>Fuentes:</strong> MIT Lead Response Management Study · Harvard Business Review · Meta Business Messaging Report · Forrester Research<br>
+      Sin respuesta inmediata: <strong>3%</strong> de cierre (promedio mercado). Con respuesta en &lt;45 seg: <strong>15%</strong> (conservadora — rango real: 8–28%).
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S7: CTA
+════════════════════════════════ -->
+<section id="s7">
   <div class="bg-grid"></div>
   <div class="glow" style="width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(192,38,168,.12) 0%,transparent 70%)"></div>
   <div class="cta-inner">
@@ -890,7 +1064,7 @@ async function updateDemoVisto(agentKey) {
 }
 
 /* ── NAVIGATION ── */
-const SECS = ['s0','s1','s2','s3','s4','s5','s6'];
+const SECS = ['s0','s1','s2','s3','s4','s5','s6','s7'];
 let cur = 0;
 function goTo(i) {
   document.getElementById(SECS[i])?.scrollIntoView({behavior:'smooth'});
@@ -1375,6 +1549,110 @@ function animCount(id, to, ms) {
   const steps=40, inc=to/steps, iv=ms/steps; let n=0,s=0;
   const t=setInterval(()=>{ s++; n=Math.min(inc*s,to); el.textContent=Math.round(n); if(s>=steps) clearInterval(t); }, iv);
 }
+
+/* ── ROI CALCULATOR ── */
+(function(){
+  const PRICES = {
+    usd:{ anual:789, semestral:1116 },
+    eur:{ anual:710, semestral:1004 }
+  };
+  const PLAN_LBLS = {
+    usd:{ anual:'$789/mes', semestral:'$1,116/mes' },
+    eur:{ anual:'€710/mes', semestral:'€1,004/mes' }
+  };
+  const PLAN_BADGES = {
+    anual:'⚡ Claudia · Contrato anual',
+    semestral:'⚡ Plan · Contrato semestral'
+  };
+  let currency='usd', plan='anual';
+
+  function fmt(n){
+    const s=currency==='usd'?'$':'€';
+    return s+new Intl.NumberFormat('en-US').format(Math.round(n));
+  }
+  function setEl(id,v){
+    const el=document.getElementById(id);
+    if(!el||el.textContent===v) return;
+    el.textContent=v;
+    el.classList.remove('roi-pop'); void el.offsetWidth; el.classList.add('roi-pop');
+  }
+
+  window.roiSetCurrency=function(c){
+    currency=c;
+    ['usd','eur'].forEach(x=>document.getElementById('roi-btn-'+x)?.classList.toggle('active',x===c));
+    document.getElementById('roi-sym').textContent=c==='usd'?'$':'€';
+    document.getElementById('roi-sym2').textContent=c==='usd'?'$':'€';
+    roiUpdateLabels(); roiCalc();
+  };
+  window.roiSetPlan=function(p){
+    plan=p;
+    ['anual','semestral'].forEach(x=>document.getElementById('roi-btn-'+x)?.classList.toggle('active',x===p));
+    roiUpdateLabels(); roiCalc();
+  };
+  window.roiUpdateChats=function(v){
+    setEl('roi-val-chats',v); roiCalc();
+  };
+
+  function roiUpdateLabels(){
+    document.getElementById('roi-lbl-anual').textContent='('+PLAN_LBLS[currency].anual+')';
+    document.getElementById('roi-lbl-semestral').textContent='('+PLAN_LBLS[currency].semestral+')';
+    document.getElementById('roi-plan-badge').textContent=PLAN_BADGES[plan];
+    document.getElementById('roi-con-precio').textContent=PLAN_LBLS[currency][plan];
+  }
+
+  window.roiCalc=function(){
+    const chatsW=parseInt(document.getElementById('roi-slider')?.value)||30;
+    const ticket=parseFloat(document.getElementById('roi-ticket')?.value)||300;
+    const precio=PRICES[currency][plan];
+    const chatsM=chatsW*4;
+    const sinCli=Math.round(chatsM*0.03);
+    const sinIng=sinCli*ticket;
+    const conCli=Math.round(chatsM*0.15);
+    const conIng=conCli*ticket;
+    const neto=conIng-precio;
+    const roi=conIng/precio;
+    const perdida=conIng-sinIng;
+    const be=Math.ceil(precio/ticket);
+    const beClamp=Math.min(be,conCli);
+    const extra=Math.max(conCli-beClamp,0);
+    const bePct=conCli>0?Math.min((beClamp/conCli)*100,100):0;
+
+    setEl('roi-sin-chats', chatsM.toLocaleString('en-US'));
+    setEl('roi-sin-cli',   sinCli.toLocaleString('en-US'));
+    setEl('roi-sin-ing',   fmt(sinIng));
+    setEl('roi-sin-neto',  fmt(sinIng));
+    setEl('roi-sin-perdida','–'+fmt(perdida));
+    setEl('roi-con-chats', chatsM.toLocaleString('en-US'));
+    setEl('roi-con-cli',   conCli.toLocaleString('en-US'));
+    setEl('roi-con-cli2',  conCli+' '+(conCli===1?'cliente':'clientes'));
+    setEl('roi-con-ing',   fmt(conIng));
+    setEl('roi-con-neto',  fmt(Math.max(neto,0)));
+    setEl('roi-num',       roi.toFixed(1)+'x');
+    setEl('roi-be-n',      be+' '+(be===1?'cliente':'clientes'));
+    setEl('roi-be-n2',     beClamp.toLocaleString('en-US'));
+    setEl('roi-extra',     extra.toLocaleString('en-US'));
+    setEl('roi-be-mid',    'Break-even: '+be+' '+(be===1?'cliente':'clientes'));
+    setEl('roi-be-end',    conCli+' cerrados');
+
+    const fill=document.getElementById('roi-be-fill');
+    if(fill) fill.style.width=bePct.toFixed(1)+'%';
+
+    const stmtEl=document.getElementById('roi-stmt-main');
+    if(stmtEl){
+      if(roi>=5){
+        stmtEl.innerHTML='Cada <span class="grad-text" style="font-weight:800">'+(currency==='usd'?'$':'€')+'1</span> invertido en NODO te devuelve <span class="grad-text" style="font-weight:800">'+roi.toFixed(1)+'x.</span> El break-even es solo <strong id="roi-be-n">'+be+' '+(be===1?'cliente':'clientes')+'.</strong>';
+      } else if(neto>0){
+        stmtEl.innerHTML='Con solo <strong id="roi-be-n">'+be+' '+(be===1?'cliente':'clientes')+'</strong> ya recuperas la inversión — el resto es <span class="grad-text" style="font-weight:800">tuyo.</span>';
+      } else {
+        stmtEl.innerHTML='Ajusta el ticket medio — con <strong>'+fmt(Math.ceil(precio/conCli))+'</strong> por cliente ya cubres la inversión con '+conCli+' cierres.';
+      }
+    }
+    roiUpdateLabels();
+  };
+
+  // Init on DOM ready
+  document.addEventListener('DOMContentLoaded', window.roiCalc);
+})();
 </script>
 </body>
 </html>

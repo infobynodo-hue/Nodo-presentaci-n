@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NODO One · Calculadora ROI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── VARIABLES ── */
+:root {
+  --pk:#c026a8; --pk2:#a21caf; --vio:#7c3aed; --vio2:#9333ea;
+  --grad: linear-gradient(135deg,#c026a8 0%,#a21caf 50%,#7c3aed 100%);
+  --grad-soft: linear-gradient(135deg,rgba(192,38,168,.1) 0%,rgba(124,58,237,.06) 100%);
+  --t:#1e1b4b; --tm:#3730a3; --td:#6d7ab5;
+  --g2:#16a34a; --r:#dc2626;
+  --glass-bg: rgba(139,92,246,.07);
+  --glass-border: rgba(99,102,241,.22);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'DM Sans',sans-serif;
+  background: #f5f4ff;
+  min-height: 100vh;
+  color: var(--t);
+  padding: 60px 20px 80px;
+}
+body::before {
+  content:'';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(125% 125% at 50% 10%, #fff 40%, #6366f1 100%);
+}
+
+/* ── GLASS BASE ── */
+.glass {
+  border-radius: 20px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  box-shadow:
+    0 8px 40px rgba(99,102,241,.12),
+    0 2px 8px rgba(99,102,241,.07),
+    inset 0 1.5px 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 rgba(255,255,255,.3);
+}
+.glass-hot {
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(192,38,168,.1) 0%, rgba(124,58,237,.08) 100%);
+  border: 1.5px solid rgba(192,38,168,.35);
+  backdrop-filter: blur(24px) saturate(1.9);
+  -webkit-backdrop-filter: blur(24px) saturate(1.9);
+  box-shadow:
+    0 12px 50px rgba(192,38,168,.18),
+    0 4px 16px rgba(124,58,237,.12),
+    inset 0 1.5px 0 rgba(255,255,255,.85),
+    inset 0 -1px 0 rgba(255,255,255,.25);
+  position: relative;
+  overflow: hidden;
+}
+.glass-hot::before {
+  content:'';
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(155deg, rgba(255,255,255,.45) 0%, rgba(255,255,255,.05) 40%, transparent 100%);
+  z-index: 0;
+}
+.glass-hot > * { position: relative; z-index: 1; }
+
+/* ── LAYOUT ── */
+.roi-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* ── HEADER ── */
+.roi-label {
+  font-family:'DM Mono',monospace;
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--pk);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.roi-label::before { content:''; width:24px; height:1.5px; background:var(--grad); border-radius:2px; }
+.roi-h1 {
+  font-family:'Syne',sans-serif;
+  font-size: clamp(28px, 5vw, 46px);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--t);
+  margin-bottom: 14px;
+}
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.roi-sub {
+  font-size: 16px;
+  color: var(--td);
+  line-height: 1.6;
+  max-width: 580px;
+  margin-bottom: 40px;
+}
+
+/* ── CONTROLS ── */
+.controls-card { padding: 28px 32px; margin-bottom: 28px; }
+.controls-row {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 24px;
+  align-items: center;
+}
+.controls-row:last-child { margin-bottom: 0; }
+
+/* Currency + Plan toggles */
+.toggle-group { display: flex; gap: 6px; }
+.toggle-btn {
+  padding: 8px 20px;
+  border-radius: 100px;
+  border: 1.5px solid var(--glass-border);
+  background: transparent;
+  font-family:'DM Sans',sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--td);
+  cursor: pointer;
+  transition: all .2s;
+}
+.toggle-btn.active {
+  background: var(--grad);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(192,38,168,.3);
+}
+
+.ctrl-block { flex: 1; min-width: 220px; }
+.ctrl-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--tm);
+  margin-bottom: 10px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.ctrl-label span {
+  font-family:'DM Mono',monospace;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--pk2);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Slider */
+.roi-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--pk) 0%, var(--vio) 100%);
+  outline: none;
+  cursor: pointer;
+}
+.roi-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2.5px solid var(--pk);
+  box-shadow: 0 2px 10px rgba(192,38,168,.3);
+  cursor: pointer;
+  transition: transform .15s;
+}
+.roi-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+/* Ticket input */
+.ticket-wrap {
+  display: flex; align-items: center;
+  border: 1.5px solid var(--glass-border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.5);
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.ticket-wrap:focus-within { border-color: var(--pk); }
+.ticket-sym {
+  padding: 12px 14px;
+  font-family:'DM Mono',monospace;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--pk2);
+  background: rgba(192,38,168,.06);
+  border-right: 1px solid var(--glass-border);
+}
+.ticket-input {
+  border: none; background: transparent;
+  padding: 12px 16px;
+  font-family:'DM Mono',monospace;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--t);
+  width: 100%;
+  outline: none;
+}
+
+/* ── COMPARISON GRID ── */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+@media(max-width:600px) { .compare-grid { grid-template-columns: 1fr; } }
+
+.col-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 24px;
+}
+.col-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.col-dot-gray { background: #94a3b8; }
+.col-dot-hot  { background: var(--grad); }
+.col-tag {
+  font-family:'Syne',sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--t);
+  line-height: 1.2;
+}
+.col-tag small {
+  display: block;
+  font-family:'DM Sans',sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--td);
+  margin-top: 2px;
+}
+
+/* Sin NODO card */
+.card-sin { padding: 28px; }
+.card-con { padding: 28px; }
+
+/* Stat rows */
+.stat-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(99,102,241,.1);
+}
+.stat-row:last-of-type { border-bottom: none; }
+.stat-name {
+  font-size: 13px;
+  color: var(--td);
+  font-weight: 400;
+}
+.stat-val {
+  font-family:'DM Mono',monospace;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--t);
+  text-align: right;
+}
+.stat-val.muted { color: #94a3b8; }
+.stat-val.red { color: var(--r); }
+.stat-val.green { color: var(--g2); }
+.stat-val.hot {
+  background: var(--grad);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.badge-rate {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family:'DM Mono',monospace;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+.badge-gray { background: rgba(148,163,184,.15); color:#64748b; }
+.badge-pink { background: rgba(192,38,168,.12); color: var(--pk2); }
+
+/* Big ROI number */
+.roi-big-wrap {
+  text-align: center;
+  padding: 20px 0 8px;
+  border-top: 1px solid rgba(192,38,168,.15);
+  margin-top: 16px;
+}
+.roi-big-label {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--td);
+  margin-bottom: 4px;
+}
+.roi-big-num {
+  font-family:'Syne',sans-serif;
+  font-size: clamp(42px, 8vw, 64px);
+  font-weight: 800;
+  line-height: 1;
+  background: var(--grad);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all .3s ease;
+}
+.roi-big-sub {
+  font-size: 12px;
+  color: var(--td);
+  margin-top: 4px;
+}
+
+/* ── BOTTOM STATEMENT ── */
+.statement-card {
+  padding: 28px 32px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.statement-card .stmt-icon { font-size: 28px; margin-bottom: 12px; }
+.stmt-main {
+  font-family:'Syne',sans-serif;
+  font-size: clamp(17px, 2.5vw, 22px);
+  font-weight: 700;
+  color: var(--t);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.stmt-sub {
+  font-size: 14px;
+  color: var(--td);
+  line-height: 1.6;
+}
+
+/* Breakeven bar */
+.breakeven-wrap {
+  margin: 20px 0 8px;
+  padding: 0 8px;
+}
+.breakeven-track {
+  height: 8px;
+  background: rgba(99,102,241,.12);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.breakeven-fill {
+  height: 100%;
+  background: var(--grad);
+  border-radius: 100px;
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+}
+.breakeven-labels {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--td);
+}
+
+/* ── SOURCES ── */
+.sources {
+  text-align: center;
+  font-size: 11px;
+  color: #a0aec0;
+  line-height: 1.8;
+}
+.sources strong { color: var(--td); }
+
+/* ── ANIMATIONS ── */
+@keyframes pop { 0%{transform:scale(.92)}60%{transform:scale(1.04)}100%{transform:scale(1)} }
+.pop { animation: pop .3s ease; }
+
+/* ── DIVIDER ── */
+.divider { width: 40px; height: 3px; background: var(--grad); border-radius: 2px; margin-bottom: 32px; }
+
+/* ── PLAN PRICE BADGE ── */
+.plan-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600;
+  color: var(--pk2);
+  background: rgba(192,38,168,.08);
+  border: 1px solid rgba(192,38,168,.2);
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin-bottom: 16px;
+}
+</style>
+</head>
+<body>
+
+<div class="roi-wrap">
+
+  <!-- HEADER -->
+  <div class="roi-label">06 · Retorno de inversión</div>
+  <h1 class="roi-h1">¿Cuánto estás dejando<br>de ganar <span class="grad-text">cada mes?</span></h1>
+  <p class="roi-sub">Introduce los datos de tu negocio y ve en tiempo real la diferencia entre responder tarde y responder en segundos.</p>
+  <div class="divider"></div>
+
+  <!-- CONTROLS -->
+  <div class="glass controls-card">
+
+    <!-- Row 1: Moneda + Plan -->
+    <div class="controls-row">
+      <div class="ctrl-block" style="min-width:unset;flex:0">
+        <div class="ctrl-label">Moneda</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="btn-usd" onclick="setCurrency('usd')">$ USD</button>
+          <button class="toggle-btn" id="btn-eur" onclick="setCurrency('eur')">€ EUR</button>
+        </div>
+      </div>
+      <div class="ctrl-block">
+        <div class="ctrl-label">Plan NODO</div>
+        <div class="toggle-group" style="flex-wrap:wrap">
+          <button class="toggle-btn active" id="btn-anual" onclick="setPlan('anual')">
+            Claudia · Anual <span id="lbl-anual" style="opacity:.7;font-size:12px">($789/mes)</span>
+          </button>
+          <button class="toggle-btn" id="btn-semestral" onclick="setPlan('semestral')">
+            Semestral <span id="lbl-semestral" style="opacity:.7;font-size:12px">($1,116/mes)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Sliders -->
+    <div class="controls-row" style="gap:32px">
+      <div class="ctrl-block">
+        <div class="ctrl-label">
+          Chats perdidos / semana
+          <span id="val-chats">30</span>
+        </div>
+        <input type="range" class="roi-slider" id="slider-chats" min="5" max="150" value="30" oninput="updateChats(this.value)">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--td);margin-top:6px">
+          <span>5</span><span>fuera de horario</span><span>150</span>
+        </div>
+      </div>
+      <div class="ctrl-block">
+        <div class="ctrl-label">Ticket medio por cliente</div>
+        <div class="ticket-wrap">
+          <div class="ticket-sym" id="sym">$</div>
+          <input type="number" class="ticket-input" id="ticket" value="300" min="10" max="99999"
+            oninput="recalc()" onchange="recalc()">
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /controls -->
+
+  <!-- COMPARISON GRID -->
+  <div class="compare-grid">
+
+    <!-- SIN NODO -->
+    <div class="glass card-sin">
+      <div class="col-header">
+        <div class="col-dot col-dot-gray"></div>
+        <div class="col-tag">
+          Sin NODO
+          <small>Respuesta promedio: 47 horas</small>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <span class="stat-name">Chats / mes</span>
+        <span class="stat-val muted" id="sin-chats">120</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-name">Tasa de cierre</span>
+        <span class="badge-gray">3% · promedio mercado</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-name">Clientes cerrados / mes</span>
+        <span class="stat-val red" id="sin-clientes">4</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-name">Ingresos recuperados</span>
+        <span class="stat-val red" id="sin-ingresos">$1,080</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-name">Inversión NODO</span>
+        <span class="stat-val muted">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-name">Beneficio neto</span>
+        <span class="stat-val muted" id="sin-neto">$1,080</span>
+      </div>
+
+      <div class="roi-big-wrap">
+        <div class="roi-big-label">Lo que pierdes al mes</div>
+        <div class="roi-big-num" style="background:linear-gradient(135deg,#dc2626,#f97316);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent" id="sin-perdida">–$3,420</div>
+        <div class="roi-big-sub">vs potencial con NODO</div>
+      </div>
+    </div>
+
+    <!-- CON NODO -->
+    <div class="glass-hot card-con">
+      <div class="col-header">
+        <div class="col-dot col-dot-hot"></div>
+        <div class="col-tag">
+          Con NODO
+          <small>Respuesta en &lt; 45 segundos · 24/7</small>
+        </div>
+      </div>
+
+      <div class="plan-badge" id="plan-badge">⚡ Claudia · Contrato anual</div>
+
+      <div class="stat-row">
+        <span class="stat-name">Chats / mes</span>
+        <span class="stat-val" id="con-chats">120</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-name">Tasa de cierre</span>
+        <span class="badge-pink">15% · respuesta inmediata ★</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-name">Clientes cerrados / mes</span>
+        <span class="stat-val hot" id="con-clientes">18</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-name">Ingresos recuperados</span>
+        <span class="stat-val hot" id="con-ingresos">$5,400</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-name">Inversión NODO</span>
+        <span class="stat-val" id="con-precio">$789/mes</span>
+      </div>
+      <div class="stat-row" style="border-bottom:none">
+        <span class="stat-name" style="font-weight:600;color:var(--t)">Beneficio neto</span>
+        <span class="stat-val green" id="con-neto">$4,611</span>
+      </div>
+
+      <div class="roi-big-wrap">
+        <div class="roi-big-label">Retorno sobre inversión</div>
+        <div class="roi-big-num" id="roi-num">6.8x</div>
+        <div class="roi-big-sub">por cada <span id="roi-sym">$</span>1 invertido en NODO</div>
+      </div>
+    </div>
+
+  </div><!-- /compare-grid -->
+
+  <!-- BOTTOM STATEMENT -->
+  <div class="glass-hot statement-card">
+    <div class="stmt-icon">🎯</div>
+    <div class="stmt-main" id="stmt-main">
+      Con solo <strong id="stmt-breakeven">3 clientes</strong> ya recuperas la inversión — el resto es tuyo.
+    </div>
+    <div class="stmt-sub" id="stmt-sub">
+      De los <strong id="stmt-con-clientes">18 clientes</strong> que cerrarías con NODO,
+      solo necesitas <strong id="stmt-be2">3</strong> para cubrir el plan. Los <strong id="stmt-extra">15</strong> restantes son beneficio puro.
+    </div>
+
+    <!-- Breakeven bar -->
+    <div class="breakeven-wrap">
+      <div class="breakeven-track">
+        <div class="breakeven-fill" id="be-fill" style="width:17%"></div>
+      </div>
+      <div class="breakeven-labels">
+        <span>0 clientes</span>
+        <span id="be-label-mid">Break-even: 3 clientes</span>
+        <span id="be-label-end">18 cerrados</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOURCES -->
+  <div class="sources">
+    <strong>Fuentes:</strong> MIT Lead Response Management Study · Harvard Business Review · Meta Business Messaging Report 2024 · Forrester Research<br>
+    Tasa sin respuesta inmediata: <strong>3%</strong> (promedio de mercado). Tasa con respuesta en &lt;45 seg: <strong>15%</strong> (conservadora, rango real: 8–28%).
+  </div>
+
+</div><!-- /roi-wrap -->
+
+<script>
+/* ── STATE ── */
+let currency = 'usd';
+let plan     = 'anual';
+
+const PRICES = {
+  usd: { anual: 789,  semestral: 1116 },
+  eur: { anual: 710,  semestral: 1004 }
+};
+const PLAN_LABELS = {
+  usd: { anual: '$789/mes',  semestral: '$1,116/mes' },
+  eur: { anual: '€710/mes',  semestral: '€1,004/mes' }
+};
+const PLAN_BADGES = {
+  anual:      '⚡ Claudia · Contrato anual',
+  semestral:  '⚡ Plan · Contrato semestral'
+};
+
+const RATE_SIN = 0.03;
+const RATE_CON = 0.15;
+
+/* ── HELPERS ── */
+function fmt(n) {
+  const sym = currency === 'usd' ? '$' : '€';
+  return sym + new Intl.NumberFormat('en-US').format(Math.round(n));
+}
+function animatePop(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+}
+
+/* ── SETTERS ── */
+function setCurrency(c) {
+  currency = c;
+  document.getElementById('btn-usd').classList.toggle('active', c === 'usd');
+  document.getElementById('btn-eur').classList.toggle('active', c === 'eur');
+  document.getElementById('sym').textContent = c === 'usd' ? '$' : '€';
+  document.getElementById('roi-sym').textContent = c === 'usd' ? '$' : '€';
+  updatePlanLabels();
+  recalc();
+}
+
+function setPlan(p) {
+  plan = p;
+  document.getElementById('btn-anual').classList.toggle('active', p === 'anual');
+  document.getElementById('btn-semestral').classList.toggle('active', p === 'semestral');
+  updatePlanLabels();
+  recalc();
+}
+
+function updatePlanLabels() {
+  document.getElementById('lbl-anual').textContent     = '(' + PLAN_LABELS[currency].anual + ')';
+  document.getElementById('lbl-semestral').textContent = '(' + PLAN_LABELS[currency].semestral + ')';
+  document.getElementById('plan-badge').textContent    = PLAN_BADGES[plan];
+  document.getElementById('con-precio').textContent    = PLAN_LABELS[currency][plan];
+}
+
+function updateChats(v) {
+  document.getElementById('val-chats').textContent = v;
+  recalc();
+}
+
+/* ── MAIN CALC ── */
+function recalc() {
+  const chatsW  = parseInt(document.getElementById('slider-chats').value) || 30;
+  const ticket  = parseFloat(document.getElementById('ticket').value)       || 300;
+  const precio  = PRICES[currency][plan];
+
+  const chatsM  = chatsW * 4;
+
+  // Sin NODO
+  const sinCli  = Math.round(chatsM * RATE_SIN);
+  const sinIng  = sinCli * ticket;
+
+  // Con NODO
+  const conCli  = Math.round(chatsM * RATE_CON);
+  const conIng  = conCli * ticket;
+  const neto    = conIng - precio;
+  const roi     = conIng / precio;
+  const perdida = conIng - sinIng;
+
+  // Break-even
+  const be     = Math.ceil(precio / ticket);
+  const beClamp = Math.min(be, conCli);
+  const extra  = conCli - beClamp;
+  const bePct  = conCli > 0 ? Math.min((beClamp / conCli) * 100, 100) : 0;
+
+  // Update DOM
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && el.textContent !== val) { el.textContent = val; animatePop(id); }
+  };
+
+  set('sin-chats',    chatsM.toLocaleString('es-ES'));
+  set('sin-clientes', sinCli.toLocaleString('es-ES'));
+  set('sin-ingresos', fmt(sinIng));
+  set('sin-neto',     fmt(sinIng));
+  set('sin-perdida',  '–' + fmt(perdida));
+
+  set('con-chats',    chatsM.toLocaleString('es-ES'));
+  set('con-clientes', conCli.toLocaleString('es-ES'));
+  set('con-ingresos', fmt(conIng));
+  set('con-neto',     fmt(Math.max(neto, 0)));
+  set('roi-num',      roi.toFixed(1) + 'x');
+
+  // Statement
+  set('stmt-breakeven',    be + (be === 1 ? ' cliente' : ' clientes'));
+  set('stmt-con-clientes', conCli + (conCli === 1 ? ' cliente' : ' clientes'));
+  set('stmt-be2',          beClamp.toLocaleString('es-ES'));
+  set('stmt-extra',        Math.max(extra, 0).toLocaleString('es-ES'));
+  set('be-label-mid',      'Break-even: ' + be + ' cliente' + (be !== 1 ? 's' : ''));
+  set('be-label-end',      conCli + ' cerrados');
+
+  // Breakeven bar
+  document.getElementById('be-fill').style.width = bePct.toFixed(1) + '%';
+
+  // Dynamic statement phrase
+  const stmtEl = document.getElementById('stmt-main');
+  if (roi >= 5) {
+    stmtEl.innerHTML = `Cada <span class="grad-text" style="font-weight:800">${currency==='usd'?'$':'€'}1</span> invertido en NODO te devuelve <span class="grad-text" style="font-weight:800">${roi.toFixed(1)} veces.</span> El break-even es solo <strong id="stmt-breakeven">${be} ${be===1?'cliente':'clientes'}.</strong>`;
+  } else if (neto > 0) {
+    stmtEl.innerHTML = `Con solo <strong id="stmt-breakeven">${be} ${be===1?'cliente':'clientes'}</strong> ya recuperas la inversión — el resto es <span class="grad-text" style="font-weight:800">tuyo.</span>`;
+  } else {
+    stmtEl.innerHTML = `Ajusta el ticket medio — con un ticket de <strong>${fmt(Math.ceil(precio / conCli))}</strong> ya cubres la inversión con ${conCli} cierres.`;
+  }
+
+  updatePlanLabels();
+}
+
+/* ── INIT ── */
+recalc();
+</script>
+</body>
+</html>
