@@ -401,15 +401,18 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 }
 
 /* ── S6 ROI CALCULATOR ── */
-#s6{align-items:flex-start;padding:100px 60px 80px;min-height:auto}
-.roi-controls{padding:26px 30px;margin-bottom:24px}
-.roi-ctrl-row{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:22px}
-.roi-ctrl-row:last-child{margin-bottom:0}
-.roi-ctrl-block{flex:1;min-width:200px}
-.roi-ctrl-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--tm);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+#s6{align-items:flex-start;padding:80px 60px 70px;min-height:auto}
+#s6 .s-sub{max-width:100%;margin-bottom:28px}
+.roi-controls{padding:22px 26px;margin-bottom:20px}
+.roi-ctrl-top{display:flex;gap:0;margin-bottom:18px;border-bottom:1px solid rgba(99,102,241,.1);padding-bottom:18px}
+.roi-ctrl-half{flex:1;display:flex;flex-direction:column;gap:8px;padding-right:24px}
+.roi-ctrl-half+.roi-ctrl-half{padding-right:0;padding-left:24px;border-left:1px solid rgba(99,102,241,.1)}
+.roi-ctrl-bottom{display:flex;gap:24px;align-items:flex-start}
+.roi-ctrl-block{flex:1}
+.roi-ctrl-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--tm);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
 .roi-ctrl-lbl span{font-size:14px;font-weight:600;color:var(--pk2);letter-spacing:0;text-transform:none;font-family:'Syne',sans-serif}
-.roi-tgl{display:flex;gap:6px;flex-wrap:wrap}
-.roi-tgl-btn{padding:7px 18px;border-radius:100px;border:1.5px solid var(--bo);background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--td);cursor:pointer;transition:all .2s}
+.roi-tgl{display:flex;gap:6px;flex-wrap:nowrap}
+.roi-tgl-btn{padding:7px 16px;border-radius:100px;border:1.5px solid var(--bo);background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--td);cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
 .roi-tgl-btn.active{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(192,38,168,.3)}
 .roi-slider{width:100%;-webkit-appearance:none;height:5px;border-radius:4px;background:linear-gradient(90deg,var(--pk),var(--vio));outline:none;cursor:pointer}
 .roi-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:2.5px solid var(--pk);box-shadow:0 2px 10px rgba(192,38,168,.3);cursor:pointer;transition:transform .15s}
@@ -456,11 +459,16 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 .roi-pop{animation:roiPop .3s ease}
 @media(max-width:860px){
   .roi-compare{grid-template-columns:1fr}
-  .roi-ctrl-row{flex-direction:column;gap:18px}
-  #s6{padding:80px 24px 60px}
-  .roi-controls{padding:20px}
-  .roi-col{padding:20px}
-  .roi-stmt{padding:20px}
+  .roi-ctrl-top{flex-direction:column;gap:16px}
+  .roi-ctrl-half{padding-right:0!important;padding-left:0!important;border-left:none!important;border-bottom:1px solid rgba(99,102,241,.1);padding-bottom:16px}
+  .roi-ctrl-half:last-child{border-bottom:none;padding-bottom:0}
+  .roi-ctrl-bottom{flex-direction:column;gap:16px}
+  #s6{padding:70px 24px 50px}
+  .roi-controls{padding:18px}
+  .roi-col{padding:18px}
+  .roi-stmt{padding:18px}
+  .roi-ctrl-block[style*="max-width"]{max-width:100%!important}
+  .roi-tgl{flex-wrap:wrap}
 }
 </style>
 </head>
@@ -889,15 +897,16 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 
     <!-- CONTROLS -->
     <div class="lg roi-controls reveal d3">
-      <div class="roi-ctrl-row">
-        <div class="roi-ctrl-block" style="flex:0;min-width:unset">
+      <!-- Fila superior: Moneda | Plan -->
+      <div class="roi-ctrl-top">
+        <div class="roi-ctrl-half">
           <div class="roi-ctrl-lbl">Moneda</div>
           <div class="roi-tgl">
             <button class="roi-tgl-btn active" id="roi-btn-usd" onclick="roiSetCurrency('usd')">$ USD</button>
             <button class="roi-tgl-btn" id="roi-btn-eur" onclick="roiSetCurrency('eur')">€ EUR</button>
           </div>
         </div>
-        <div class="roi-ctrl-block">
+        <div class="roi-ctrl-half">
           <div class="roi-ctrl-lbl">Plan NODO</div>
           <div class="roi-tgl">
             <button class="roi-tgl-btn active" id="roi-btn-anual" onclick="roiSetPlan('anual')">
@@ -909,13 +918,14 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
           </div>
         </div>
       </div>
-      <div class="roi-ctrl-row">
+      <!-- Fila inferior: Slider | Ticket -->
+      <div class="roi-ctrl-bottom">
         <div class="roi-ctrl-block">
           <div class="roi-ctrl-lbl">Chats perdidos / semana <span id="roi-val-chats">30</span></div>
           <input type="range" class="roi-slider" id="roi-slider" min="5" max="150" value="30" oninput="roiUpdateChats(this.value)">
           <div class="roi-slider-hint"><span>5</span><span>fuera de horario</span><span>150</span></div>
         </div>
-        <div class="roi-ctrl-block">
+        <div class="roi-ctrl-block" style="max-width:260px">
           <div class="roi-ctrl-lbl">Ticket medio por cliente</div>
           <div class="roi-ticket-wrap">
             <div class="roi-ticket-sym" id="roi-sym">$</div>
