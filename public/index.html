@@ -491,9 +491,12 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
 .roi-col-tag{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;line-height:1.2}
 .roi-col-tag small{display:block;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--td);margin-top:1px}
 .roi-plan-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--pk2);background:rgba(192,38,168,.08);border:1px solid rgba(192,38,168,.2);padding:3px 11px;border-radius:100px;margin-bottom:14px}
-.roi-stat{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(99,102,241,.1)}
+.roi-stat{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(99,102,241,.1)}
 .roi-stat:last-of-type{border-bottom:none}
+.roi-stat-lbl{display:flex;flex-direction:column;gap:2px}
 .roi-stat-n{font-size:12px;color:var(--td)}
+.roi-stat-hint{font-size:10px;color:var(--td);opacity:.55;line-height:1.4;max-width:190px}
+.roi-ctrl-hint{font-size:10px;color:var(--td);opacity:.6;margin-top:-4px;margin-bottom:7px;line-height:1.4}
 .roi-stat-v{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--t);text-align:right}
 .roi-stat-v.muted{color:#94a3b8}
 .roi-stat-v.red{color:var(--r)}
@@ -1089,11 +1092,13 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
       <div class="roi-ctrl-bottom">
         <div class="roi-ctrl-block">
           <div class="roi-ctrl-lbl">Chats perdidos / semana <span id="roi-val-chats">30</span></div>
+          <div class="roi-ctrl-hint">Los que llegan tarde, fuera de horario o nunca recibieron respuesta</div>
           <input type="range" class="roi-slider" id="roi-slider" min="5" max="150" value="30" oninput="roiUpdateChats(this.value)">
           <div class="roi-slider-hint"><span>5</span><span>fuera de horario</span><span>150</span></div>
         </div>
         <div class="roi-ctrl-block" style="max-width:260px">
           <div class="roi-ctrl-lbl">Ticket medio por cliente</div>
+          <div class="roi-ctrl-hint">Precio promedio de lo que le vendes a un cliente nuevo</div>
           <div class="roi-ticket-wrap">
             <div class="roi-ticket-sym" id="roi-sym">$</div>
             <input type="number" class="roi-ticket-inp" id="roi-ticket" value="300" min="10" max="99999" oninput="roiCalc()" onchange="roiCalc()">
@@ -1111,12 +1116,12 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
           <div class="roi-col-dot" style="background:#94a3b8"></div>
           <div class="roi-col-tag">Sin NODO<small>Respuesta promedio: 47 horas</small></div>
         </div>
-        <div class="roi-stat"><span class="roi-stat-n">Chats / mes</span><span class="roi-stat-v muted" id="roi-sin-chats">120</span></div>
-        <div class="roi-stat"><span class="roi-stat-n">Tasa de cierre</span><span class="roi-badge-gray">3% · promedio mercado</span></div>
-        <div class="roi-stat"><span class="roi-stat-n">Clientes cerrados / mes</span><span class="roi-stat-v red" id="roi-sin-cli">4</span></div>
-        <div class="roi-stat"><span class="roi-stat-n">Ingresos recuperados</span><span class="roi-stat-v red" id="roi-sin-ing">$1,200</span></div>
-        <div class="roi-stat"><span class="roi-stat-n">Inversión NODO</span><span class="roi-stat-v muted">—</span></div>
-        <div class="roi-stat"><span class="roi-stat-n">Beneficio neto</span><span class="roi-stat-v muted" id="roi-sin-neto">$1,200</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Chats / mes</span><span class="roi-stat-hint">Consultas que recibes al mes — las que responden al día siguiente o nunca</span></div><span class="roi-stat-v muted" id="roi-sin-chats">120</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Tasa de cierre</span><span class="roi-stat-hint">De 100 personas que escriben, cuántas terminan comprando</span></div><span class="roi-badge-gray">3% · promedio mercado</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Clientes cerrados / mes</span><span class="roi-stat-hint">Nuevos clientes que efectivamente pagan ese mes</span></div><span class="roi-stat-v red" id="roi-sin-cli">4</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Ingresos recuperados</span><span class="roi-stat-hint">Lo que factura tu negocio a partir de esos cierres</span></div><span class="roi-stat-v red" id="roi-sin-ing">$1,200</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Inversión NODO</span><span class="roi-stat-hint">No aplica — sin agente, sin cobertura fuera de horario</span></div><span class="roi-stat-v muted">—</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Beneficio neto</span><span class="roi-stat-hint">Lo que genera tu negocio con la estructura actual</span></div><span class="roi-stat-v muted" id="roi-sin-neto">$1,200</span></div>
         <div class="roi-big">
           <div class="roi-big-lbl">Lo que pierdes al mes</div>
           <div class="roi-big-num" style="background:linear-gradient(135deg,#dc2626,#f97316);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent" id="roi-sin-perdida">–$4,200</div>
@@ -1131,12 +1136,12 @@ section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;dis
           <div class="roi-col-tag">Con NODO<small>Respuesta en &lt; 45 segundos · 24/7</small></div>
         </div>
         <div class="roi-plan-badge" id="roi-plan-badge">⚡ Claudia · Contrato anual</div>
-        <div class="roi-stat"><span class="roi-stat-n">Chats / mes</span><span class="roi-stat-v" id="roi-con-chats">120</span></div>
-        <div class="roi-stat"><span class="roi-stat-n">Tasa de cierre</span><span class="roi-badge-pink">15% · respuesta inmediata ★</span></div>
-        <div class="roi-stat"><span class="roi-stat-n">Clientes cerrados / mes</span><span class="roi-stat-v hot" id="roi-con-cli">18</span></div>
-        <div class="roi-stat"><span class="roi-stat-n">Ingresos recuperados</span><span class="roi-stat-v hot" id="roi-con-ing">$5,400</span></div>
-        <div class="roi-stat"><span class="roi-stat-n">Inversión NODO</span><span class="roi-stat-v" id="roi-con-precio">$789/mes</span></div>
-        <div class="roi-stat" style="border-bottom:none"><span class="roi-stat-n" style="font-weight:600;color:var(--t)">Beneficio neto</span><span class="roi-stat-v green" id="roi-con-neto">$4,611</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Chats / mes</span><span class="roi-stat-hint">Las mismas consultas — ahora todas reciben respuesta en menos de 45s</span></div><span class="roi-stat-v" id="roi-con-chats">120</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Tasa de cierre</span><span class="roi-stat-hint">Respuesta inmediata = más conversiones; el cliente no espera ni compara</span></div><span class="roi-badge-pink">15% · respuesta inmediata ★</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Clientes cerrados / mes</span><span class="roi-stat-hint">Nuevos clientes que pagan — los que antes se perdían por no responder</span></div><span class="roi-stat-v hot" id="roi-con-cli">18</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Ingresos recuperados</span><span class="roi-stat-hint">Facturación generada directamente por el agente ese mes</span></div><span class="roi-stat-v hot" id="roi-con-ing">$5,400</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Inversión NODO</span><span class="roi-stat-hint">Coste mensual fijo del agente — sin sorpresas ni costes variables</span></div><span class="roi-stat-v" id="roi-con-precio">$789/mes</span></div>
+        <div class="roi-stat" style="border-bottom:none"><div class="roi-stat-lbl"><span class="roi-stat-n" style="font-weight:600;color:var(--t)">Beneficio neto</span><span class="roi-stat-hint">Ingresos generados menos lo que inviertes en NODO cada mes</span></div><span class="roi-stat-v green" id="roi-con-neto">$4,611</span></div>
         <div class="roi-big">
           <div class="roi-big-lbl">Retorno sobre inversión</div>
           <div class="roi-big-num grad-text" id="roi-num">6.8x</div>
