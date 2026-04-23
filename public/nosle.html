@@ -899,7 +899,7 @@ El siguiente paso es agendar una reunión de diagnóstico para revisar la situac
     <h2 class="cta-title reveal d1">Comienza con una <em>reunión de diagnóstico.</em></h2>
     <p class="cta-sub reveal d2">En esa primera reunión definimos juntos las prioridades, los temas a cubrir y el alcance exacto del sistema. A partir de ahí, nos encargamos de todo.</p>
     <div class="cta-btns reveal d3">
-      <button class="cta-btn1" onclick="openModal()">Agenda tu diagnóstico →</button>
+      <a href="https://cal.com/nodo-digital-besczy/secret" target="_blank" class="cta-btn1">Agenda tu diagnóstico →</a>
       <a href="https://nodoone.com" target="_blank" class="cta-btn2">Ver más sobre NODO One</a>
     </div>
     <div class="cta-proof reveal d4">
@@ -1023,6 +1023,7 @@ async function submitLead() {
   }
 
   document.getElementById('welcomeModal').style.display = 'none';
+  window.open('https://cal.com/nodo-digital-besczy/secret', '_blank');
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 }
 
