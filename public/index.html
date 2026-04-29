@@ -1200,6 +1200,21 @@ const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 let _leadId = null;
 let _demoVisto = null;
 
+/* ── VISIT TRACKING ── */
+(async function trackVisit() {
+  try {
+    const device = window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop';
+    await fetch(`${SB_URL}/rest/v1/visits`, {
+      method: 'POST',
+      headers: {
+        'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}`,
+        'Content-Type': 'application/json', 'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ page: 'propuesta_general', device, referrer: document.referrer || null })
+    });
+  } catch(e) {}
+})();
+
 /* ── LEAD CAPTURE ── */
 window.addEventListener('load', () => {
   setTimeout(() => document.getElementById('leadNombre').focus(), 400);
@@ -1466,6 +1481,12 @@ async function sendMsg(key) {
   btn.disabled = true;
   appendMsg(key, text, 'user');
   AGENTS[key].msgs.push({role:'user', content:text});
+  /* track demo interaction */
+  fetch(`${SB_URL}/rest/v1/demo_events`, {
+    method:'POST',
+    headers:{'apikey':SB_ANON,'Authorization':`Bearer ${SB_ANON}`,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify({page:'propuesta_general',sector:key})
+  }).catch(()=>{});
   typ.classList.add('show');
   document.getElementById(`msgs-${key}`).scrollTop = 9999;
 
