@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iCCS · Propuesta Comercial — Agentes IA para el Sector Salud</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:rgba(255,255,255,.03);--s:rgba(255,255,255,.42);--s2:rgba(255,255,255,.62);--bo:rgba(14,92,140,.22);
+  --pk:#1FA9E0;--pk2:#0E8CC0;--vio:#0E5C8C;--vio2:#1A7BB5;
+  --pk-l:#0E5C8C;--vio-l:#0B4A70;
+  --t:#0B2034;--tm:#0E5C8C;--td:#4A7A96;
+  --g2:#16a34a;--g-l:#166534;--r:#dc2626;
+  --grad:linear-gradient(135deg,#1FA9E0 0%,#0E8CC0 50%,#0E5C8C 100%);
+  --grad-soft:linear-gradient(135deg,rgba(31,169,224,.12) 0%,rgba(14,92,140,.08) 100%);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-x:hidden;overflow-y:scroll;scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:radial-gradient(125% 125% at 50% 10%,#F6F3EE 40%,#7FD0EE 100%);background-attachment:fixed;color:var(--t);overflow-x:hidden}
+
+.lg{
+  position:relative;overflow:hidden;isolation:isolate;
+  border-radius:16px;
+  background:rgba(31,169,224,.08);
+  border:1px solid rgba(14,92,140,.28);
+  backdrop-filter:blur(22px) saturate(1.9) brightness(1.05);
+  -webkit-backdrop-filter:blur(22px) saturate(1.9) brightness(1.05);
+  box-shadow:
+    0 8px 40px rgba(14,92,140,.14),
+    0 2px 8px rgba(14,92,140,.08),
+    inset 0 1.5px 0 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 0 rgba(255,255,255,.3),
+    inset 1.5px 0 0 0 rgba(255,255,255,.5),
+    inset -1.5px 0 0 0 rgba(255,255,255,.15);
+}
+.lg::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;background:linear-gradient(160deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.08) 40%,transparent 100%)}
+.lg::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;border-radius:inherit;pointer-events:none;z-index:2;background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent)}
+section{min-height:100svh;min-height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.grad-text{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(246,243,238,.92) 0%,transparent 100%);pointer-events:none;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.topbar-logo{font-family:'Fraunces',serif;font-size:15px;font-weight:800;color:var(--t)}
+.topbar-logo span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar-right{display:flex;align-items:center;gap:12px;pointer-events:all}
+.key-btn{display:flex;align-items:center;gap:6px;padding:4px 12px;border:1px solid var(--bo);border-radius:20px;cursor:pointer;transition:border-color .2s;background:transparent}
+.key-btn:hover{border-color:rgba(31,169,224,.5)}
+.key-dot{width:6px;height:6px;border-radius:50%;background:var(--td);transition:background .3s}
+.key-dot.on{background:var(--g2);animation:pulse 2s infinite}
+.key-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)}
+.topbar-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--tm);padding:3px 10px;border:1px solid var(--bo);border-radius:20px}
+
+.sidenav{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:10px}
+.snav-dot{width:6px;height:6px;border-radius:50%;background:var(--td);cursor:pointer;transition:all .3s;position:relative}
+.snav-dot.active{background:var(--pk);box-shadow:0 0 8px rgba(31,169,224,.6);width:8px;height:8px}
+.snav-dot:hover{background:var(--pk-l)}
+.snav-dot::after{content:attr(data-label);position:absolute;right:18px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--tm);white-space:nowrap;opacity:0;transition:opacity .2s;text-transform:uppercase}
+.snav-dot:hover::after{opacity:1}
+
+.modal-overlay{position:fixed;inset:0;z-index:999;background:radial-gradient(125% 125% at 50% 10%,rgba(246,243,238,.97) 40%,rgba(14,92,140,.85) 100%);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:center;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.modal-box{padding:44px 48px;max-width:500px;width:92%;border-radius:20px;border-color:rgba(31,169,224,.4)!important}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+.modal-glow{position:absolute;top:-80px;right:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(31,169,224,.12) 0%,transparent 70%);pointer-events:none}
+.modal-brand{font-family:'Fraunces',serif;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px}
+.modal-title{font-family:'Fraunces',serif;font-size:26px;font-weight:800;margin-bottom:8px;line-height:1.15}
+.modal-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.modal-sub{font-size:14px;color:var(--tm);line-height:1.65;margin-bottom:28px}
+.modal-field{margin-bottom:14px}
+.modal-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--tm);margin-bottom:6px;display:block}
+.modal-input{width:100%;background:var(--s2);border:1px solid var(--bo);border-radius:10px;padding:13px 16px;font-size:16px;color:var(--t);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+.modal-input:focus{border-color:rgba(31,169,224,.5);background:var(--bg)}
+.modal-input::placeholder{color:var(--td)}
+.modal-err{font-size:12px;color:#f07050;margin-bottom:10px;display:none;padding:8px 12px;background:rgba(232,68,26,.08);border:1px solid rgba(232,68,26,.2);border-radius:6px}
+.modal-btn{width:100%;padding:15px;border:none;border-radius:14px;font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:4px;position:relative;overflow:hidden;isolation:isolate;transition:transform .7s cubic-bezier(.175,.885,.32,2.2),box-shadow .3s;box-shadow:0 6px 24px rgba(31,169,224,.45),0 0 20px rgba(31,169,224,.25),inset 2px 2px 1px 0 rgba(255,255,255,.35),inset -1px -1px 1px 1px rgba(255,255,255,.15);background:var(--grad);backdrop-filter:blur(10px) saturate(1.4);-webkit-backdrop-filter:blur(10px) saturate(1.4)}
+.modal-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.04) 100%);border-radius:inherit;pointer-events:none}
+.modal-btn:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 10px 28px rgba(0,0,0,.3),0 0 32px rgba(31,169,224,.35),inset 2px 2px 1px 0 rgba(255,255,255,.4),inset -1px -1px 1px 1px rgba(255,255,255,.25)}
+.modal-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.modal-privacy{font-size:11px;color:var(--td);text-align:center;margin-top:14px;font-family:'JetBrains Mono',monospace;line-height:1.5}
+.phone-row{display:flex;gap:8px}
+.modal-select{background:var(--s2);border:1px solid var(--bo);border-radius:10px;padding:13px 10px;font-size:16px;color:var(--t);font-family:'Inter',sans-serif;outline:none;cursor:pointer;transition:border-color .2s;flex-shrink:0;-webkit-appearance:none;appearance:none;text-align:center;min-width:90px}
+.modal-select:focus{border-color:rgba(31,169,224,.5);background:var(--bg)}
+.phone-num{flex:1}
+.phone-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--td);margin-top:5px;letter-spacing:.04em;transition:color .2s}
+.phone-hint.ok{color:#25a35a}
+.phone-hint.bad{color:#f07050}
+
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(14,92,140,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(14,92,140,.07) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.glow{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);opacity:.18}
+
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(37,163,90,.4)}50%{box-shadow:0 0 0 4px rgba(37,163,90,0)}}
+@keyframes livepulse{0%,100%{box-shadow:0 0 0 0 rgba(37,163,90,.4)}50%{box-shadow:0 0 0 4px rgba(37,163,90,0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+@keyframes scrollPulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes entryIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:all .7s cubic-bezier(.4,0,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+#s0{flex-direction:column;text-align:center;padding-top:80px}
+.hero-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;max-width:800px;padding:0 40px}
+.hero-clock{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--tm);margin-bottom:10px}
+.hero-msg-wrap{margin-bottom:32px;opacity:0;animation:fadeUp .7s ease .5s both}
+.hero-wamsg{display:inline-flex;align-items:center;gap:12px;background:var(--s);border:1px solid var(--bo);border-radius:18px 18px 4px 18px;padding:12px 18px;font-size:14px;color:var(--tm)}
+.hero-wamsg-dot{width:8px;height:8px;border-radius:50%;background:var(--g2);flex-shrink:0}
+.hero-typing{display:inline-flex;align-items:center;gap:4px;padding:10px 16px;background:var(--s2);border:1px solid var(--bo);border-radius:4px 18px 18px 18px;margin-top:6px;opacity:0;animation:fadeUp .4s ease 2.4s both}
+.tdot{width:6px;height:6px;border-radius:50%;background:var(--tm);animation:tdot 1.2s infinite ease}
+.tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
+.hero-no-resp{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,52px);font-weight:800;color:#e8441a;margin-bottom:10px;letter-spacing:-.02em;opacity:0;animation:fadeUp .6s ease 4.2s both}
+.hero-gone{font-size:15px;color:var(--tm);margin-bottom:36px;opacity:0;animation:fadeUp .5s ease 5s both}
+.hero-counter-wrap{display:flex;align-items:center;gap:16px;padding:16px 28px;background:rgba(232,68,26,.06);border:1px solid rgba(232,68,26,.2);border-radius:8px;margin-bottom:52px;opacity:0;animation:fadeUp .5s ease 5.8s both}
+.hero-counter-num{font-family:'Fraunces',serif;font-size:38px;font-weight:800;color:#f07050;line-height:1}
+.hero-counter-label{font-size:12px;color:var(--tm);line-height:1.4;text-align:left;max-width:160px}
+.hero-logo-wrap{opacity:0;animation:fadeUp .8s ease 7s both;margin-bottom:16px}
+.hero-logo{font-family:'Fraunces',serif;font-size:12px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
+.hero-tagline{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,42px);font-weight:800;line-height:1.15;letter-spacing:-.02em}
+.hero-tagline em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-scroll{margin-top:44px;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeUp .5s ease 8.5s both;cursor:pointer}
+.hero-scroll-line{width:1px;height:36px;background:linear-gradient(180deg,var(--pk),transparent);animation:scrollPulse 2s infinite}
+.hero-scroll span{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--td)}
+
+#s1{align-items:flex-start;padding:100px 60px 60px}
+.s-inner{position:relative;z-index:2;width:100%;max-width:1100px;margin:0 auto}
+.s-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--tm);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.s-label::after{content:'';flex:1;height:1px;background:var(--bo)}
+.s-title{font-family:'Fraunces',serif;font-size:clamp(26px,3.5vw,46px);font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:12px}
+.s-sub{font-size:15px;color:var(--tm);line-height:1.7;max-width:600px;margin-bottom:36px}
+.prob-quote{text-align:center;padding:44px 0;border-top:1px solid var(--bo);border-bottom:1px solid var(--bo);margin-bottom:36px}
+.prob-quote-eye{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--pk-l);margin-bottom:14px}
+.prob-quote-text{font-family:'Fraunces',serif;font-size:clamp(20px,2.5vw,32px);font-weight:800;line-height:1.25;letter-spacing:-.01em}
+.prob-quote-text em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.prob-quote-sub{font-size:13px;color:var(--tm);line-height:1.7;max-width:500px;margin:14px auto 0}
+.prob-stat{display:inline-flex;align-items:baseline;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:20px;padding:10px 20px;background:rgba(31,169,224,.08);border:1px solid rgba(31,169,224,.2);border-radius:40px}
+.prob-stat-num{font-family:'Fraunces',serif;font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.prob-stat-txt{font-size:13px;font-weight:600;color:var(--t)}
+.prob-stat-src{font-size:10px;color:var(--tm);font-family:'JetBrains Mono',monospace;letter-spacing:.05em}
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.bac{padding:26px 28px}
+.bab{border-color:rgba(232,68,26,.3)!important;background:rgba(232,68,26,.05)!important}
+.baa{border-color:rgba(37,163,90,.3)!important;background:rgba(37,163,90,.05)!important}
+.bat{font-family:'Fraunces',serif;font-size:14px;font-weight:700;margin-bottom:14px}
+.bab .bat{color:#f07050}.baa .bat{color:var(--g2)}
+.bai{font-size:13px;color:var(--tm);display:flex;gap:10px;margin-bottom:9px;line-height:1.5;align-items:flex-start}
+.dot-r{width:6px;height:6px;border-radius:50%;background:var(--r);flex-shrink:0;margin-top:5px}
+.dot-g{width:6px;height:6px;border-radius:50%;background:var(--g2);flex-shrink:0;margin-top:5px}
+
+#s2{align-items:flex-start;padding:100px 60px 60px}
+.sol-intro{padding:22px 30px;margin-bottom:32px;border-color:rgba(31,169,224,.35)!important}
+.sol-intro::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--grad)}
+.sol-intro-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--pk-l);margin-bottom:7px}
+.sol-intro-text{font-family:'Fraunces',serif;font-size:15px;font-weight:700;line-height:1.55}
+.agents-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px}
+.agent-card{overflow:hidden;transition:transform .4s cubic-bezier(.175,.885,.32,1.5),box-shadow .3s}
+.agent-card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.4),0 0 24px rgba(31,169,224,.15),inset 0 1.5px 0 0 rgba(255,255,255,.35)!important}
+.ac-top{padding:22px;border-bottom:1px solid var(--bo);display:flex;align-items:center;gap:14px}
+.ac-pk .ac-top{background:rgba(31,169,224,.06)}.ac-vio .ac-top{background:rgba(14,92,140,.06)}
+.ac-av{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.ac-pk .ac-av{background:rgba(31,169,224,.15);border:1px solid rgba(31,169,224,.3)}
+.ac-vio .ac-av{background:rgba(14,92,140,.15);border:1px solid rgba(14,92,140,.3)}
+.ac-name{font-family:'Fraunces',serif;font-size:21px;font-weight:800;margin-bottom:3px}
+.ac-role{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em}
+.ac-pk .ac-role{color:var(--pk-l)}.ac-vio .ac-role{color:var(--vio-l)}
+.ac-body{padding:18px 22px}
+.ac-desc{font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:14px}
+.ac-caps{list-style:none;display:flex;flex-direction:column;gap:6px}
+.ac-caps li{font-size:12px;color:var(--tm);display:flex;gap:8px;align-items:flex-start;line-height:1.45}
+.ac-caps li::before{font-size:8px;flex-shrink:0;margin-top:4px}
+.ac-pk .ac-caps li::before{content:'◆';color:var(--pk)}.ac-vio .ac-caps li::before{content:'◆';color:var(--vio2)}
+.ac-metrics{margin-top:14px;padding-top:14px;border-top:1px solid var(--bo);display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.am{background:var(--bg);border:1px solid var(--bo);border-radius:8px;padding:9px 7px;text-align:center}
+.am-val{font-family:'Fraunces',serif;font-size:15px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:3px}
+.am-lbl{font-size:9px;color:var(--tm)}
+.met-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.met{padding:18px;text-align:center;transition:transform .4s cubic-bezier(.175,.885,.32,1.5),box-shadow .3s}
+.met:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.35),0 0 16px rgba(31,169,224,.12),inset 0 1.5px 0 0 rgba(255,255,255,.35)!important}
+.met-val{font-family:'Fraunces',serif;font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:5px}
+.met-lbl{font-size:11px;color:var(--tm);line-height:1.4}
+.met-sub{font-size:9px;color:var(--td);font-family:'JetBrains Mono',monospace;margin-top:3px;letter-spacing:.06em}
+
+#s3{align-items:flex-start;padding:88px 60px 40px}
+.demo-header{text-align:center;margin-bottom:24px}
+.live-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(37,163,90,.1);border:1px solid rgba(37,163,90,.25);border-radius:20px;padding:4px 14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--g2);margin-bottom:14px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--g2);animation:pulse 2s infinite}
+.demo-title{font-family:'Fraunces',serif;font-size:clamp(20px,2.5vw,32px);font-weight:800;margin-bottom:7px;letter-spacing:-.01em}
+.demo-sub{font-size:14px;color:var(--tm)}
+.demo-tabs{display:flex;gap:8px;margin-bottom:18px;justify-content:center}
+.dtab{padding:10px 20px;border-radius:8px;background:var(--s);border:1px solid var(--bo);cursor:pointer;transition:all .2s;font-family:'Fraunces',serif;font-size:13px;font-weight:700;color:var(--tm);display:flex;align-items:center;gap:8px}
+.dtab:hover{border-color:rgba(31,169,224,.4);color:var(--t)}
+.dtab.active{background:var(--grad-soft);border-color:rgba(31,169,224,.4);color:var(--t);box-shadow:0 0 20px rgba(31,169,224,.12)}
+.demo-wrap{display:grid;grid-template-columns:1fr 340px;gap:18px;width:100%;max-width:1100px;margin:0 auto}
+.dpanel{display:none}.dpanel.active{display:flex;flex-direction:column}
+.chat-win{overflow:hidden;display:flex;flex-direction:column;height:420px}
+.chat-hdr{padding:13px 18px;border-bottom:1px solid var(--bo);display:flex;align-items:center;gap:11px;flex-shrink:0}
+.chat-av{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--grad-soft);border:1px solid rgba(31,169,224,.3);flex-shrink:0}
+.chat-aname{font-family:'Fraunces',serif;font-size:13px;font-weight:700}
+.chat-arole{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--pk-l);text-transform:uppercase}
+.chat-status{margin-left:auto;display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--g2);text-transform:uppercase}
+.chat-sdot{width:6px;height:6px;border-radius:50%;background:var(--g2);animation:pulse 2s infinite}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px;scrollbar-width:thin;scrollbar-color:var(--bo) transparent}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--bo);border-radius:2px}
+.cmsg{max-width:85%;padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.5;animation:msgIn .25s ease both}
+.cmsg-u{background:var(--grad);color:#fff;align-self:flex-end;border-radius:12px 12px 4px 12px}
+.cmsg-a{background:var(--s2);border:1px solid var(--bo);color:var(--t);align-self:flex-start;border-radius:12px 12px 12px 4px}
+.cmsg-time{font-size:10px;opacity:.45;margin-top:3px;font-family:'JetBrains Mono',monospace}
+.typing-ind{display:none;align-self:flex-start;background:var(--s2);border:1px solid var(--bo);padding:9px 13px;border-radius:12px 12px 12px 4px;align-items:center;gap:4px}
+.typing-ind.show{display:flex}
+.chat-foot{padding:11px 14px;border-top:1px solid var(--bo);flex-shrink:0}
+.chat-in-row{display:flex;gap:7px}
+.chat-in{flex:1;background:var(--s2);border:1px solid var(--bo);border-radius:8px;padding:9px 13px;font-size:16px;color:var(--t);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+.chat-in::placeholder{color:var(--td)}.chat-in:focus{border-color:rgba(31,169,224,.4)}
+.chat-send{padding:9px 15px;background:var(--grad);border:none;border-radius:8px;cursor:pointer;font-family:'Fraunces',serif;font-size:12px;font-weight:700;color:#fff;transition:opacity .2s;white-space:nowrap}
+.chat-send:hover{opacity:.85}.chat-send:disabled{opacity:.4;cursor:not-allowed}
+.suggs{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.sugg{padding:5px 11px;border-radius:20px;border:1px solid var(--bo);font-size:11px;color:var(--tm);cursor:pointer;background:rgba(255,255,255,.45);transition:all .2s;font-family:'JetBrains Mono',monospace;letter-spacing:.02em}
+.sugg:hover{border-color:rgba(31,169,224,.4);color:var(--pk-l);background:rgba(31,169,224,.06)}
+.demo-sidebar{display:flex;flex-direction:column;gap:11px}
+.dscard{padding:17px;border-radius:12px}
+.dscard-t{font-family:'Fraunces',serif;font-size:12px;font-weight:700;color:var(--pk-l);margin-bottom:9px;text-transform:uppercase;letter-spacing:.05em}
+.dscard-i{font-size:12px;color:var(--tm);display:flex;gap:7px;margin-bottom:5px;line-height:1.4}
+.dscard-i::before{content:'·';color:var(--pk);flex-shrink:0}
+.pwrd{background:var(--grad-soft);border:1px solid rgba(31,169,224,.3);border-radius:8px;padding:11px 14px;text-align:center;margin-top:auto}
+.pwrd-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--pk-l);margin-bottom:3px}
+.pwrd-s{font-size:11px;color:var(--tm)}
+
+#s4{align-items:flex-start;padding:100px 60px 60px}
+.intel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:24px}
+.ic{padding:19px;transition:transform .4s cubic-bezier(.175,.885,.32,1.5),box-shadow .3s}
+.ic:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.35),0 0 16px rgba(31,169,224,.12),inset 0 1.5px 0 0 rgba(255,255,255,.35)!important}
+.ic-icon{font-size:22px;margin-bottom:9px}
+.ic-t{font-family:'Fraunces',serif;font-size:13px;font-weight:700;color:var(--pk-l);margin-bottom:5px}
+.ic-d{font-size:12px;color:var(--tm);line-height:1.6}
+.impact-bar{border-left:3px solid var(--pk);border-radius:0 14px 14px 0!important;padding:18px 26px;display:flex;align-items:center;gap:16px;margin-bottom:18px;border-color:rgba(31,169,224,.28)!important;background:linear-gradient(135deg,rgba(31,169,224,.1),rgba(14,92,140,.06))!important}
+.impact-icon{font-size:26px;flex-shrink:0}
+.impact-text{font-family:'Fraunces',serif;font-size:15px;font-weight:700;line-height:1.4}
+.impact-text em{color:var(--pk-l);font-style:normal}
+.impact-sub{font-size:11px;color:var(--tm);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.roi-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.roi-col{padding:22px}
+.roi-before{border-color:rgba(232,68,26,.3)!important;background:rgba(232,68,26,.05)!important}
+.roi-after{border-color:rgba(31,169,224,.35)!important;position:relative;overflow:hidden}
+.roi-after::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+.roi-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:13px}
+.roi-before .roi-lbl{color:#f07050}.roi-after .roi-lbl{color:var(--pk-l)}
+.roi-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.roi-row:last-child{border-bottom:none}
+.roi-row span:first-child{color:var(--tm)}
+.roi-before .roi-row span:last-child{color:var(--t);font-weight:600}
+.roi-after .roi-row span:last-child{font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+#s5{align-items:flex-start;padding:100px 60px 60px}
+.portal-wrap{margin-bottom:20px;overflow:hidden;border-radius:18px}
+.portal-bar{display:flex;align-items:center;gap:10px;padding:11px 18px;background:rgba(246,243,238,.9);border-bottom:1px solid var(--bo)}
+.portal-bar-dot{width:10px;height:10px;border-radius:50%;background:#f5a623;box-shadow:0 0 6px rgba(245,166,35,.5)}
+.portal-bar-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#92600a;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);padding:3px 10px;border-radius:100px}
+.portal-bar-url{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--td)}
+.pm-dash{background:#f4f8fc;padding:20px 24px;font-family:'Inter',sans-serif}
+.pm-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.pm-title{font-family:'Fraunces',serif;font-size:15px;font-weight:800;color:#0B2034}
+.pm-sub{font-size:11px;color:#4A7A96;margin-top:2px}
+.pm-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.pm-tab{font-size:11px;padding:5px 11px;border-radius:20px;border:1px solid #cce3f0;color:#4A7A96;background:#fff;cursor:default}
+.pm-tab.active{background:#0E5C8C;color:#fff;border-color:#0E5C8C}
+.pm-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.pm-kpi{background:#fff;border-radius:12px;padding:14px 16px;border:1px solid #cce3f0}
+.pm-kpi-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.pm-kpi-val{font-family:'Fraunces',serif;font-size:26px;font-weight:800;color:#0B2034;line-height:1}
+.pm-kpi-val.pm-vio{color:#0E5C8C}
+.pm-kpi-val.pm-blu{color:#1FA9E0}
+.pm-kpi-sub{font-size:10px;color:#94a3b8;margin-top:4px}
+.pm-kpi-sub.pm-vio{color:#0E5C8C}
+.pm-mid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.pm-res,.pm-alert,.pm-hora{background:#fff;border-radius:12px;padding:14px 16px;border:1px solid #cce3f0}
+.pm-res-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:11px;font-weight:600;color:#0B2034}
+.pm-link{color:#0E5C8C;font-size:10px;cursor:default}
+.pm-res-row{display:flex;gap:20px;margin-bottom:10px}
+.pm-res-lbl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;margin-bottom:3px;font-family:'JetBrains Mono',monospace}
+.pm-res-val{font-family:'Fraunces',serif;font-size:22px;font-weight:800;line-height:1}
+.pm-res-val.pm-grn{color:#16a34a}
+.pm-res-val.pm-org{color:#f59e0b}
+.pm-res-pct{font-size:10px;color:#94a3b8}
+.pm-bar-wrap{height:6px;border-radius:100px;background:#e0eef7;display:flex;overflow:hidden;margin-bottom:6px}
+.pm-bar-grn{background:#16a34a;border-radius:100px 0 0 100px}
+.pm-bar-org{background:#f59e0b}
+.pm-bar-leg{display:flex;gap:12px;font-size:10px;color:#4A7A96}
+.pm-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px;vertical-align:middle}
+.pm-dot-g{background:#16a34a}.pm-dot-o{background:#f59e0b}
+.pm-alert-num{font-family:'Fraunces',serif;font-size:32px;font-weight:800;color:#0B2034;line-height:1;margin:8px 0 4px}
+.pm-alert-sub{font-size:10px;color:#4A7A96;margin-bottom:10px}
+.pm-alert-row{display:flex;justify-content:space-between;font-size:11px;color:#4A7A96;margin-top:6px}
+.pm-alert-pct{color:#f59e0b;font-weight:700}
+.pm-alert-note{font-size:10px;color:#16a34a;margin-top:4px}
+.pm-hora-hdr{font-size:11px;font-weight:600;color:#0B2034;margin-bottom:8px}
+.pm-hora-slots{display:flex;gap:6px;margin-bottom:10px}
+.pm-slot{flex:1;text-align:center;padding:7px 4px;border-radius:8px;background:#e0eef7}
+.pm-slot-act{background:#0E5C8C}
+.pm-slot-lbl{font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;margin-bottom:3px}
+.pm-slot-act .pm-slot-lbl{color:rgba(255,255,255,.7)}
+.pm-slot-val{font-family:'Fraunces',serif;font-size:16px;font-weight:800;color:#0B2034}
+.pm-slot-act .pm-slot-val{color:#fff}
+.pm-hora-bars{display:flex;flex-direction:column;gap:4px}
+.pm-hbar{display:flex;align-items:center;gap:6px;font-size:9px;color:#94a3b8;font-family:'JetBrains Mono',monospace}
+.pm-hbar span:first-child{width:32px;text-align:right;flex-shrink:0}
+.pm-hbar span:last-child{width:22px;flex-shrink:0}
+.pm-hb{height:5px;background:#7FD0EE;border-radius:100px;flex:0 0 auto}
+.pm-hbar-pk .pm-hb-pk{background:#0E5C8C}
+.pm-hbar-pk{color:#0E5C8C}
+@media(max-width:900px){.pm-kpis{grid-template-columns:1fr 1fr}.pm-mid{grid-template-columns:1fr}}
+.hybrid-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.hyb{padding:20px;transition:transform .4s cubic-bezier(.175,.885,.32,1.5),box-shadow .3s}
+.hyb:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.35),0 0 16px rgba(31,169,224,.12),inset 0 1.5px 0 0 rgba(255,255,255,.35)!important}
+.hyb-t{font-family:'Fraunces',serif;font-size:13px;font-weight:700;color:var(--pk-l);margin-bottom:5px}
+.hyb-d{font-size:12px;color:var(--tm);line-height:1.6}
+.hyb-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:10px}
+
+#s6{align-items:flex-start;padding:80px 60px 70px;min-height:auto}
+#s6 .s-sub{max-width:100%;margin-bottom:28px}
+.roi-controls{padding:22px 26px;margin-bottom:20px}
+.roi-ctrl-top{display:flex;gap:0;margin-bottom:18px;border-bottom:1px solid rgba(14,92,140,.1);padding-bottom:18px}
+.roi-ctrl-half{flex:1;display:flex;flex-direction:column;gap:8px;padding-right:24px}
+.roi-ctrl-half+.roi-ctrl-half{padding-right:0;padding-left:24px;border-left:1px solid rgba(14,92,140,.1)}
+.roi-ctrl-bottom{display:flex;gap:24px;align-items:flex-start}
+.roi-ctrl-block{flex:1}
+.roi-ctrl-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--tm);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.roi-ctrl-lbl span{font-size:14px;font-weight:600;color:var(--pk2);letter-spacing:0;text-transform:none;font-family:'Fraunces',serif}
+.roi-tgl{display:flex;gap:6px;flex-wrap:nowrap}
+.roi-tgl-btn{padding:7px 16px;border-radius:100px;border:1.5px solid var(--bo);background:transparent;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--td);cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.roi-tgl-btn.active{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(31,169,224,.3)}
+.roi-slider{width:100%;-webkit-appearance:none;height:5px;border-radius:4px;background:linear-gradient(90deg,var(--pk),var(--vio));outline:none;cursor:pointer}
+.roi-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:2.5px solid var(--pk);box-shadow:0 2px 10px rgba(31,169,224,.3);cursor:pointer;transition:transform .15s}
+.roi-slider::-webkit-slider-thumb:hover{transform:scale(1.2)}
+.roi-slider-hint{display:flex;justify-content:space-between;font-size:10px;color:var(--td);margin-top:5px}
+.roi-ticket-wrap{display:flex;align-items:center;border:1.5px solid var(--bo);border-radius:12px;background:rgba(255,255,255,.5);overflow:hidden;transition:border-color .2s}
+.roi-ticket-wrap:focus-within{border-color:var(--pk)}
+.roi-ticket-sym{padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500;color:var(--pk2);background:rgba(31,169,224,.06);border-right:1px solid var(--bo)}
+.roi-ticket-inp{border:none;background:transparent;padding:11px 14px;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;color:var(--t);width:100%;outline:none}
+.roi-compare{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
+.roi-col{padding:24px 26px}
+.roi-col-hot{border:1.5px solid rgba(31,169,224,.35)!important;background:linear-gradient(135deg,rgba(31,169,224,.09) 0%,rgba(14,92,140,.07) 100%)!important}
+.roi-col-hot::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;background:linear-gradient(155deg,rgba(255,255,255,.4) 0%,rgba(255,255,255,.04) 40%,transparent 100%)}
+.roi-col-hot>*{position:relative;z-index:1}
+.roi-col-hdr{display:flex;align-items:center;gap:9px;margin-bottom:20px}
+.roi-col-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.roi-col-tag{font-family:'Fraunces',serif;font-size:13px;font-weight:700;line-height:1.2}
+.roi-col-tag small{display:block;font-family:'Inter',sans-serif;font-size:11px;font-weight:400;color:var(--td);margin-top:1px}
+.roi-plan-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--pk2);background:rgba(31,169,224,.08);border:1px solid rgba(31,169,224,.2);padding:3px 11px;border-radius:100px;margin-bottom:14px}
+.roi-stat{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(14,92,140,.1)}
+.roi-stat:last-of-type{border-bottom:none}
+.roi-stat-lbl{display:flex;flex-direction:column;gap:2px}
+.roi-stat-n{font-size:12px;color:var(--td)}
+.roi-stat-hint{font-size:10px;color:var(--td);opacity:.55;line-height:1.4;max-width:190px}
+.roi-ctrl-hint{font-size:10px;color:var(--td);opacity:.6;margin-top:-4px;margin-bottom:7px;line-height:1.4}
+.roi-stat-v{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:var(--t);text-align:right}
+.roi-stat-v.muted{color:#94a3b8}
+.roi-stat-v.red{color:var(--r)}
+.roi-stat-v.green{color:var(--g2)}
+.roi-stat-v.hot{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.roi-badge-gray{display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;padding:2px 9px;border-radius:100px;background:rgba(148,163,184,.15);color:#64748b}
+.roi-badge-pink{display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;padding:2px 9px;border-radius:100px;background:rgba(31,169,224,.1);color:var(--pk2)}
+.roi-big{text-align:center;padding:18px 0 6px;border-top:1px solid rgba(14,92,140,.12);margin-top:14px}
+.roi-big-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--td);margin-bottom:3px}
+.roi-big-num{font-family:'Fraunces',serif;font-size:clamp(36px,5vw,58px);font-weight:800;line-height:1;transition:all .3s}
+.roi-big-sub{font-size:11px;color:var(--td);margin-top:3px}
+.roi-stmt{padding:26px 30px;text-align:center;margin-bottom:18px}
+.roi-stmt-icon{font-size:26px;margin-bottom:10px}
+.roi-stmt-main{font-family:'Fraunces',serif;font-size:clamp(16px,2vw,21px);font-weight:700;color:var(--t);line-height:1.4;margin-bottom:7px}
+.roi-stmt-sub{font-size:13px;color:var(--td);line-height:1.65}
+.roi-be-track{height:7px;background:rgba(14,92,140,.1);border-radius:100px;overflow:hidden;margin:16px 8px 6px}
+.roi-be-fill{height:100%;background:var(--grad);border-radius:100px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.roi-be-lbls{display:flex;justify-content:space-between;font-size:10px;color:var(--td);padding:0 8px}
+.roi-sources{text-align:center;font-size:10px;color:#a0aec0;line-height:1.9;margin-top:6px}
+.roi-sources strong{color:var(--td)}
+@keyframes roiPop{0%{transform:scale(.9)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+.roi-pop{animation:roiPop .3s ease}
+
+#s7{flex-direction:column;text-align:center}
+.cta-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;max-width:700px;padding:0 40px}
+.cta-eye{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--pk-l);margin-bottom:18px}
+.cta-title{font-family:'Fraunces',serif;font-size:clamp(26px,3.5vw,46px);font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-bottom:14px}
+.cta-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-sub{font-size:15px;color:var(--tm);line-height:1.7;margin-bottom:36px;max-width:520px}
+.cta-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:44px}
+.cta-btn1{padding:15px 32px;border:none;border-radius:14px;font-family:'Fraunces',serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:9px;position:relative;overflow:hidden;isolation:isolate;transition:transform .7s cubic-bezier(.175,.885,.32,2.2),box-shadow .3s;box-shadow:0 6px 24px rgba(31,169,224,.45),0 0 20px rgba(31,169,224,.25),inset 2px 2px 1px 0 rgba(255,255,255,.35),inset -1px -1px 1px 1px rgba(255,255,255,.15);background:var(--grad);backdrop-filter:blur(10px) saturate(1.4);-webkit-backdrop-filter:blur(10px) saturate(1.4)}
+.cta-btn1::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.04) 100%);border-radius:inherit;pointer-events:none}
+.cta-btn1:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 10px 28px rgba(0,0,0,.3),0 0 32px rgba(31,169,224,.35),inset 2px 2px 1px 0 rgba(255,255,255,.4),inset -1px -1px 1px 1px rgba(255,255,255,.25)}
+.cta-btn2{padding:15px 32px;border-radius:14px;font-family:'Fraunces',serif;font-size:14px;font-weight:700;color:var(--vio-l);cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:9px;position:relative;overflow:hidden;isolation:isolate;transition:transform .7s cubic-bezier(.175,.885,.32,2.2),box-shadow .3s;box-shadow:0 6px 24px rgba(14,92,140,.2),inset 0 1.5px 0 0 rgba(255,255,255,.9),inset 1.5px 0 0 0 rgba(255,255,255,.5);background:rgba(31,169,224,.12);backdrop-filter:blur(10px) saturate(1.4);-webkit-backdrop-filter:blur(10px) saturate(1.4);border:1px solid rgba(14,92,140,.35)}
+.cta-btn2::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.05) 100%);border-radius:inherit;pointer-events:none}
+.cta-btn2:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 10px 28px rgba(14,92,140,.3),inset 0 1.5px 0 0 rgba(255,255,255,.95);background:rgba(31,169,224,.2)}
+.cta-proof{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
+.cpp{text-align:center}
+.cpp-val{font-family:'Fraunces',serif;font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:3px}
+.cpp-lbl{font-size:11px;color:var(--tm)}
+.cta-foot{margin-top:44px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--td)}
+.cta-foot em{color:var(--tm);font-style:normal}
+
+@media(max-width:900px){
+  #s1,#s2,#s3,#s4,#s5{padding:90px 24px 40px}
+  .ba-grid,.agents-grid,.intel-grid,.met-row,.roi-compare,.hybrid-row,.demo-wrap{grid-template-columns:1fr}
+  .demo-sidebar,.sidenav{display:none}
+  .topbar{padding:14px 24px}
+}
+@media(max-width:860px){
+  .roi-compare{grid-template-columns:1fr}
+  .roi-ctrl-top{flex-direction:column;gap:16px}
+  .roi-ctrl-half{padding-right:0!important;padding-left:0!important;border-left:none!important;border-bottom:1px solid rgba(14,92,140,.1);padding-bottom:16px}
+  .roi-ctrl-half:last-child{border-bottom:none;padding-bottom:0}
+  .roi-ctrl-bottom{flex-direction:column;gap:16px}
+  #s6{padding:70px 24px 50px}
+  .roi-controls{padding:18px}
+  .roi-col{padding:18px}
+  .roi-stmt{padding:18px}
+  .roi-ctrl-block[style*="max-width"]{max-width:100%!important}
+  .roi-tgl{flex-wrap:wrap}
+}
+@media(max-width:600px){
+  #s0,#s1,#s2,#s3,#s4,#s5,#s6{padding:80px 18px 36px}
+  #s3{padding:80px 18px 32px}
+  .s-inner{padding:0}
+  .topbar{padding:12px 18px}
+  .topbar-badge{display:none}
+  .hero-inner{padding:0 8px}
+  .hero-counter-wrap{flex-direction:column;align-items:center;text-align:center;gap:8px;padding:14px 18px}
+  .hero-counter-label{max-width:none;text-align:center}
+  .hero-scroll{margin-top:28px}
+  .modal-overlay{align-items:flex-start;padding:20px 0 40px}
+  .modal-box{padding:28px 22px;border-radius:16px;margin:auto}
+  .modal-title{font-size:20px}
+  .s-title{font-size:clamp(22px,6vw,32px)}
+  .prob-quote-text{font-size:clamp(18px,5vw,26px)}
+  .chat-win{height:360px}
+  .demo-tabs{flex-wrap:wrap;gap:6px}
+  .dtab{font-size:12px;padding:8px 14px}
+  .met-row{grid-template-columns:1fr 1fr}
+  .intel-grid{grid-template-columns:1fr 1fr}
+  .ac-metrics{grid-template-columns:1fr 1fr 1fr}
+  .cta-btns{flex-direction:column;align-items:stretch}
+  .cta-btn1,.cta-btn2{justify-content:center}
+  .cta-proof{gap:18px}
+  *{max-width:100%}
+  img,canvas,video,iframe{max-width:100%;height:auto}
+}
+@media(max-width:380px){
+  .modal-box{padding:22px 16px}
+  .modal-title{font-size:18px}
+  .phone-row{flex-direction:column}
+  .modal-select{min-width:unset;width:100%}
+  .intel-grid{grid-template-columns:1fr}
+  .met-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<svg style="position:absolute;width:0;height:0;overflow:hidden"><defs><filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox"><feTurbulence type="fractalNoise" baseFrequency="0.001 0.004" numOctaves="1" seed="17" result="turbulence"/><feComponentTransfer in="turbulence" result="mapped"><feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5"/><feFuncG type="gamma" amplitude="0" exponent="1" offset="0"/><feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5"/></feComponentTransfer><feGaussianBlur in="turbulence" stdDeviation="2" result="softMap"/><feDisplacementMap in="SourceGraphic" in2="softMap" scale="80" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal-box lg">
+    <div class="modal-glow"></div>
+    <div class="modal-brand">iCCS · International Cancer Care Society</div>
+    <div class="modal-title">Propuesta para que su organización<br><em>responda y gestione pacientes 24/7</em></div>
+    <div class="modal-sub">Déjenos sus datos y en segundos podrá ver cómo nuestros agentes de inteligencia artificial trabajan en el sector salud — en vivo.</div>
+    <div class="modal-err" id="leadErr"></div>
+    <div class="modal-field">
+      <label class="modal-label">Su nombre</label>
+      <input type="text" class="modal-input" id="leadNombre" placeholder="Ej: Dr. Carlos Martínez" autocomplete="name" onkeydown="if(event.key==='Enter')document.getElementById('leadTelefono').focus()">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Teléfono / WhatsApp</label>
+      <div class="phone-row">
+        <select class="modal-select" id="leadPais" onchange="updatePhoneField()">
+          <option value="+57" data-digits="10" data-ph="300 123 4567" data-name="Colombia">🇨🇴 +57</option>
+          <option value="+52" data-digits="10" data-ph="55 1234 5678" data-name="México">🇲🇽 +52</option>
+          <option value="+58" data-digits="10" data-ph="414 123 4567" data-name="Venezuela">🇻🇪 +58</option>
+          <option value="+54" data-digits="10" data-ph="11 1234 5678" data-name="Argentina">🇦🇷 +54</option>
+          <option value="+56" data-digits="9"  data-ph="9 1234 5678"  data-name="Chile">🇨🇱 +56</option>
+          <option value="+51" data-digits="9"  data-ph="987 654 321"  data-name="Perú">🇵🇪 +51</option>
+          <option value="+34" data-digits="9"  data-ph="612 345 678"  data-name="España">🇪🇸 +34</option>
+          <option value="+1"  data-digits="10" data-ph="305 123 4567" data-name="EE.UU.">🇺🇸 +1</option>
+          <option value="+44" data-digits="10" data-ph="7911 123456"  data-name="R. Unido">🇬🇧 +44</option>
+        </select>
+        <input type="tel" inputmode="numeric" class="modal-input phone-num" id="leadTelefono" placeholder="300 123 4567" autocomplete="tel-national" oninput="sanitizePhone(this)" onkeydown="if(event.key==='Enter')submitLead()">
+      </div>
+      <div class="phone-hint" id="phoneHint">Colombia · 10 dígitos</div>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Organización <span style="color:var(--td)">(opcional)</span></label>
+      <input type="text" class="modal-input" id="leadEmpresa" placeholder="Ej: Policlínica Central" autocomplete="organization" onkeydown="if(event.key==='Enter')submitLead()">
+    </div>
+    <button class="modal-btn" id="leadBtn" onclick="submitLead()">Ver la propuesta →</button>
+    <div class="modal-privacy">Sus datos son confidenciales y solo serán usados<br>por el equipo de iCCS · NODO One para contactarle.</div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-logo">i<span>CCS</span></div>
+  <div class="topbar-badge">Propuesta Comercial · Sector Salud</div>
+</header>
+
+<!-- SIDENAV -->
+<nav class="sidenav">
+  <div class="snav-dot active" data-section="0" data-label="Inicio"></div>
+  <div class="snav-dot" data-section="1" data-label="El Problema"></div>
+  <div class="snav-dot" data-section="2" data-label="La Solución"></div>
+  <div class="snav-dot" data-section="3" data-label="Demo en Vivo"></div>
+  <div class="snav-dot" data-section="4" data-label="Lo que Obtiene"></div>
+  <div class="snav-dot" data-section="5" data-label="Panel de Control"></div>
+  <div class="snav-dot" data-section="6" data-label="ROI · Retorno"></div>
+  <div class="snav-dot" data-section="7" data-label="Agendar Llamada"></div>
+</nav>
+
+<!-- S0 HERO -->
+<section id="s0">
+  <div class="bg-grid"></div>
+  <div class="glow" style="width:600px;height:600px;top:-200px;right:-100px;background:radial-gradient(circle,rgba(31,169,224,.15) 0%,transparent 70%)"></div>
+  <div class="glow" style="width:400px;height:400px;bottom:-100px;left:-50px;background:radial-gradient(circle,rgba(14,92,140,.1) 0%,transparent 70%)"></div>
+  <div class="hero-inner">
+    <div class="hero-msg-wrap">
+      <div class="hero-clock">🕐 &nbsp;02:47 AM &nbsp;— &nbsp;su centro médico</div>
+      <div class="hero-wamsg"><div class="hero-wamsg-dot"></div><span>Buenos días, necesito saber si tienen consulta disponible esta semana. ¿Alguien me puede atender? 🙏</span></div>
+      <div style="display:flex;padding-left:12px;margin-top:6px">
+        <div class="hero-typing"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>
+      </div>
+    </div>
+    <div class="hero-no-resp">Sin respuesta.</div>
+    <div class="hero-gone">Este paciente no va a esperar al lunes. Llamó a otra clínica, consiguió cita y su caso ya no llegará a usted.</div>
+    <div class="hero-counter-wrap">
+      <div class="hero-counter-num" id="heroCounter">40%</div>
+      <div class="hero-counter-label">de las consultas médicas llegan fuera del horario — y ningún centro las responde.</div>
+    </div>
+    <div class="hero-logo-wrap">
+      <div class="hero-logo">iCCS · Powered by NODO One</div>
+      <h1 class="hero-tagline">Su organización atiende pacientes<br>y agenda citas <em>24/7 sin depender de personas.</em></h1>
+    </div>
+    <div class="hero-scroll" onclick="goTo(1)">
+      <span>Continuar</span><div class="hero-scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- S1 PROBLEMA -->
+<section id="s1">
+  <div class="bg-grid"></div>
+  <div class="s-inner">
+    <div class="s-label reveal">01 · El problema que resuelve NODO en salud</div>
+    <h2 class="s-title reveal d1">Su centro médico es <span class="grad-text">humano-dependiente.</span></h2>
+    <p class="s-sub reveal d2">Depende de una recepcionista para cada llamada, de un coordinador para cada cita, de alguien disponible para responder. Cuando el equipo descansa, el flujo de pacientes se detiene.</p>
+    <div class="prob-quote reveal d3">
+      <div class="prob-quote-eye">La nueva realidad del sector salud</div>
+      <div class="prob-quote-text">El paciente que no recibe respuesta<br><em>busca otro médico en segundos.</em></div>
+      <p class="prob-quote-sub">La competencia entre centros médicos es digital. El que responde primero retiene al paciente. El que no responde pierde la consulta, el seguimiento y la relación.</p>
+      <div class="prob-stat">
+        <span class="prob-stat-num">78%</span>
+        <span class="prob-stat-txt">de los pacientes eligen al centro que primero responde</span>
+        <span class="prob-stat-src">— Harvard Business Review, 2024</span>
+      </div>
+    </div>
+    <div class="ba-grid reveal d4">
+      <div class="bac bab lg">
+        <div class="bat">❌ Sin agente IA — hoy</div>
+        <div class="bai"><span class="dot-r"></span>El paciente llama fuera de horario y no hay nadie</div>
+        <div class="bai"><span class="dot-r"></span>Las recepcionistas responden las mismas preguntas todo el día</div>
+        <div class="bai"><span class="dot-r"></span>Citas sin confirmar generan ausencias y gaps en agenda</div>
+        <div class="bai"><span class="dot-r"></span>Escalar atención implica contratar más personal</div>
+        <div class="bai"><span class="dot-r"></span>Seguimientos post-consulta no se realizan por falta de tiempo</div>
+      </div>
+      <div class="bac baa lg">
+        <div class="bat">✅ Con agente IA — el cambio</div>
+        <div class="bai"><span class="dot-g"></span>Respuesta inmediata las 24 horas, los 365 días del año</div>
+        <div class="bai"><span class="dot-g"></span>Agendamiento, confirmación y recordatorio automáticos</div>
+        <div class="bai"><span class="dot-g"></span>Reducción de ausencias con recordatorios 24h antes</div>
+        <div class="bai"><span class="dot-g"></span>Capacidad ilimitada sin aumentar plantilla</div>
+        <div class="bai"><span class="dot-g"></span>Su equipo se enfoca en la atención clínica, no en la recepción</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2 SOLUCIÓN -->
+<section id="s2">
+  <div class="bg-grid"></div>
+  <div class="s-inner">
+    <div class="s-label reveal">02 · Qué es NODO y cómo funciona en salud</div>
+    <h2 class="s-title reveal d1">El primer <span class="grad-text">BPO Digital</span> para el sector médico</h2>
+    <div class="sol-intro lg reveal d2">
+      <div class="sol-intro-lbl">La lógica del modelo</div>
+      <div class="sol-intro-text">NODO no vende software. Instala empleados digitales dentro de la operación de su centro — agentes de inteligencia artificial entrenados en el lenguaje médico que trabajan de forma continua, con total visibilidad para su organización.</div>
+    </div>
+    <div class="agents-grid reveal d3">
+      <div class="agent-card ac-pk lg">
+        <div class="ac-top"><div class="ac-av">🏥</div><div><div class="ac-name">Claudia Médica</div><div class="ac-role">Recepción y citas · 24/7</div></div></div>
+        <div class="ac-body">
+          <div class="ac-desc">Atiende consultas de pacientes, agenda citas, confirma disponibilidad y gestiona recordatorios — sin intervención humana y sin errores.</div>
+          <ul class="ac-caps">
+            <li>Respuesta en menos de 45 segundos — siempre</li>
+            <li>Agenda, confirma y recuerda citas automáticamente</li>
+            <li>Informa servicios, especialidades y tarifas</li>
+            <li>1.000 conversaciones simultáneas · multilingüe</li>
+          </ul>
+          <div class="ac-metrics">
+            <div class="am"><div class="am-val">157k+</div><div class="am-lbl">Pacientes</div></div>
+            <div class="am"><div class="am-val">$429k</div><div class="am-lbl">Generados</div></div>
+            <div class="am"><div class="am-val">99,9%</div><div class="am-lbl">Precisión</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card ac-vio lg">
+        <div class="ac-top"><div class="ac-av">📞</div><div><div class="ac-name">Lucía Voz</div><div class="ac-role">Llamadas entrantes · 24/7</div></div></div>
+        <div class="ac-body">
+          <div class="ac-desc">Atiende llamadas telefónicas, gestiona urgencias de primer nivel, confirma citas y transfiere a médico o coordinador cuando corresponde.</div>
+          <ul class="ac-caps">
+            <li>Recepción inmediata de llamadas sin espera</li>
+            <li>Triaje conversacional de primer nivel</li>
+            <li>Transferencia a humano en casos prioritarios</li>
+            <li>Multilingüe — hasta 5 idiomas simultáneos</li>
+          </ul>
+          <div class="ac-metrics">
+            <div class="am"><div class="am-val">1M+</div><div class="am-lbl">Llamadas</div></div>
+            <div class="am"><div class="am-val">19x</div><div class="am-lbl">ROI/mes</div></div>
+            <div class="am"><div class="am-val">95,9%</div><div class="am-lbl">SLA</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="met-row reveal d4">
+      <div class="met lg"><div class="met-val">157k+</div><div class="met-lbl">Pacientes gestionados</div><div class="met-sub">Solo Claudia · WhatsApp</div></div>
+      <div class="met lg"><div class="met-val">1M+</div><div class="met-lbl">Llamadas atendidas</div><div class="met-sub">Solo Lucía · Voz</div></div>
+      <div class="met lg"><div class="met-val">$700k+</div><div class="met-lbl">Ingresos generados</div><div class="met-sub">Claudia + Lucía</div></div>
+      <div class="met lg"><div class="met-val">39+</div><div class="met-lbl">Centros activos</div><div class="met-sub">Hoy en operación</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 DEMO -->
+<section id="s3">
+  <div class="bg-grid"></div>
+  <div style="position:relative;z-index:2;width:100%;max-width:1100px;margin:0 auto">
+    <div class="demo-header">
+      <div class="live-badge"><div class="live-dot"></div>Propuesta comercial · IA real · Live</div>
+      <h2 class="demo-title">Su agente médico <span class="grad-text">en acción ahora mismo</span></h2>
+      <p class="demo-sub">Seleccione el tipo de centro y hable con Claudia — así atiende a sus pacientes</p>
+    </div>
+    <div class="demo-tabs">
+      <button class="dtab active" data-agent="policlinica" onclick="switchAgent('policlinica')"><span>🏥</span> Policlínica</button>
+      <button class="dtab" data-agent="diagnostico" onclick="switchAgent('diagnostico')"><span>🔬</span> Centro de Diagnóstico</button>
+      <button class="dtab" data-agent="hospital" onclick="switchAgent('hospital')"><span>🩺</span> Hospital General</button>
+    </div>
+    <div class="demo-wrap">
+
+      <!-- Panel Policlínica -->
+      <div class="dpanel active" id="panel-policlinica">
+        <div class="chat-win lg">
+          <div class="chat-hdr">
+            <div class="chat-av">🏥</div>
+            <div><div class="chat-aname">Claudia</div><div class="chat-arole">Policlínica Central · Recepción</div></div>
+            <div class="chat-status"><div class="chat-sdot"></div>Activo · 24/7</div>
+          </div>
+          <div class="chat-msgs" id="msgs-policlinica">
+            <div class="cmsg cmsg-a">¡Hola! Soy Claudia, recepcionista virtual de la Policlínica Central 😊 ¿En qué le puedo ayudar hoy?<div class="cmsg-time" id="t0-policlinica"></div></div>
+          </div>
+          <div class="typing-ind" id="typing-policlinica"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div><span style="font-size:11px;color:var(--tm);margin-left:6px">Claudia escribe…</span></div>
+          <div class="chat-foot">
+            <div class="chat-in-row">
+              <input class="chat-in" id="in-policlinica" placeholder="Escribe tu mensaje…" onkeydown="handleKey(event,'policlinica')">
+              <button class="chat-send" id="btn-policlinica" onclick="sendMsg('policlinica')">Enviar →</button>
+            </div>
+            <div class="suggs">
+              <div class="sugg" onclick="useSugg('policlinica','¿Tienen consulta de medicina general esta semana?')">¿Consulta disponible?</div>
+              <div class="sugg" onclick="useSugg('policlinica','Quiero agendar una cita con el cardiólogo')">Agendar con cardiólogo</div>
+              <div class="sugg" onclick="useSugg('policlinica','¿Cuál es el precio de la consulta?')">¿Cuánto cuesta la consulta?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Diagnóstico -->
+      <div class="dpanel" id="panel-diagnostico">
+        <div class="chat-win lg">
+          <div class="chat-hdr">
+            <div class="chat-av">🔬</div>
+            <div><div class="chat-aname">Claudia</div><div class="chat-arole">Centro de Diagnóstico · Atención</div></div>
+            <div class="chat-status"><div class="chat-sdot"></div>Activo · 24/7</div>
+          </div>
+          <div class="chat-msgs" id="msgs-diagnostico">
+            <div class="cmsg cmsg-a">¡Buenos días! Soy Claudia del Centro de Diagnóstico Avanzado 🔬 ¿Le puedo ayudar con algún estudio o examen?<div class="cmsg-time" id="t0-diagnostico"></div></div>
+          </div>
+          <div class="typing-ind" id="typing-diagnostico"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div><span style="font-size:11px;color:var(--tm);margin-left:6px">Claudia escribe…</span></div>
+          <div class="chat-foot">
+            <div class="chat-in-row">
+              <input class="chat-in" id="in-diagnostico" placeholder="Escribe tu mensaje…" onkeydown="handleKey(event,'diagnostico')">
+              <button class="chat-send" id="btn-diagnostico" onclick="sendMsg('diagnostico')">Enviar →</button>
+            </div>
+            <div class="suggs">
+              <div class="sugg" onclick="useSugg('diagnostico','¿Qué necesito para hacerme una resonancia magnética?')">Resonancia magnética</div>
+              <div class="sugg" onclick="useSugg('diagnostico','¿Tienen tomografía y cuánto cuesta?')">Tomografía · precio</div>
+              <div class="sugg" onclick="useSugg('diagnostico','Tengo orden médica para análisis de sangre')">Análisis con orden médica</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Hospital -->
+      <div class="dpanel" id="panel-hospital">
+        <div class="chat-win lg">
+          <div class="chat-hdr">
+            <div class="chat-av">🩺</div>
+            <div><div class="chat-aname">Claudia</div><div class="chat-arole">Hospital General · Información</div></div>
+            <div class="chat-status"><div class="chat-sdot"></div>Activo · 24/7</div>
+          </div>
+          <div class="chat-msgs" id="msgs-hospital">
+            <div class="cmsg cmsg-a">Hola, soy Claudia del Hospital General 🩺 Estoy aquí para orientarle sobre nuestros servicios, especialidades y citas. ¿En qué le ayudo?<div class="cmsg-time" id="t0-hospital"></div></div>
+          </div>
+          <div class="typing-ind" id="typing-hospital"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div><span style="font-size:11px;color:var(--tm);margin-left:6px">Claudia escribe…</span></div>
+          <div class="chat-foot">
+            <div class="chat-in-row">
+              <input class="chat-in" id="in-hospital" placeholder="Escribe tu mensaje…" onkeydown="handleKey(event,'hospital')">
+              <button class="chat-send" id="btn-hospital" onclick="sendMsg('hospital')">Enviar →</button>
+            </div>
+            <div class="suggs">
+              <div class="sugg" onclick="useSugg('hospital','¿Tienen oncología y cómo agendo una cita?')">Oncología · cita</div>
+              <div class="sugg" onclick="useSugg('hospital','¿Cuáles son los horarios de urgencias?')">Urgencias · horario</div>
+              <div class="sugg" onclick="useSugg('hospital','Mi familiar está hospitalizado, ¿cómo obtengo información?')">Paciente hospitalizado</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="demo-sidebar">
+        <div id="si-policlinica">
+          <div class="dscard lg">
+            <div class="dscard-t">Policlínica Central</div>
+            <div class="dscard-i">Medicina general, cardiología, pediatría, ginecología, traumatología</div>
+            <div class="dscard-i">Consultas desde $25.000 COP · Citas en 24h</div>
+            <div class="dscard-i">Lunes–Viernes 7am–8pm · Sábados 8am–2pm</div>
+            <div class="dscard-i">Cra 45 #32-15 · Bogotá</div>
+          </div>
+        </div>
+        <div id="si-diagnostico" style="display:none">
+          <div class="dscard lg">
+            <div class="dscard-t">Centro de Diagnóstico</div>
+            <div class="dscard-i">Radiología, ecografía, tomografía, resonancia, laboratorio clínico</div>
+            <div class="dscard-i">RMN desde $280.000 · TAC desde $180.000 · Labs desde $35.000</div>
+            <div class="dscard-i">Resultados online en 24–48h · Sede norte y sur</div>
+            <div class="dscard-i">Lunes–Sábado 7am–7pm</div>
+          </div>
+        </div>
+        <div id="si-hospital" style="display:none">
+          <div class="dscard lg">
+            <div class="dscard-t">Hospital General</div>
+            <div class="dscard-i">Urgencias 24/7 · Hospitalización · Cirugía · UCI · Oncología</div>
+            <div class="dscard-i">+32 especialidades médicas disponibles</div>
+            <div class="dscard-i">Atención con o sin EPS · Medicina prepagada</div>
+            <div class="dscard-i">Urgencias siempre activas · Información 24h</div>
+          </div>
+        </div>
+        <div class="dscard lg">
+          <div class="dscard-t">Lo que gestiona el agente</div>
+          <div class="dscard-i">Agendamiento y confirmación de citas</div>
+          <div class="dscard-i">Información de servicios y tarifas</div>
+          <div class="dscard-i">Recordatorios automáticos 24h antes</div>
+          <div class="dscard-i">Triaje inicial y derivación al especialista</div>
+          <div class="dscard-i">Resultados y documentos por WhatsApp</div>
+        </div>
+        <div class="pwrd">
+          <div class="pwrd-t">Potenciado por</div>
+          <div class="pwrd-s">Claude · Anthropic · Entrenado en protocolos médicos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4 BENEFICIOS -->
+<section id="s4">
+  <div class="bg-grid"></div>
+  <div class="s-inner">
+    <div class="s-label reveal">04 · Lo que obtiene su organización</div>
+    <h2 class="s-title reveal d1">Inteligencia operativa <span class="grad-text">diseñada para salud.</span></h2>
+    <p class="s-sub reveal d2">Su agente no es un chatbot genérico. Está entrenado en el lenguaje, los protocolos y las necesidades específicas del sector médico.</p>
+    <div class="intel-grid reveal d3">
+      <div class="ic lg"><div class="ic-icon">🕐</div><div class="ic-t">Disponibilidad total</div><div class="ic-d">Atiende pacientes a las 3am con la misma calidad que a las 10am. Sin excepciones, sin ausencias, sin días festivos.</div></div>
+      <div class="ic lg"><div class="ic-icon">📅</div><div class="ic-t">Agenda inteligente</div><div class="ic-d">Gestiona citas, confirma, reagenda y envía recordatorios automáticos — reduciendo ausencias hasta un 40%.</div></div>
+      <div class="ic lg"><div class="ic-icon">🔒</div><div class="ic-t">Confidencialidad</div><div class="ic-d">Diseñado con protocolos de privacidad para datos de salud. Nunca comparte información clínica sin autorización.</div></div>
+      <div class="ic lg"><div class="ic-icon">📋</div><div class="ic-t">Triaje conversacional</div><div class="ic-d">Clasifica la urgencia del paciente y deriva al especialista correcto — antes de que el equipo médico intervenga.</div></div>
+      <div class="ic lg"><div class="ic-icon">💬</div><div class="ic-t">Comunicación post-consulta</div><div class="ic-d">Entrega resultados, instrucciones de tratamiento y recordatorios de medicación por WhatsApp de forma automática.</div></div>
+      <div class="ic lg"><div class="ic-icon">📊</div><div class="ic-t">Métricas en tiempo real</div><div class="ic-d">Dashboard con volumen de consultas, tiempos de respuesta, tasa de citas cumplidas y alertas operativas.</div></div>
+    </div>
+    <div class="impact-bar lg reveal d4">
+      <div class="impact-icon">🏆</div>
+      <div>
+        <div class="impact-text">El 55% de las consultas médicas llegan <em>fuera del horario de atención.</em></div>
+        <div class="impact-sub">Fuente: Accenture Health Technology Report · 2024</div>
+      </div>
+    </div>
+    <div class="roi-compare reveal d5">
+      <div class="roi-col roi-before lg">
+        <div class="roi-lbl">Modelo humano-dependiente</div>
+        <div class="roi-row"><span>Coste mensual recepción</span><span>1.800–2.500 €</span></div>
+        <div class="roi-row"><span>Cobertura horaria</span><span>8h/día · 5 días</span></div>
+        <div class="roi-row"><span>Llamadas simultáneas</span><span>1–2 máximo</span></div>
+        <div class="roi-row"><span>Consistencia de atención</span><span>Variable</span></div>
+        <div class="roi-row"><span>Para crecer</span><span>Contratar más</span></div>
+      </div>
+      <div class="roi-col roi-after lg">
+        <div class="roi-lbl">Agente digital NODO</div>
+        <div class="roi-row"><span>Inversión mensual</span><span>desde $789/mes</span></div>
+        <div class="roi-row"><span>Cobertura horaria</span><span>24/7 · 365 días</span></div>
+        <div class="roi-row"><span>Consultas simultáneas</span><span>1.000+</span></div>
+        <div class="roi-row"><span>Consistencia de atención</span><span>99,9% · siempre igual</span></div>
+        <div class="roi-row"><span>Para crecer</span><span>Instantáneo · sin coste</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 PANEL CONTROL -->
+<section id="s5">
+  <div class="bg-grid"></div>
+  <div class="s-inner">
+    <div class="s-label reveal">05 · Su panel de control en tiempo real</div>
+    <h2 class="s-title reveal d1">Visibilidad total sobre <span class="grad-text">cada interacción.</span></h2>
+    <p class="s-sub reveal d2">Cada consulta registrada. Cada cita agendada. Cada alerta generada. NODO le da los datos que antes no existían en su organización de salud.</p>
+    <div class="lg portal-wrap reveal d3">
+      <div class="portal-bar">
+        <div class="portal-bar-dot"></div>
+        <div class="portal-bar-lbl">Vista previa · Portal iCCS</div>
+        <div class="portal-bar-url">nodo-os · Métricas del agente médico</div>
+      </div>
+      <div class="pm-dash">
+        <div class="pm-hdr">
+          <div>
+            <div class="pm-title">Métricas del Agente Médico</div>
+            <div class="pm-sub">Rendimiento de atención a pacientes</div>
+          </div>
+          <div class="pm-tabs">
+            <span class="pm-tab">7 días</span>
+            <span class="pm-tab">14 días</span>
+            <span class="pm-tab active">Último mes</span>
+            <span class="pm-tab">3 meses</span>
+            <span class="pm-tab">Histórico</span>
+          </div>
+        </div>
+        <div class="pm-kpis">
+          <div class="pm-kpi"><div class="pm-kpi-lbl">CONSULTAS TOTALES</div><div class="pm-kpi-val">5.847</div><div class="pm-kpi-sub">● en el último mes</div></div>
+          <div class="pm-kpi"><div class="pm-kpi-lbl">FUERA DE HORARIO</div><div class="pm-kpi-val pm-vio">3.241</div><div class="pm-kpi-sub pm-vio">● 55% del total</div></div>
+          <div class="pm-kpi"><div class="pm-kpi-lbl">CITAS AGENDADAS</div><div class="pm-kpi-val pm-blu">2.180</div><div class="pm-kpi-sub">● por el agente</div></div>
+          <div class="pm-kpi"><div class="pm-kpi-lbl">TIEMPO DE RESPUESTA</div><div class="pm-kpi-val pm-blu">37s</div><div class="pm-kpi-sub">● por mensaje</div></div>
+        </div>
+        <div class="pm-mid">
+          <div class="pm-res">
+            <div class="pm-res-hdr"><span>Resolución de consultas</span><a class="pm-link">Ver detalle →</a></div>
+            <div class="pm-res-row">
+              <div><div class="pm-res-lbl">RESUELTAS AUTÓNOMAMENTE</div><div class="pm-res-val pm-grn">5.365</div><div class="pm-res-pct">92% del total</div></div>
+              <div><div class="pm-res-lbl">DERIVADAS AL EQUIPO</div><div class="pm-res-val pm-org">278</div><div class="pm-res-pct">5% del total</div></div>
+            </div>
+            <div class="pm-bar-wrap"><div class="pm-bar-grn" style="width:92%"></div><div class="pm-bar-org" style="width:5%"></div></div>
+            <div class="pm-bar-leg"><span><span class="pm-dot pm-dot-g"></span>Autónomas</span><span><span class="pm-dot pm-dot-o"></span>Derivadas</span></div>
+          </div>
+          <div class="pm-alert">
+            <div class="pm-res-hdr"><span>Alertas generadas</span><a class="pm-link">Ver detalle →</a></div>
+            <div class="pm-alert-num">278</div>
+            <div class="pm-alert-sub">consultas que requirieron intervención médica</div>
+            <div class="pm-alert-row"><span class="pm-alert-lbl">Tasa de alerta</span><span class="pm-alert-pct">5%</span></div>
+            <div class="pm-alert-note">✓ Dentro del rango óptimo (&lt; 8%)</div>
+          </div>
+          <div class="pm-hora">
+            <div class="pm-hora-hdr">Actividad horaria</div>
+            <div class="pm-hora-slots">
+              <div class="pm-slot"><div class="pm-slot-lbl">MAÑANA (6–12)</div><div class="pm-slot-val">721</div></div>
+              <div class="pm-slot pm-slot-act"><div class="pm-slot-lbl">TARDE (12–20)</div><div class="pm-slot-val">1.911</div></div>
+              <div class="pm-slot"><div class="pm-slot-lbl">NOCHE (20–6)</div><div class="pm-slot-val">714</div></div>
+            </div>
+            <div class="pm-hora-bars">
+              <div class="pm-hbar"><span>09:00</span><div class="pm-hb" style="width:40%"></div><span>4%</span></div>
+              <div class="pm-hbar"><span>12:00</span><div class="pm-hb" style="width:76%"></div><span>7%</span></div>
+              <div class="pm-hbar pm-hbar-pk"><span>18:00</span><div class="pm-hb pm-hb-pk" style="width:100%"></div><span>9%</span></div>
+              <div class="pm-hbar"><span>21:00</span><div class="pm-hb" style="width:55%"></div><span>5%</span></div>
+              <div class="pm-hbar"><span>00:00</span><div class="pm-hb" style="width:12%"></div><span>1%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hybrid-row reveal d4">
+      <div class="hyb lg"><div class="hyb-num">VOLUMEN</div><div class="hyb-t">💬 Total de consultas del período</div><div class="hyb-d">Cuántas interacciones gestionó su agente — con media diaria. Detecta picos por campaña, temporada o publicidad.</div></div>
+      <div class="hyb lg"><div class="hyb-num">NOCTURNO</div><div class="hyb-t">🌙 Pacientes fuera de horario</div><div class="hyb-d">El tráfico invisible que antes se perdía. Pacientes que buscaban atención a las 2am y ahora reciben respuesta inmediata.</div></div>
+      <div class="hyb lg"><div class="hyb-num">CITAS</div><div class="hyb-t">📅 Agendamientos automáticos</div><div class="hyb-d">Cuántas citas gestionó el agente sin intervención humana. Cada cita es un paciente atendido y un hueco de agenda ocupado.</div></div>
+      <div class="hyb lg"><div class="hyb-num">EFICIENCIA</div><div class="hyb-t">✅ Resolución autónoma</div><div class="hyb-d">Porcentaje de consultas que cierra el agente solo. Cuanto más alto, menos carga para recepcionistas y coordinadores.</div></div>
+      <div class="hyb lg"><div class="hyb-num">VELOCIDAD</div><div class="hyb-t">⚡ Tiempo de respuesta</div><div class="hyb-d">En cuántos segundos responde. El paciente que recibe respuesta inmediata tiene 5x más probabilidad de completar la cita.</div></div>
+      <div class="hyb lg"><div class="hyb-num">ALERTAS</div><div class="hyb-t">🔔 Derivaciones al equipo</div><div class="hyb-d">Casos que requirieron intervención humana real. Permite optimizar el protocolo de triaje y el flujo de escalado.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S6 ROI -->
+<section id="s6">
+  <div class="bg-grid"></div>
+  <div class="glow" style="width:600px;height:600px;top:10%;right:-100px;background:radial-gradient(circle,rgba(14,92,140,.1) 0%,transparent 70%)"></div>
+  <div class="s-inner">
+    <div class="s-label reveal">06 · Retorno de inversión</div>
+    <h2 class="s-title reveal d1">¿Cuántos pacientes está perdiendo <span class="grad-text">cada mes?</span></h2>
+    <p class="s-sub reveal d2">Introduzca los datos de su centro y vea en tiempo real la diferencia entre responder tarde y responder en segundos.</p>
+    <div class="lg roi-controls reveal d3">
+      <div class="roi-ctrl-top">
+        <div class="roi-ctrl-half">
+          <div class="roi-ctrl-lbl">Moneda</div>
+          <div class="roi-tgl">
+            <button class="roi-tgl-btn active" id="roi-btn-usd" onclick="roiSetCurrency('usd')">$ USD</button>
+            <button class="roi-tgl-btn" id="roi-btn-eur" onclick="roiSetCurrency('eur')">€ EUR</button>
+          </div>
+        </div>
+        <div class="roi-ctrl-half">
+          <div class="roi-ctrl-lbl">Plan NODO</div>
+          <div class="roi-tgl">
+            <button class="roi-tgl-btn active" id="roi-btn-anual" onclick="roiSetPlan('anual')">Anual <span id="roi-lbl-anual" style="opacity:.65;font-size:11px;font-family:'JetBrains Mono',monospace">($789/mes)</span></button>
+            <button class="roi-tgl-btn" id="roi-btn-semestral" onclick="roiSetPlan('semestral')">Semestral <span id="roi-lbl-semestral" style="opacity:.65;font-size:11px;font-family:'JetBrains Mono',monospace">($1,116/mes)</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="roi-ctrl-bottom">
+        <div class="roi-ctrl-block">
+          <div class="roi-ctrl-lbl">Consultas sin respuesta / semana <span id="roi-val-chats">30</span></div>
+          <div class="roi-ctrl-hint">Las que llegan fuera de horario, sin respuesta o con demora mayor a 2 horas</div>
+          <input type="range" class="roi-slider" id="roi-slider" min="5" max="150" value="30" oninput="roiUpdateChats(this.value)">
+          <div class="roi-slider-hint"><span>5</span><span>fuera de horario</span><span>150</span></div>
+        </div>
+        <div class="roi-ctrl-block" style="max-width:260px">
+          <div class="roi-ctrl-lbl">Ticket medio por paciente</div>
+          <div class="roi-ctrl-hint">Valor promedio de una consulta o tratamiento nuevo</div>
+          <div class="roi-ticket-wrap">
+            <div class="roi-ticket-sym" id="roi-sym">$</div>
+            <input type="number" class="roi-ticket-inp" id="roi-ticket" value="300" min="10" max="99999" oninput="roiCalc()" onchange="roiCalc()">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="roi-compare reveal d4">
+      <div class="lg roi-col">
+        <div class="roi-col-hdr">
+          <div class="roi-col-dot" style="background:#94a3b8"></div>
+          <div class="roi-col-tag">Sin NODO<small>Respuesta promedio: 47 horas</small></div>
+        </div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Consultas / mes</span><span class="roi-stat-hint">Sin respuesta o con demora — el paciente ya eligió otro centro</span></div><span class="roi-stat-v muted" id="roi-sin-chats">120</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Tasa de conversión</span><span class="roi-stat-hint">De 100 que consultan, cuántos agendan cita</span></div><span class="roi-badge-gray">3% · promedio mercado</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Pacientes captados / mes</span><span class="roi-stat-hint">Nuevos pacientes que efectivamente agendan</span></div><span class="roi-stat-v red" id="roi-sin-cli">4</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Ingresos recuperados</span><span class="roi-stat-hint">Facturación generada por esos nuevos pacientes</span></div><span class="roi-stat-v red" id="roi-sin-ing">$1,200</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Inversión NODO</span></div><span class="roi-stat-v muted">—</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Beneficio neto</span></div><span class="roi-stat-v muted" id="roi-sin-neto">$1,200</span></div>
+        <div class="roi-big">
+          <div class="roi-big-lbl">Lo que pierde al mes</div>
+          <div class="roi-big-num" style="background:linear-gradient(135deg,#dc2626,#f97316);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent" id="roi-sin-perdida">–$4,200</div>
+          <div class="roi-big-sub">vs potencial con NODO</div>
+        </div>
+      </div>
+      <div class="lg roi-col roi-col-hot">
+        <div class="roi-col-hdr">
+          <div class="roi-col-dot" style="background:linear-gradient(135deg,#1FA9E0,#0E5C8C)"></div>
+          <div class="roi-col-tag">Con NODO<small>Respuesta en &lt; 45 segundos · 24/7</small></div>
+        </div>
+        <div class="roi-plan-badge" id="roi-plan-badge">⚡ Plan Anual · Contrato anual</div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Consultas / mes</span><span class="roi-stat-hint">Las mismas — ahora todas reciben respuesta en menos de 45s</span></div><span class="roi-stat-v" id="roi-con-chats">120</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Tasa de conversión</span><span class="roi-stat-hint">Respuesta inmediata = más citas confirmadas</span></div><span class="roi-badge-pink">15% · respuesta inmediata ★</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Pacientes captados / mes</span></div><span class="roi-stat-v hot" id="roi-con-cli">18</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Ingresos recuperados</span></div><span class="roi-stat-v hot" id="roi-con-ing">$5,400</span></div>
+        <div class="roi-stat"><div class="roi-stat-lbl"><span class="roi-stat-n">Inversión NODO</span></div><span class="roi-stat-v" id="roi-con-precio">$789/mes</span></div>
+        <div class="roi-stat" style="border-bottom:none"><div class="roi-stat-lbl"><span class="roi-stat-n" style="font-weight:600;color:var(--t)">Beneficio neto</span></div><span class="roi-stat-v green" id="roi-con-neto">$4,611</span></div>
+        <div class="roi-big">
+          <div class="roi-big-lbl">Retorno sobre inversión</div>
+          <div class="roi-big-num grad-text" id="roi-num">6.8x</div>
+          <div class="roi-big-sub">por cada <span id="roi-sym2">$</span>1 invertido en NODO</div>
+        </div>
+      </div>
+    </div>
+    <div class="lg roi-stmt reveal d5">
+      <div class="roi-stmt-icon">🎯</div>
+      <div class="roi-stmt-main" id="roi-stmt-main">Con solo <strong id="roi-be-n">3 pacientes</strong> ya recupera la inversión — el resto es beneficio.</div>
+      <div class="roi-stmt-sub" id="roi-stmt-sub">De los <strong id="roi-con-cli2">18 pacientes</strong> que captaría con NODO, solo necesita <strong id="roi-be-n2">3</strong> para cubrir el plan. Los <strong id="roi-extra">15</strong> restantes son beneficio puro.</div>
+      <div class="roi-be-track"><div class="roi-be-fill" id="roi-be-fill" style="width:17%"></div></div>
+      <div class="roi-be-lbls"><span>0 pacientes</span><span id="roi-be-mid">Break-even: 3 pacientes</span><span id="roi-be-end">18 captados</span></div>
+    </div>
+    <div class="roi-sources reveal">
+      <strong>Fuentes:</strong> MIT Lead Response Management Study · Harvard Business Review · Accenture Health Technology Report · Forrester Research<br>
+      Sin respuesta inmediata: <strong>3%</strong> de conversión. Con respuesta en &lt;45 seg: <strong>15%</strong> (conservadora — rango real: 8–28%).
+    </div>
+  </div>
+</section>
+
+<!-- S7 CTA -->
+<section id="s7">
+  <div class="bg-grid"></div>
+  <div class="glow" style="width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(14,92,140,.12) 0%,transparent 70%)"></div>
+  <div class="cta-inner">
+    <div class="cta-eye">El siguiente paso</div>
+    <h2 class="cta-title">¿Listo para instalar su <em>recepcionista digital?</em></h2>
+    <p class="cta-sub">En 2 semanas su organización responde a pacientes en menos de 45 segundos, los 365 días del año. Sin contratar personal. Sin complejidad técnica.</p>
+    <div class="cta-btns">
+      <a href="https://wa.link/nbrnmq" target="_blank" class="cta-btn1">💬 &nbsp;Hablar con el equipo ahora</a>
+      <a href="https://cal.com/nodo-digital-besczy/secret" target="_blank" class="cta-btn2">📅 &nbsp;Agendar una llamada</a>
+    </div>
+    <div class="cta-proof">
+      <div class="cpp"><div class="cpp-val">39+</div><div class="cpp-lbl">Centros activos</div></div>
+      <div class="cpp"><div class="cpp-val">$700k+</div><div class="cpp-lbl">Ingresos generados</div></div>
+      <div class="cpp"><div class="cpp-val">19x</div><div class="cpp-lbl">ROI mensual</div></div>
+      <div class="cpp"><div class="cpp-val">2 sem</div><div class="cpp-lbl">Activación</div></div>
+    </div>
+    <div class="cta-foot">iCCS · Powered by NODO One · <em>info.nodoone.com</em></div>
+  </div>
+</section>
+
+<script>
+const SB_URL  = 'https://qmwoxwpopgkmkiinlgoj.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtd294d3BvcGdrbWtpaW5sZ29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzODI1NTQsImV4cCI6MjA4OTk1ODU1NH0.7A_OFGJo-cFXo4BfD2F5aMrqeDuRMplTZa4vJXKQtYo';
+let _leadId = null;
+let _demoVisto = null;
+
+(async function trackVisit() {
+  try {
+    const device = window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop';
+    await fetch(`${SB_URL}/rest/v1/visits`, {
+      method: 'POST',
+      headers: {'apikey':SB_ANON,'Authorization':`Bearer ${SB_ANON}`,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ page: 'propuesta_iccs', device, referrer: document.referrer || null })
+    });
+  } catch(e) {}
+})();
+
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('leadNombre').focus(), 400);
+  document.querySelectorAll('[id^="t0-"]').forEach(el => {
+    el.textContent = new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+  });
+});
+
+function _phoneRule() {
+  const opt = document.getElementById('leadPais').selectedOptions[0];
+  return { digits: parseInt(opt.dataset.digits||10), name: opt.dataset.name||'', ph: opt.dataset.ph||'' };
+}
+function updatePhoneField() {
+  const rule = _phoneRule();
+  const inp  = document.getElementById('leadTelefono');
+  const hint = document.getElementById('phoneHint');
+  inp.placeholder = rule.ph; inp.value = '';
+  hint.textContent = rule.name + ' · ' + rule.digits + ' dígitos';
+  hint.className = 'phone-hint';
+}
+function sanitizePhone(el) {
+  const rule = _phoneRule();
+  const hint = document.getElementById('phoneHint');
+  let val = el.value.replace(/[^\d\s]/g, '');
+  const digits = val.replace(/\D/g,'');
+  if (digits.length > rule.digits) {
+    let count = 0;
+    val = val.split('').filter(c => {
+      if (/\d/.test(c)) { if (count < rule.digits) { count++; return true; } return false; }
+      return count < rule.digits;
+    }).join('');
+  }
+  el.value = val;
+  const n = val.replace(/\D/g,'').length;
+  const left = rule.digits - n;
+  if (n === 0) { hint.textContent = rule.name + ' · ' + rule.digits + ' dígitos'; hint.className = 'phone-hint'; }
+  else if (n < rule.digits) { hint.textContent = 'Faltan ' + left + ' dígito' + (left===1?'':'s'); hint.className = 'phone-hint bad'; }
+  else { hint.textContent = '✓ Número completo'; hint.className = 'phone-hint ok'; }
+}
+
+async function submitLead() {
+  const nombre   = document.getElementById('leadNombre').value.trim();
+  const pais     = document.getElementById('leadPais').value;
+  const numRaw   = document.getElementById('leadTelefono').value.trim().replace(/\s+/g,'');
+  const digits   = numRaw.replace(/\D/g,'');
+  const rule     = _phoneRule();
+  const telefono = numRaw ? `${pais} ${numRaw}` : '';
+  const empresa  = document.getElementById('leadEmpresa').value.trim();
+  const errEl    = document.getElementById('leadErr');
+  const btn      = document.getElementById('leadBtn');
+  if (!nombre || !digits) { errEl.textContent = '⚠ Por favor completa tu nombre y teléfono.'; errEl.style.display='block'; return; }
+  if (digits.length !== rule.digits) { errEl.textContent = `⚠ El número debe tener ${rule.digits} dígitos (llevas ${digits.length}).`; errEl.style.display='block'; return; }
+  errEl.style.display='none'; btn.disabled=true; btn.textContent='Guardando…';
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/leads_demo`, {
+      method: 'POST',
+      headers: {'apikey':SB_ANON,'Authorization':`Bearer ${SB_ANON}`,'Content-Type':'application/json','Prefer':'return=representation'},
+      body: JSON.stringify({ nombre, telefono, empresa: empresa||null, fuente: 'propuesta_iccs' })
+    });
+    const data = await res.json();
+    if (data?.[0]?.id) _leadId = data[0].id;
+  } catch(e) { console.warn('Supabase insert error:', e); }
+  document.getElementById('welcomeModal').style.display='none';
+  window.scrollTo({top:0,left:0,behavior:'instant'});
+}
+
+async function updateDemoVisto(agentKey) {
+  if (!_leadId || _demoVisto === agentKey) return;
+  _demoVisto = agentKey;
+  try {
+    await fetch(`${SB_URL}/rest/v1/leads_demo?id=eq.${_leadId}`, {
+      method: 'PATCH',
+      headers: {'apikey':SB_ANON,'Authorization':`Bearer ${SB_ANON}`,'Content-Type':'application/json'},
+      body: JSON.stringify({ demo_visto: agentKey })
+    });
+  } catch(e) {}
+}
+
+const SECS = ['s0','s1','s2','s3','s4','s5','s6','s7'];
+let cur = 0;
+function goTo(i) { document.getElementById(SECS[i])?.scrollIntoView({behavior:'smooth'}); }
+document.querySelectorAll('.snav-dot').forEach(d => d.addEventListener('click', () => goTo(+d.dataset.section)));
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowDown' || e.key === 'PageDown') { if(cur < SECS.length-1) goTo(cur+1); }
+  else if (e.key === 'ArrowUp' || e.key === 'PageUp') { if(cur > 0) goTo(cur-1); }
+});
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && e.intersectionRatio > 0.5) {
+      cur = SECS.indexOf(e.target.id);
+      document.querySelectorAll('.snav-dot').forEach((d,i) => d.classList.toggle('active', i===cur));
+    }
+  });
+}, {threshold:0.5});
+SECS.forEach(id => { const el=document.getElementById(id); if(el) obs.observe(el); });
+
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+
+setTimeout(() => {
+  const el = document.getElementById('heroCounter');
+  if (!el) return;
+  let n=40; el.textContent='40%';
+  const t=setInterval(()=>{ n=Math.min(n+1,55); el.textContent=n+'%'; if(n>=55) clearInterval(t); }, 120);
+}, 6200);
+setTimeout(() => {
+  const t = document.querySelector('.hero-typing');
+  if (t) { t.style.transition='opacity .5s'; t.style.opacity='0'; }
+}, 4000);
+
+const AGENTS = {
+  policlinica: {
+    msgs: [],
+    sys: `Eres Claudia, recepcionista virtual de Policlínica Central en Bogotá. Escribes exactamente como una persona real en WhatsApp: natural, cálida, profesional. Sin asteriscos, sin listas, sin guiones, sin markdown de ningún tipo.
+
+SERVICIOS Y TARIFAS: Medicina general 45 mil, pediatría 55 mil, cardiología 120 mil, ginecología 95 mil, traumatología 90 mil, dermatología 85 mil, endocrinología 100 mil, oftalmología 80 mil. Consulta de valoración gratuita para nuevos pacientes en medicina general.
+
+HORARIO: Lunes a viernes 7am a 8pm, sábados 8am a 2pm. Urgencias médicas de baja complejidad hasta las 10pm. Cra 45 #32-15, Bogotá.
+
+SEGUROS Y PAGOS: Aceptamos Sura, Colsanitas, Compensar, Coomeva, Medimás y medicina prepagada. También particular. El costo puede variar según su plan de seguro.
+
+FLUJO DE ATENCIÓN:
+1. Si preguntan por un servicio o especialidad: da el precio particular y pregunta si tiene seguro médico.
+2. Si quieren agendar: pregunta solo el nombre, la especialidad y si prefieren mañana o tarde.
+3. Una vez tienes nombre y turno: confirma la cita con día y hora aproximados.
+4. Si es urgencia: oriéntales a urgencias o al número de emergencias según la gravedad.
+5. Si piden algo fuera del ámbito médico: explica con amabilidad que solo gestionamos servicios de salud.
+
+REGLAS IMPORTANTES:
+- Máximo 2-3 oraciones por mensaje, como WhatsApp real
+- Nunca hagas diagnósticos ni des opiniones médicas
+- Tono cálido y tranquilizador — el paciente a veces está preocupado
+- Los números en palabras naturales: "45 mil" no "$45.000 COP"
+- Siempre termina con el siguiente paso claro`
+  },
+  diagnostico: {
+    msgs: [],
+    sys: `Eres Claudia, asistente del Centro de Diagnóstico Avanzado. Tono profesional, claro y tranquilizador, como WhatsApp médico real. Sin asteriscos, sin listas, sin guiones, sin markdown.
+
+SERVICIOS Y PRECIOS: Radiografía desde 35 mil, ecografía abdominal 85 mil, ecografía obstétrica 95 mil, tomografía simple 180 mil, tomografía con contraste 240 mil, resonancia magnética 280 mil, resonancia con contraste 350 mil, densitometría 110 mil, mamografía 90 mil. Laboratorio: cuadro hemático 18 mil, glucemia 12 mil, perfil lipídico 45 mil, perfil hormonal 120 mil, PCR COVID 85 mil.
+
+PREPARACIÓN: Ayuno de 4 horas para ecografía abdominal y laboratorios. RMN: retirar metales, llegar 15 min antes. Tomografía con contraste: informar si hay alergias o insuficiencia renal.
+
+HORARIO: Lunes a sábado 7am a 7pm. Sede norte: Cra 7 #127-40. Sede sur: Av 1 de Mayo #40-20. Resultados disponibles online en 24 a 48 horas.
+
+FLUJO DE ATENCIÓN:
+1. Si preguntan por un examen: da el precio, informa la preparación necesaria y pregunta si tienen orden médica.
+2. Con orden médica: puede haber cobertura parcial o total según el seguro — pídeles que traigan la orden y el carné.
+3. Para agendar: pide nombre, examen a realizar y preferencia de sede.
+4. Si es urgente o el médico lo indicó urgente: tienen citas de mismo día en la mañana — pregunta disponibilidad.
+
+REGLAS:
+- Máximo 2-3 oraciones por mensaje
+- Nunca interpretes resultados médicos ni hagas diagnósticos
+- Tono calmado y preciso — el paciente necesita claridad
+- Siempre avanza: si tienen la orden → propón fecha, si tienen fecha → confirma`
+  },
+  hospital: {
+    msgs: [],
+    sys: `Eres Claudia, asistente de información del Hospital General. Tono profesional, sereno y orientador. Natural y directo, como WhatsApp institucional de salud. Sin asteriscos, sin listas, sin guiones, sin markdown.
+
+SERVICIOS: Urgencias 24/7 de alta y baja complejidad. Hospitalización en habitación individual o compartida. Cirugía programada y de emergencia. UCI adultos y pediátrica. Especialidades: oncología, cardiología, neurología, ortopedia, gastroenterología, nefrología, neumología, psiquiatría, y 25 más. Atención con EPS, medicina prepagada y particular.
+
+INFORMACIÓN HOSPITALIZACIÓN: Para consultar estado de paciente hospitalizado, el familiar debe identificarse con cédula. Horario de visitas: 10am-12pm y 4pm-7pm. Información por este canal solo de carácter general.
+
+URGENCIAS: Para urgencias activas, indica que vayan directamente a urgencias o llamen al número de emergencias. No gestiones diagnósticos por chat.
+
+FLUJO DE ATENCIÓN:
+1. Si preguntan por una especialidad: confirma que la tenemos y oriénta sobre cómo agendar cita externa.
+2. Si preguntan por hospitalización: pide nombre del paciente y explica el proceso de consulta presencial o por línea de información.
+3. Si preguntan por urgencias activas: indica que acudan físicamente o llamen al 123.
+4. Para citas especializadas externas: orienta al módulo de admisiones o al número de citas.
+5. Si la pregunta requiere información clínica específica: explica que esa información se da al paciente o familiar directo de forma presencial.
+
+REGLAS:
+- Máximo 2-3 oraciones por mensaje
+- Nunca des información clínica de pacientes por este canal
+- Tono institucional pero humano — muchas veces quien escribe está preocupado
+- Siempre orienta al siguiente paso concreto`
+  }
+};
+
+function switchAgent(key) {
+  updateDemoVisto(key);
+  document.querySelectorAll('.dpanel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${key}`).classList.add('active');
+  document.querySelectorAll('.dtab').forEach(t => t.classList.toggle('active', t.dataset.agent===key));
+  ['policlinica','diagnostico','hospital'].forEach(k => {
+    const si = document.getElementById(`si-${k}`);
+    if (si) si.style.display = k===key ? 'block' : 'none';
+  });
+}
+
+function handleKey(e, key) { if(e.key==='Enter') sendMsg(key); }
+function useSugg(key, text) { const el=document.getElementById(`in-${key}`); if(el){el.value=text;el.focus();} }
+function nowTime() { return new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}); }
+
+function appendMsg(key, text, role) {
+  const c = document.getElementById(`msgs-${key}`);
+  if (!c) return;
+  const d = document.createElement('div');
+  d.className = `cmsg cmsg-${role==='user'?'u':'a'}`;
+  d.innerHTML = text.replace(/\n/g,'<br>');
+  const t = document.createElement('div');
+  t.className = 'cmsg-time'; t.textContent = nowTime();
+  d.appendChild(t);
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+
+async function sendMsg(key) {
+  const inp = document.getElementById(`in-${key}`);
+  const btn = document.getElementById(`btn-${key}`);
+  const typ = document.getElementById(`typing-${key}`);
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = ''; btn.disabled = true;
+  appendMsg(key, text, 'user');
+  AGENTS[key].msgs.push({role:'user', content:text});
+  fetch(`${SB_URL}/rest/v1/demo_events`, {
+    method:'POST',
+    headers:{'apikey':SB_ANON,'Authorization':`Bearer ${SB_ANON}`,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify({page:'propuesta_iccs',sector:key})
+  }).catch(()=>{});
+  typ.classList.add('show');
+  document.getElementById(`msgs-${key}`).scrollTop = 9999;
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:AGENTS[key].sys,messages:AGENTS[key].msgs})
+    });
+    const data = await res.json();
+    typ.classList.remove('show');
+    if (data.content?.[0]?.text) {
+      const reply = data.content[0].text;
+      AGENTS[key].msgs.push({role:'assistant', content:reply});
+      appendMsg(key, reply, 'agent');
+    } else if (data.error) {
+      appendMsg(key, `⚠ ${data.error.message || 'Error de API'}`, 'agent');
+    }
+  } catch(err) {
+    typ.classList.remove('show');
+    appendMsg(key, '⚠ Error de conexión con el servidor.', 'agent');
+  }
+  btn.disabled = false;
+  inp.focus();
+}
+
+/* ROI CALCULATOR */
+let roiCur = 'usd', roiPlan = 'anual';
+const PRICES = { usd:{anual:789,semestral:1116}, eur:{anual:729,semestral:1029} };
+const SYMS   = { usd:'$', eur:'€' };
+function roiSetCurrency(c) {
+  roiCur = c;
+  document.getElementById('roi-btn-usd').classList.toggle('active',c==='usd');
+  document.getElementById('roi-btn-eur').classList.toggle('active',c==='eur');
+  document.getElementById('roi-lbl-anual').textContent = `(${SYMS[c]}${PRICES[c].anual.toLocaleString()}/mes)`;
+  document.getElementById('roi-lbl-semestral').textContent = `(${SYMS[c]}${PRICES[c].semestral.toLocaleString()}/mes)`;
+  document.getElementById('roi-sym').textContent = SYMS[c];
+  document.getElementById('roi-sym2').textContent = SYMS[c];
+  roiCalc();
+}
+function roiSetPlan(p) {
+  roiPlan = p;
+  document.getElementById('roi-btn-anual').classList.toggle('active',p==='anual');
+  document.getElementById('roi-btn-semestral').classList.toggle('active',p==='semestral');
+  document.getElementById('roi-plan-badge').textContent = p==='anual' ? '⚡ Plan Anual · Contrato anual' : '⚡ Plan Semestral';
+  roiCalc();
+}
+function roiUpdateChats(v) {
+  document.getElementById('roi-val-chats').textContent = v;
+  roiCalc();
+}
+function roiCalc() {
+  const chatsW = parseInt(document.getElementById('roi-slider').value)||30;
+  const ticket  = parseFloat(document.getElementById('roi-ticket').value)||300;
+  const sym     = SYMS[roiCur];
+  const precio  = PRICES[roiCur][roiPlan];
+  const chatsM  = chatsW * 4;
+  const sinCli  = Math.round(chatsM * 0.03);
+  const conCli  = Math.round(chatsM * 0.15);
+  const sinIng  = sinCli * ticket;
+  const conIng  = conCli * ticket;
+  const conNeto = conIng - precio;
+  const sinNeto = sinIng;
+  const perdida = conNeto - sinNeto;
+  const roi     = conIng > 0 ? (conIng / precio).toFixed(1) : '0.0';
+  const be      = Math.ceil(precio / ticket);
+  const extra   = Math.max(0, conCli - be);
+  const bePct   = Math.min(100, Math.round((be / Math.max(conCli,1)) * 100));
+  const fmt = n => sym + Math.round(n).toLocaleString('es');
+  document.getElementById('roi-sin-chats').textContent = chatsM;
+  document.getElementById('roi-con-chats').textContent = chatsM;
+  document.getElementById('roi-sin-cli').textContent = sinCli;
+  document.getElementById('roi-con-cli').textContent = conCli;
+  document.getElementById('roi-con-cli2').textContent = conCli + ' pacientes';
+  document.getElementById('roi-sin-ing').textContent = fmt(sinIng);
+  document.getElementById('roi-con-ing').textContent = fmt(conIng);
+  document.getElementById('roi-con-precio').textContent = sym + precio.toLocaleString() + '/mes';
+  document.getElementById('roi-sin-neto').textContent = fmt(sinNeto);
+  document.getElementById('roi-con-neto').textContent = fmt(conNeto);
+  document.getElementById('roi-sin-perdida').textContent = '–' + fmt(perdida);
+  document.getElementById('roi-num').textContent = roi + 'x';
+  document.getElementById('roi-be-n').textContent = be + ' pacientes';
+  document.getElementById('roi-be-n2').textContent = be;
+  document.getElementById('roi-extra').textContent = extra;
+  document.getElementById('roi-be-mid').textContent = 'Break-even: ' + be + ' pacientes';
+  document.getElementById('roi-be-end').textContent = conCli + ' captados';
+  document.getElementById('roi-be-fill').style.width = bePct + '%';
+  document.getElementById('roi-stmt-main').innerHTML = `Con solo <strong>${be} pacientes</strong> ya recupera la inversión — el resto es beneficio.`;
+  document.getElementById('roi-stmt-sub').innerHTML = `De los <strong>${conCli} pacientes</strong> que captaría con NODO, solo necesita <strong>${be}</strong> para cubrir el plan. Los <strong>${extra}</strong> restantes son beneficio puro.`;
+  ['roi-num','roi-sin-perdida'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('roi-pop'); void el.offsetWidth; el.classList.add('roi-pop'); }
+  });
+}
+roiCalc();
+</script>
+</body>
+</html>
