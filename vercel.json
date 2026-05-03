@@ -6,6 +6,9 @@
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.py" },
+    { "src": "/nosle", "dest": "/public/nosle.html" },
+    { "src": "/admin", "dest": "/public/admin.html" },
+    { "src": "/iccs", "dest": "/public/iccs.html" },
     { "src": "/(.*)", "dest": "/public/$1" },
     { "src": "/", "dest": "/public/index.html" }
   ]
